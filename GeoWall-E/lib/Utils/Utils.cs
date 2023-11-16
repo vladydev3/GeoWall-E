@@ -1,4 +1,7 @@
+global using System.Collections.Generic;
 namespace GeoWall_E;
+
+
 
 public enum Colors
 {
