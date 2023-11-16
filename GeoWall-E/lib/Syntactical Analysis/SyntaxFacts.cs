@@ -1,4 +1,4 @@
-namespace GeoWallE;
+namespace GeoWall_E;
 
 static class SyntaxFacts
 {

@@ -1,5 +1,5 @@
 
-namespace GeoWallE;
+namespace GeoWall_E;
 
 public class Parser
 {

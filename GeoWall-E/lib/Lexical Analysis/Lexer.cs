@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace GeoWallE;
+namespace GeoWall_E;
 
 public class Lexer
 {

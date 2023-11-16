@@ -1,4 +1,4 @@
-namespace GeoWallE;
+namespace GeoWall_E;
 
 public class FunctionCallExpression : Expression
 {

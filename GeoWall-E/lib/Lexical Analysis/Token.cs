@@ -1,4 +1,4 @@
-namespace GeoWallE;
+namespace GeoWall_E;
 
 // Aqui va cada token posible
 public enum TokenType
