@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <RootNamespace>GeoWall_E</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>True</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="fondo.jpg" />
+    <None Remove="Logo.jpg" />
+    <None Remove="OIG %281%29.jpg" />
+    <None Remove="photo-1548614229-c1fe21dfab63.webp" />
+    <None Remove="R %281%29.jpg" />
+    <None Remove="R.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="fondo.jpg" />
+    <Resource Include="Logo.jpg" />
+    <Resource Include="OIG (1).jpg" />
+    <Resource Include="photo-1548614229-c1fe21dfab63.webp" />
+    <Resource Include="R (1).jpg" />
+    <Resource Include="R.jpg" />
+  </ItemGroup>
+
+</Project>

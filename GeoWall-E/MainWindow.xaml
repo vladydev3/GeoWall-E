@@ -1,0 +1,48 @@
+﻿<Window x:Class="GeoWall_E.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GeoWall_E"
+        mc:Ignorable="d"
+        Title="GeoWall-E" Height="2000" Width="2000">
+    <Grid Margin="0,0,0,-647">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2000"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Background>
+            <ImageBrush ImageSource="/R (1).jpg"/>
+            
+        </Grid.Background>
+        <TextBlock x:Name="Bienvenida" Margin="598,-2,1036,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FFA55503" FontWeight="Bold">
+            <TextBlock.Effect>
+                <DropShadowEffect/>
+            </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text="                                                  "/></TextBlock>
+        <TextBox x:Name="Entrada" AcceptsReturn="True"  BorderThickness="0.5" Margin="2,123,1652,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="973" TextChanged="TextBox_TextChanged" BorderBrush="#FF030304" Background="#FF111321" Foreground="#FFF3EDED" FontFamily="Arial Black" FontSize="14">
+            <TextBox.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-0.316"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </TextBox.RenderTransform>
+        </TextBox>
+        <Button Content="Start" HorizontalAlignment="Left" Margin="376,127,0,0" VerticalAlignment="Top" Click="Button_Click" RenderTransformOrigin="0.669,-25.522" Height="46" Width="140" FontSize="18" Background="#FF131321" Foreground="#FFCC6802" FontFamily="Arial Black" FontStyle="Italic"/>
+        <Button Content="Restart" HorizontalAlignment="Left" Margin="526,123,0,0" VerticalAlignment="Top" Click="Button_Click_1"  RenderTransformOrigin="2.675,0.631" Height="46" Width="140" FontSize="18" Background="#FF131123" Foreground="#FFAD6F00" FontFamily="Arial Black">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="1"/>
+                    <SkewTransform AngleY="-0.896" AngleX="-0.158"/>
+                    <RotateTransform/>
+                    <TranslateTransform Y="-1.699" X="-0.076"/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
+        <Canvas x:Name="drawingCanvas" Margin="494,178,0,24">
+            
+        </Canvas>
+        <Image HorizontalAlignment="Left" Height="100" Margin="1453,0,0,0" VerticalAlignment="Top" Width="100" Source="/Logo.jpg" RenderTransformOrigin="0.32,0.46"/>
+
+    </Grid>
+</Window>
