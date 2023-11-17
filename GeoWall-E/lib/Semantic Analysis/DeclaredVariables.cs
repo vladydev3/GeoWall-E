@@ -6,6 +6,7 @@ public class DeclaredVariable
     public ObjectTypes? Type { get; set; }
     public Expression? Value { get; set; }
     public bool? IsSequence { get; set; }
+    public bool? IsConstant { get; set; }
     public Color? Color { get; set; }
 
     public DeclaredVariable(string name, ObjectTypes type, Color color, bool sequence = false)
@@ -16,9 +17,10 @@ public class DeclaredVariable
         Color = color;
     }
 
-    public DeclaredVariable(string name, Expression value)
+    public DeclaredVariable(string name, Expression value, bool constant = true)
     {
         Name = name;
         Value = value;
+        IsConstant = constant;
     }
 }

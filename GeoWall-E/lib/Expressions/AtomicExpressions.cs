@@ -34,10 +34,10 @@ public class VariableExpression : Expression
 {
     public override TokenType Type => TokenType.Variable;
     public Token Name { get; set; }
-    public int Scope { get; set; }
-    public VariableExpression(Token name, int scope=0)
+    public VariableExpression(Token name)
     {
         Name = name;
-        Scope = scope;
     }
+
+    
 }

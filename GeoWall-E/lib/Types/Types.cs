@@ -37,7 +37,7 @@ public class Point : Types
             Foreground = Brushes.Black
         };
 
-        // Añadir el punto y la etiqueta al Canvas
+        // Aï¿½adir el punto y la etiqueta al Canvas
         drawingCanvas.Children.Add(point1);
         drawingCanvas.Children.Add(label);
         int drawingCanvasWidth = (int)drawingCanvas.Width;
