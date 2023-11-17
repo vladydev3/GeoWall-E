@@ -33,6 +33,15 @@ namespace GeoWall_E
             string[] lines = Entrada.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             Dictionary<string, Point> pointCenters = new Dictionary<string, Point>();
 
+            // Asi se procesaria el codigo del usuario
+            string code = "point p1;\ndraw p1;";
+            var lexer = new Lexer(code);
+            var parser = new Parser(lexer.Tokenize(), lexer.errors);
+            var ast = parser.Parse_();
+            var evaluator = new Evaluator(ast.Root);
+            var toDraw = evaluator.Evaluate();  // aqui se devolveria una List<Types> con el tipo de dato que hay que imprimir (point solo por ahora) revisa en la carpeta Types la clase Point
+            // despues de esto se puede hacer un foreach y dibujar cada uno de los elementos de la lista toDraw
+
 
             for (int i = 0; i < lines.Length; i++)
             {
