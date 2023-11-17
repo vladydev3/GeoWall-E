@@ -19,6 +19,40 @@ public class Point : Types
         Name = name;
         Color = color;
     }
+    public void Draw(string name,Color color, Canvas drawingCanvas) 
+    {
+        Random random = new Random();
+        Ellipse point1 = new Ellipse
+        {
+            Width = 10,
+            Height = 10,
+            Fill = Brushes.Red,
+            ToolTip = name// Asigna el nombre del punto a ToolTip
+        };
+
+        // Crear una etiqueta con el nombre del punto
+        Label label = new Label
+        {
+            Content = name,
+            Foreground = Brushes.Black
+        };
+
+        // Añadir el punto y la etiqueta al Canvas
+        drawingCanvas.Children.Add(point1);
+        drawingCanvas.Children.Add(label);
+        int drawingCanvasWidth = (int)drawingCanvas.Width;
+        int drawingCanvasHeight = (int)drawingCanvas.Height;
+        // Posicionar el punto y la etiqueta
+        double pointCenterX = random.Next(0, drawingCanvasWidth);
+        double pointCenterY = random.Next(0, drawingCanvasHeight);
+
+        Canvas.SetLeft(point1, pointCenterX - point1.Width / 2);
+        Canvas.SetTop(point1, pointCenterY - point1.Height / 2);
+        double labelCenterX = pointCenterX; // La misma X que el punto
+        double labelCenterY = pointCenterY - 20; // Un poco por encima del punto
+        Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
+        Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
+    }
 }
 
 

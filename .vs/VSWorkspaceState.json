@@ -1,6 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\GeoWall-E",
+    "\\GeoWall-E\\bin",
+    "\\GeoWall-E\\bin\\Debug"
   ],
   "SelectedNode": "\\GeoWall-E.sln",
   "PreviewInSolutionExplorer": false

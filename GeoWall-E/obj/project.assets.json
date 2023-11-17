@@ -8,24 +8,26 @@
     "net7.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\vlady\\.nuget\\packages\\": {}
+    "C:\\Users\\Kendry\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\coding\\GeoWall-E\\GeoWall-E\\GeoWall-E.csproj",
+      "projectUniqueName": "D:\\GeoWall-E Visual Studio\\GeoWall-E\\GeoWall-E\\GeoWall-E.csproj",
       "projectName": "GeoWall-E",
-      "projectPath": "D:\\coding\\GeoWall-E\\GeoWall-E\\GeoWall-E.csproj",
-      "packagesPath": "C:\\Users\\vlady\\.nuget\\packages\\",
-      "outputPath": "D:\\coding\\GeoWall-E\\GeoWall-E\\obj\\",
+      "projectPath": "D:\\GeoWall-E Visual Studio\\GeoWall-E\\GeoWall-E\\GeoWall-E.csproj",
+      "packagesPath": "C:\\Users\\Kendry\\.nuget\\packages\\",
+      "outputPath": "D:\\GeoWall-E Visual Studio\\GeoWall-E\\GeoWall-E\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\vlady\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Kendry\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net7.0-windows"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -62,7 +64,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   }
