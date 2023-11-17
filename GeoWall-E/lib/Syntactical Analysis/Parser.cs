@@ -1,4 +1,3 @@
-
 namespace GeoWall_E;
 
 public class Parser

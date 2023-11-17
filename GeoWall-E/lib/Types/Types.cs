@@ -12,10 +12,12 @@ public class Point : Types
     public double X { get; set; }
     public double Y { get; set; }
     public string Name { get; set; }
+    public Color Color { get; set; }    
 
-    public Point(string name = "")
+    public Point(Color color, string name = "")
     {
         Name = name;
+        Color = color;
     }
 }
 
