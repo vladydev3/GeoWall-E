@@ -1,3 +1,4 @@
+
 namespace GeoWall_E;
 
 public class Evaluator
@@ -9,8 +10,9 @@ public class Evaluator
         Root = root;
     }
 
-    public List<Types> Evaluate()
+    /*public List<Types> Evaluate()
     {
-
+        return
     }
+    */
 }
