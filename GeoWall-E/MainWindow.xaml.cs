@@ -72,6 +72,11 @@ namespace GeoWall_E
         {
             
         }
-        
+
+        private void ScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            // 'scrollViewer' se refiere al control ScrollViewer que has añadido en tu XAML
+            scrollViewer.ScrollToVerticalOffset(e.NewValue);
+        }
     }
 }
