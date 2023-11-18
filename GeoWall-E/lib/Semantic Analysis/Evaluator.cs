@@ -60,10 +60,10 @@ public class Evaluator
         {
             HandleRayExpression(rayexp, toDraw);
         }
-        else if (draw.Expression is CircleExpression circleexp)
+       /* else if (draw.Expression is CircleExpression circleexp)
         {
             HandleCircleExpression(circleexp, toDraw);
-        }
+        }*/
         else if (draw.Expression is ArcExpression arcexp)
         {
             HandleArcExpression(arcexp, toDraw);
@@ -75,7 +75,7 @@ public class Evaluator
         throw new NotImplementedException();
     }
 
-    private static void HandleCircleExpression(CircleExpression circleexp, List<Types> toDraw)
+   /* private static void HandleCircleExpression(CircleExpression circleexp, List<Types> toDraw)
     {
         var p1 = VariableScope.Find(x => x.Name == circleexp.Center.Text);
         var p2 = VariableScope.Find(x => x.Name == circleexp.Radius.Text);
@@ -94,7 +94,9 @@ public class Evaluator
         {
             Errors.AddError($"Variable {circleexp.Center.Text} or {circleexp.Point.Text} not declared, Line: {circleexp.Center.Line}, Column: {circleexp.Center.Column}");
         }
+    
     }
+   */
 
     private static void HandleRayExpression(RayExpression rayexp, List<Types> toDraw)
     {
