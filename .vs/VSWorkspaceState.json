@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\GeoWall-E",
+    "\\GeoWall-E\\lib",
+    "\\GeoWall-E\\lib\\Types"
   ],
-  "SelectedNode": "\\GeoWall-E.sln",
+  "SelectedNode": "\\GeoWall-E\\lib\\Types\\Types.cs",
   "PreviewInSolutionExplorer": false
 }
