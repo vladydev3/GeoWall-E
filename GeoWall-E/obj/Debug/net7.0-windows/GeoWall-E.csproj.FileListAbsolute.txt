@@ -18,3 +18,23 @@ D:\GeoWall-E Visual Studio\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\refint\G
 D:\GeoWall-E Visual Studio\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.pdb
 D:\GeoWall-E Visual Studio\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.genruntimeconfig.cache
 D:\GeoWall-E Visual Studio\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\ref\GeoWall-E.dll
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\MainWindow.g.cs
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\App.g.cs
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E_MarkupCompile.cache
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E_MarkupCompile.lref
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.dll
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\refint\GeoWall-E.dll
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.pdb
+D:\Escuela\Proyecto 3\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.exe
+D:\Escuela\Proyecto 3\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.deps.json
+D:\Escuela\Proyecto 3\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.runtimeconfig.json
+D:\Escuela\Proyecto 3\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.dll
+D:\Escuela\Proyecto 3\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.pdb
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\MainWindow.baml
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.g.resources
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.GeneratedMSBuildEditorConfig.editorconfig
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.AssemblyInfoInputs.cache
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.AssemblyInfo.cs
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.csproj.CoreCompileInputs.cache
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.genruntimeconfig.cache
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\ref\GeoWall-E.dll
