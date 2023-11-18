@@ -20,9 +20,12 @@ namespace GeoWall_E
     /// </summary>
     public partial class MainWindow : Window
     {
+        public static Canvas DrawingCanvas { get; set; }
         public MainWindow()
         {
             InitializeComponent();
+            // Asignar el Canvas del XAML a la propiedad estática
+            MainWindow.DrawingCanvas = this.drawingCanvas;
             this.WindowState = WindowState.Maximized;
 
         }
@@ -54,7 +57,7 @@ namespace GeoWall_E
                     {
                         Width = 10,
                         Height = 10,
-                        Fill = Brushes.Red,
+                        Fill = Brushes.Blue,
                         ToolTip = name// Asigna el nombre del punto a ToolTip
                     };
                     // Crear una etiqueta con el nombre del punto
