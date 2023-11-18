@@ -15,32 +15,33 @@ public class Point : Types
     public double X { get; set; }
     public double Y { get; set; }
     public string Name { get; set; }
-    public Color Color { get; set; }    
+    public Color Color { get; set; }  
 
     public Point(Color color, string name = "")
     {
         Name = name;
         Color = color;
+        X = GetX();
+        Y = GetY(); 
+        
+    }
+    public double GetX()
+    {
+        Random random = new Random();
+        int drawingCanvasWidth = (int)MainWindow.DrawingCanvas.Width;
+        double pointCenterX = random.Next(0, drawingCanvasWidth);
+        return pointCenterX;
+    }
+
+    public double GetY()
+    {
+        Random random = new Random();
+        int drawingCanvasHeight = (int)MainWindow.DrawingCanvas.Height;
+        double pointCenterY = random.Next(0, drawingCanvasHeight);
+        return pointCenterY;
     }
     public void Draw(string name,Color color, Canvas drawingCanvas,Ellipse point1, Label label,double X,double Y) 
     {
-        Random random = new Random();
-        Ellipse point1 = new Ellipse
-        {
-            Width = 10,
-            Height = 10,
-            Fill = Brushes.Red,
-            ToolTip = name// Asigna el nombre del punto a ToolTip
-        };
-
-        // Crear una etiqueta con el nombre del punto
-        Label label = new Label
-        {
-            Content = name,
-            Foreground = Brushes.Black
-        };
-
-        // Aï¿½adir el punto y la etiqueta al Canvas
         
         // Añadir el punto y la etiqueta al Canvas
         drawingCanvas.Children.Add(point1);
@@ -78,17 +79,89 @@ public class Line : Types
 
         // Establecer propiedades de la línea
         line.Stroke = Brushes.LightSteelBlue;
+        if (P1.X==0&& P1.Y==0)
+        {
+             Random rand = new Random();
 
-         // Coordenadas de inicio
-         line.X1 = P1.X;
-         line.Y1 = P1.Y;
+            // Generar una inclinación aleatoria
+            double angle = rand.NextDouble() * Math.PI * 2;  // Ángulo en radianes
 
-         // Coordenadas de fin
-         line.X2 = P2.X;
-         line.Y2 = P2.Y;
+            // Generar una posición aleatoria para el centro de la línea
+            double centerX = rand.NextDouble() * drawingCanva.Width;
+            double centerY = rand.NextDouble() * drawingCanva.Height;
 
-         // Agregar la línea al canvas
-         drawingCanva.Children.Add(line);
+            // Calcular los puntos de inicio y final de la línea
+            double radius = Math.Sqrt(drawingCanva.Width * drawingCanva.Width * drawingCanva.Height * drawingCanva.Height);  // Radio suficientemente grande para cubrir todo el lienzo
+            line.X1 = centerX + radius * Math.Cos(angle + Math.PI);  // Punto de inicio
+            line.Y1 = centerY + radius * Math.Sin(angle + Math.PI);
+            line.X2 = centerX + radius * Math.Cos(angle);  // Punto final
+            line.Y2 = centerY + radius * Math.Sin(angle);
+
+            // Agregar la línea al lienzo
+            drawingCanva.Children.Add(line);
+        }
+        else
+        {
+            // Coordenadas de inicio
+            line.X1 = P1.X;
+            line.Y1 = P1.Y;
+            Ellipse point1 = new Ellipse
+            {
+                Width = 10,
+                Height = 10,
+                Fill = Brushes.Blue,
+                ToolTip = P1.Name// Asigna el nombre del punto a ToolTip
+            };
+            // Crear una etiqueta con el nombre del punto
+            Label label1 = new Label
+            {
+                Content = P1.Name,
+                Foreground = Brushes.Black
+            };
+            drawingCanva.Children.Add(point1);
+            drawingCanva.Children.Add(label1);
+
+            Canvas.SetLeft(point1, P1.X - point1.Width / 2);
+            Canvas.SetTop(point1, P1.Y- point1.Height / 2);
+
+            double labelCenterX1 = P1.X; // La misma X que el punto
+            double labelCenterY1 = P1.Y - 20; // Un poco por encima del punto
+
+            Canvas.SetLeft(label1, labelCenterX1 - label1.ActualWidth / 2);
+            Canvas.SetTop(label1, labelCenterY1 - label1.ActualHeight / 2);
+            // Coordenadas de fin
+            line.X2 = P2.X;
+            line.Y2 = P2.Y;
+            Ellipse point2 = new Ellipse
+            {
+                Width = 10,
+                Height = 10,
+                Fill = Brushes.Blue,
+                ToolTip = P2.Name// Asigna el nombre del punto a ToolTip
+            };
+            // Crear una etiqueta con el nombre del punto
+            Label label2 = new Label
+            {
+                Content = P2.Name,
+                Foreground = Brushes.Black
+            };
+            drawingCanva.Children.Add(point2);
+            drawingCanva.Children.Add(label2);
+
+            Canvas.SetLeft(point1, P2.X - point1.Width / 2);
+            Canvas.SetTop(point1, P2.Y - point1.Height / 2);
+
+            double labelCenterX2 = P2.X; // La misma X que el punto
+            double labelCenterY2 = P2.Y - 20; // Un poco por encima del punto
+
+            Canvas.SetLeft(label2, labelCenterX2 - label2.ActualWidth / 2);
+            Canvas.SetTop(label2, labelCenterY2 - label2.ActualHeight / 2);
+            // Coordenadas de fin
+
+            // Agregar la línea al canvas
+            drawingCanva.Children.Add(line);
+        }
+        
     }
 }
 
