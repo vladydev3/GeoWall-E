@@ -49,7 +49,36 @@ namespace GeoWall_E
                 {
                     string name = point.Name;
                     Color color = point.Color;
-                    point.Draw(name, color,drawingCanvas);
+                    Random random = new Random();
+                    Ellipse point1 = new Ellipse
+                    {
+                        Width = 10,
+                        Height = 10,
+                        Fill = Brushes.Red,
+                        ToolTip = name// Asigna el nombre del punto a ToolTip
+                    };
+                    // Crear una etiqueta con el nombre del punto
+                    Label label = new Label
+                    {
+                        Content = name,
+                        Foreground = Brushes.Black
+                    };
+
+                    // Asegurarse de que el punto y la etiqueta se dibujan dentro del Canvas
+                    int drawingCanvasWidth = (int)drawingCanvas.Width - (int)point1.Width;
+                    int drawingCanvasHeight = (int)drawingCanvas.Height - (int)point1.Height;
+
+                    // Posicionar el punto y la etiqueta
+                    double pointCenterX = random.Next((int)point1.Width / 2, drawingCanvasWidth);
+                    double pointCenterY = random.Next((int)point1.Height / 2, drawingCanvasHeight);
+                    point.X = pointCenterX;
+                    point.Y = pointCenterY;
+                    point.Draw(name, color, drawingCanvas, point1,label,pointCenterX,pointCenterY);
+                }
+                if (item is Line line)
+                {
+                    line.Draw(drawingCanvas);
+
                 }
 
 
