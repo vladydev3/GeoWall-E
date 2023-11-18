@@ -3,11 +3,8 @@
     "",
     "\\GeoWall-E",
     "\\GeoWall-E\\lib",
-    "\\GeoWall-E\\lib\\Expressions",
-    "\\GeoWall-E\\lib\\Semantic Analysis",
-    "\\GeoWall-E\\lib\\Types",
-    "\\GeoWall-E\\lib\\Utils"
+    "\\GeoWall-E\\lib\\Types"
   ],
-  "SelectedNode": "\\GeoWall-E\\MainWindow.xaml.cs",
+  "SelectedNode": "\\GeoWall-E\\lib\\Types\\Types.cs",
   "PreviewInSolutionExplorer": false
 }
