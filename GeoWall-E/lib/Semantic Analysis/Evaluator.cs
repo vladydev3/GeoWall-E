@@ -26,6 +26,12 @@ public class Evaluator
                 VariableScope.Add(new DeclaredVariable(line.Name.Text, ObjectTypes.Line, line.Color, line.IsSequence));
                 continue;
             }
+            if (node is LineExpression linexp)
+            {
+                VariableScope.Add(new DeclaredVariable(ObjectTypes.Line, linexp.P1, linexp.P2));
+                continue;
+            }
+
             if (node is SegmentStatement segment)
             {
                 VariableScope.Add(new DeclaredVariable(segment.Name.Text, ObjectTypes.Segment, segment.Color, segment.IsSequence));
