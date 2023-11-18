@@ -24,8 +24,25 @@ public class Point : Types
     }
     public void Draw(string name,Color color, Canvas drawingCanvas,Ellipse point1, Label label,double X,double Y) 
     {
+        Random random = new Random();
+        Ellipse point1 = new Ellipse
+        {
+            Width = 10,
+            Height = 10,
+            Fill = Brushes.Red,
+            ToolTip = name// Asigna el nombre del punto a ToolTip
+        };
+
+        // Crear una etiqueta con el nombre del punto
+        Label label = new Label
+        {
+            Content = name,
+            Foreground = Brushes.Black
+        };
+
+        // AÃ¯Â¿Â½adir el punto y la etiqueta al Canvas
         
-        // Añadir el punto y la etiqueta al Canvas
+        // AÃ±adir el punto y la etiqueta al Canvas
         drawingCanvas.Children.Add(point1);
         drawingCanvas.Children.Add(label);
 
@@ -56,10 +73,10 @@ public class Line : Types
     }
     public void Draw(Canvas drawingCanva)
     {
-        // Crear una línea
+        // Crear una lÃ­nea
         System.Windows.Shapes.Line line = new System.Windows.Shapes.Line();
 
-        // Establecer propiedades de la línea
+        // Establecer propiedades de la lÃ­nea
         line.Stroke = Brushes.LightSteelBlue;
 
          // Coordenadas de inicio
@@ -70,7 +87,7 @@ public class Line : Types
          line.X2 = P2.X;
          line.Y2 = P2.Y;
 
-         // Agregar la línea al canvas
+         // Agregar la lÃ­nea al canvas
          drawingCanva.Children.Add(line);
     }
 }
