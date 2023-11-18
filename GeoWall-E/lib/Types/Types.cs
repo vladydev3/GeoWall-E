@@ -40,16 +40,21 @@ public class Point : Types
         // A�adir el punto y la etiqueta al Canvas
         drawingCanvas.Children.Add(point1);
         drawingCanvas.Children.Add(label);
-        int drawingCanvasWidth = (int)drawingCanvas.Width;
-        int drawingCanvasHeight = (int)drawingCanvas.Height;
+
+        // Asegurarse de que el punto y la etiqueta se dibujan dentro del Canvas
+        int drawingCanvasWidth = (int)drawingCanvas.Width - (int)point1.Width;
+        int drawingCanvasHeight = (int)drawingCanvas.Height - (int)point1.Height;
+
         // Posicionar el punto y la etiqueta
-        double pointCenterX = random.Next(0, drawingCanvasWidth);
-        double pointCenterY = random.Next(0, drawingCanvasHeight);
+        double pointCenterX = random.Next((int)point1.Width / 2, drawingCanvasWidth);
+        double pointCenterY = random.Next((int)point1.Height / 2, drawingCanvasHeight);
 
         Canvas.SetLeft(point1, pointCenterX - point1.Width / 2);
         Canvas.SetTop(point1, pointCenterY - point1.Height / 2);
+
         double labelCenterX = pointCenterX; // La misma X que el punto
         double labelCenterY = pointCenterY - 20; // Un poco por encima del punto
+
         Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
         Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
     }
