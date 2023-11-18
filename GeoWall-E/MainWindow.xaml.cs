@@ -27,7 +27,8 @@ namespace GeoWall_E
             // Asignar el Canvas del XAML a la propiedad estática
             MainWindow.DrawingCanvas = this.drawingCanvas;
             this.WindowState = WindowState.Maximized;
-
+            this.WindowStyle = WindowStyle.None; // Añade esta línea
+            this.ResizeMode = ResizeMode.NoResize; // Añade esta línea
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -76,7 +77,7 @@ namespace GeoWall_E
                     double pointCenterY = random.Next((int)point1.Height / 2, drawingCanvasHeight);
                     point.X = pointCenterX;
                     point.Y = pointCenterY;
-                    point.Draw(name, color, drawingCanvas, point1,label,pointCenterX,pointCenterY);
+                    point.Draw(name, color, drawingCanvas, point1, label, pointCenterX, pointCenterY);
                 }
                 if (item is Line line)
                 {
@@ -102,7 +103,7 @@ namespace GeoWall_E
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
+
         }
 
         private void ScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
