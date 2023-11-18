@@ -6,7 +6,7 @@ namespace GeoWall_E;
 public abstract class Types
 {
     public abstract ObjectTypes Type { get; }
-    
+
 }
 
 public class Point : Types
@@ -15,15 +15,15 @@ public class Point : Types
     public double X { get; set; }
     public double Y { get; set; }
     public string Name { get; set; }
-    public Color Color { get; set; }  
+    public Color Color { get; set; }
 
     public Point(Color color, string name = "")
     {
         Name = name;
         Color = color;
         X = GetX();
-        Y = GetY(); 
-        
+        Y = GetY();
+
     }
     public double GetX()
     {
@@ -40,9 +40,9 @@ public class Point : Types
         double pointCenterY = random.Next(0, drawingCanvasHeight);
         return pointCenterY;
     }
-    public void Draw(string name,Color color, Canvas drawingCanvas,Ellipse point1, Label label,double X,double Y) 
+    public void Draw(string name, Color color, Canvas drawingCanvas, Ellipse point1, Label label, double X, double Y)
     {
-        
+
         // Añadir el punto y la etiqueta al Canvas
         drawingCanvas.Children.Add(point1);
         drawingCanvas.Children.Add(label);
@@ -79,9 +79,9 @@ public class Line : Types
 
         // Establecer propiedades de la línea
         line.Stroke = Brushes.LightSteelBlue;
-        if (P1.X==0&& P1.Y==0)
+        if (P1.X == 0 && P1.Y == 0)
         {
-             Random rand = new Random();
+            Random rand = new Random();
 
             // Generar una inclinación aleatoria
             double angle = rand.NextDouble() * Math.PI * 2;  // Ángulo en radianes
@@ -122,7 +122,7 @@ public class Line : Types
             drawingCanva.Children.Add(label1);
 
             Canvas.SetLeft(point1, P1.X - point1.Width / 2);
-            Canvas.SetTop(point1, P1.Y- point1.Height / 2);
+            Canvas.SetTop(point1, P1.Y - point1.Height / 2);
 
             double labelCenterX1 = P1.X; // La misma X que el punto
             double labelCenterY1 = P1.Y - 20; // Un poco por encima del punto
@@ -161,7 +161,7 @@ public class Line : Types
             // Agregar la línea al canvas
             drawingCanva.Children.Add(line);
         }
-        
+
     }
 }
 
@@ -218,13 +218,15 @@ public class Circle : Types
 {
     public override ObjectTypes Type => ObjectTypes.Circle;
     public Point Center { get; set; }
-    public int Radius { get; set; }
+    public Measure Radius { get; set; }
+    public Color Color { get; set; }
     public string Name { get; set; }
 
-    public Circle(Point center, int radius, string name = "")
+    public Circle(Point center, Measure radius, Color color, string name = "")
     {
         Center = center;
         Radius = radius;
+        Color = color;
         Name = name;
     }
 }
@@ -232,12 +234,14 @@ public class Circle : Types
 public class Measure : Types
 {
     public override ObjectTypes Type => ObjectTypes.Measure;
-    
+
     public Point P1 { get; set; }
     public Point P2 { get; set; }
+    public string Name { get; set; }
 
-    public Measure(Point p1, Point p2)
+    public Measure(Point p1, Point p2, string name = "")
     {
+        Name = name;
         P1 = p1;
         P2 = p2;
     }
