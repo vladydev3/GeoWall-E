@@ -19,8 +19,7 @@
             <ImageBrush ImageSource="/R (1).jpg"/>
 
         </Grid.Background>
-        <Canvas x:Name="drawingCanvas" Height="2430" Width="1506" Margin="494,178,0,24" Grid.RowSpan="2" Grid.ColumnSpan="2">
-        </Canvas>
+        <Canvas x:Name="drawingCanvas" Width="1500" Height="700" Margin="407,213,48,309"/>
         <TextBlock x:Name="Bienvenida" Margin="598,-2,991,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FFA55503" FontWeight="Bold">
             <TextBlock.Effect>
                 <DropShadowEffect/>
