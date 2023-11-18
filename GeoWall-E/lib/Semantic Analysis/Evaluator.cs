@@ -26,11 +26,6 @@ public class Evaluator
                 VariableScope.Add(new DeclaredVariable(line.Name.Text, ObjectTypes.Line, line.Color, line.IsSequence));
                 continue;
             }
-            if (node is LineExpression linexp)
-            {
-                VariableScope.Add(new DeclaredVariable(ObjectTypes.Line, linexp.P1, linexp.P2));
-                continue;
-            }
 
             if (node is SegmentStatement segment)
             {
@@ -72,6 +67,27 @@ public class Evaluator
                         Errors.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
                     }
                     continue;
+                }
+                if (draw.Expression is LineExpression lineexp)
+                {
+                    // looking for P1 and P2 in the scope
+                    var p1 = VariableScope.Find(x => x.Name == lineexp.P1.Text);
+                    var p2 = VariableScope.Find(x => x.Name == lineexp.P2.Text);
+                    if (p1 != null && p2 != null)
+                    {
+                        if (p1.Type == ObjectTypes.Point && p2.Type == ObjectTypes.Point)
+                        {
+                            toDraw.Add(new Line(new Point(p1.Color), new Point(p2.Color)));
+                        }
+                        else
+                        {
+                            Errors.AddError($"Invalid type for {lineexp.P1.Text} or {lineexp.P2.Text}, Line: {lineexp.P1.Line}, Column: {lineexp.P1.Column}");
+                        }
+                    }
+                    else
+                    {
+                        Errors.AddError($"Variable {lineexp.P1.Text} or {lineexp.P2.Text} not declared, Line: {lineexp.P1.Line}, Column: {lineexp.P1.Column}");
+                    }
                 }
             }
         }
