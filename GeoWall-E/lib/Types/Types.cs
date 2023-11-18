@@ -1,3 +1,6 @@
+
+using System.Windows.Controls;
+
 namespace GeoWall_E;
 
 public abstract class Types
@@ -19,6 +22,39 @@ public class Point : Types
         Name = name;
         Color = color;
     }
+    public void Draw(string name,Color color, Canvas drawingCanvas,Ellipse point1, Label label,double X,double Y) 
+    {
+        Random random = new Random();
+        Ellipse point1 = new Ellipse
+        {
+            Width = 10,
+            Height = 10,
+            Fill = Brushes.Red,
+            ToolTip = name// Asigna el nombre del punto a ToolTip
+        };
+
+        // Crear una etiqueta con el nombre del punto
+        Label label = new Label
+        {
+            Content = name,
+            Foreground = Brushes.Black
+        };
+
+        // Aï¿½adir el punto y la etiqueta al Canvas
+        
+        // Añadir el punto y la etiqueta al Canvas
+        drawingCanvas.Children.Add(point1);
+        drawingCanvas.Children.Add(label);
+
+        Canvas.SetLeft(point1, X - point1.Width / 2);
+        Canvas.SetTop(point1, Y - point1.Height / 2);
+
+        double labelCenterX = X; // La misma X que el punto
+        double labelCenterY = Y - 20; // Un poco por encima del punto
+
+        Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
+        Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
+    }
 }
 
 
@@ -34,6 +70,25 @@ public class Line : Types
         P1 = p1;
         P2 = p2;
         Name = name;
+    }
+    public void Draw(Canvas drawingCanva)
+    {
+        // Crear una línea
+        System.Windows.Shapes.Line line = new System.Windows.Shapes.Line();
+
+        // Establecer propiedades de la línea
+        line.Stroke = Brushes.LightSteelBlue;
+
+         // Coordenadas de inicio
+         line.X1 = P1.X;
+         line.Y1 = P1.Y;
+
+         // Coordenadas de fin
+         line.X2 = P2.X;
+         line.Y2 = P2.Y;
+
+         // Agregar la línea al canvas
+         drawingCanva.Children.Add(line);
     }
 }
 

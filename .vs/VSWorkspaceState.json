@@ -1,7 +1,13 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\GeoWall-E",
+    "\\GeoWall-E\\lib",
+    "\\GeoWall-E\\lib\\Expressions",
+    "\\GeoWall-E\\lib\\Semantic Analysis",
+    "\\GeoWall-E\\lib\\Types",
+    "\\GeoWall-E\\lib\\Utils"
   ],
-  "SelectedNode": "\\GeoWall-E.sln",
+  "SelectedNode": "\\GeoWall-E\\MainWindow.xaml.cs",
   "PreviewInSolutionExplorer": false
 }
