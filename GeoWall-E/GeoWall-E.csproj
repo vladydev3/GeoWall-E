@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
     <ApplicationIcon>logo.ico.ico</ApplicationIcon>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,6 +35,10 @@
     <Resource Include="photo_2023-11-18_18-31-07.jpg" />
     <Resource Include="R (1).jpg" />
     <Resource Include="R.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.6.2" />
   </ItemGroup>
 
 </Project>

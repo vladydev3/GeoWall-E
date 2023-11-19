@@ -39,3 +39,28 @@ D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.csproj.CoreCo
 D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.genruntimeconfig.cache
 D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\ref\GeoWall-E.dll
 D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E_Content.g.cs
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.csproj.AssemblyReference.cache
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\MainWindow.g.cs
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\App.g.cs
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E_Content.g.cs
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E_MarkupCompile.cache
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E_MarkupCompile.lref
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.dll
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\refint\GeoWall-E.dll
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.pdb
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\MainWindow.baml
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.g.resources
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.GeneratedMSBuildEditorConfig.editorconfig
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.csproj.CoreCompileInputs.cache
+D:\coding\GeoWall-E\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.exe
+D:\coding\GeoWall-E\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.deps.json
+D:\coding\GeoWall-E\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.runtimeconfig.json
+D:\coding\GeoWall-E\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.dll
+D:\coding\GeoWall-E\GeoWall-E\bin\Debug\net7.0-windows\GeoWall-E.pdb
+D:\coding\GeoWall-E\GeoWall-E\bin\Debug\net7.0-windows\xunit.abstractions.dll
+D:\coding\GeoWall-E\GeoWall-E\bin\Debug\net7.0-windows\xunit.assert.dll
+D:\coding\GeoWall-E\GeoWall-E\bin\Debug\net7.0-windows\xunit.core.dll
+D:\coding\GeoWall-E\GeoWall-E\bin\Debug\net7.0-windows\xunit.execution.dotnet.dll
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.csproj.CopyComplete
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.genruntimeconfig.cache
+D:\coding\GeoWall-E\GeoWall-E\obj\Debug\net7.0-windows\ref\GeoWall-E.dll
