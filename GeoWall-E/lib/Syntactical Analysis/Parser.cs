@@ -135,7 +135,7 @@ public class Parser
                 break;
             case "red":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.Red);
+                color= new Color(Colors.Red);
                 break;
             case "green":
                 PreviousColor = new Color(color.Color_);
