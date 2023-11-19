@@ -30,7 +30,10 @@ namespace GeoWall_E
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
-        {
+        
+        {         
+            // Borra el Canvas
+            drawingCanvas.Children.Clear();
             // Obtén las líneas del TextBox
             Dictionary<string, Point> pointCenters = new Dictionary<string, Point>();
 
