@@ -6,7 +6,7 @@ namespace GeoWall_E;
 public abstract class Types
 {
     public abstract ObjectTypes Type { get; }
-    
+
 }
 
 public class Point : Types
@@ -15,7 +15,7 @@ public class Point : Types
     public double X { get; set; }
     public double Y { get; set; }
     public string Name { get; set; }
-    public Color Color { get; set; }  
+    public Color Color { get; set; }
 
     public Point(Color color, string name = "")
     {
@@ -324,13 +324,15 @@ public class Circle : Types
 {
     public override ObjectTypes Type => ObjectTypes.Circle;
     public Point Center { get; set; }
-    public int Radius { get; set; }
+    public Measure Radius { get; set; }
+    public Color Color { get; set; }
     public string Name { get; set; }
 
-    public Circle(Point center, int radius, string name = "")
+    public Circle(Point center, Measure radius, Color color, string name = "")
     {
         Center = center;
         Radius = radius;
+        Color = color;
         Name = name;
     }
 }
@@ -338,12 +340,14 @@ public class Circle : Types
 public class Measure : Types
 {
     public override ObjectTypes Type => ObjectTypes.Measure;
-    
+
     public Point P1 { get; set; }
     public Point P2 { get; set; }
+    public string Name { get; set; }
 
-    public Measure(Point p1, Point p2)
+    public Measure(Point p1, Point p2, string name = "")
     {
+        Name = name;
         P1 = p1;
         P2 = p2;
     }
