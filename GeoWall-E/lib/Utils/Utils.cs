@@ -29,6 +29,10 @@ public class Color
     {
         Color_ = color;
     }
+    public string GetString() 
+    {
+        return Color_.ToString();
+    }
 }
 
 public enum ObjectTypes

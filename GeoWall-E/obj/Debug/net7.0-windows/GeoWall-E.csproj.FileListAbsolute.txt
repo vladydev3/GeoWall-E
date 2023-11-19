@@ -38,3 +38,4 @@ D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.AssemblyInfo.
 D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.csproj.CoreCompileInputs.cache
 D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E.genruntimeconfig.cache
 D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\ref\GeoWall-E.dll
+D:\Escuela\Proyecto 3\GeoWall-E\obj\Debug\net7.0-windows\GeoWall-E_Content.g.cs
