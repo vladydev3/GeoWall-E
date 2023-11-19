@@ -165,6 +165,7 @@ public class Parser
                 errors.AddError($"Unexpected color {Current.Text}, Line: {Current.Line}, Column: {Current.Column}");
                 return new ErrorExpression();
         }
+        NextToken();
         Match(TokenType.EOL);
         return new EmptyNode();
     }
@@ -252,7 +253,7 @@ public class Parser
         NextToken();
         var value = ParseExpression();
         Match(TokenType.EOL);
-        return new AsignationStatement(name, value);
+        return new AsignationStatement(name, value, color);
     }
 
     private Expression ParseLet()

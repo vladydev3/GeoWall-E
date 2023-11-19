@@ -1,3 +1,8 @@
+
+
+
+
+
 namespace GeoWall_E;
 
 public class Evaluator
@@ -56,23 +61,115 @@ public class Evaluator
         }
         else if (asignation.Value is LineExpression lineexp)
         {
-            HandleLineExpression(lineexp, toDraw);
+            HandleLineAsignationExpression(lineexp, toDraw, asignation);
         }
         else if (asignation.Value is SegmentExpression segmentexp)
         {
-            HandleSegmentExpression(segmentexp, toDraw);
+            HandleSegmentAsignationExpression(segmentexp, toDraw, asignation);
         }
         else if (asignation.Value is RayExpression rayexp)
         {
-            HandleRayExpression(rayexp, toDraw);
+            HandleRayAsignationExpression(rayexp, toDraw, asignation);
         }
         else if (asignation.Value is CircleExpression circleexp)
         {
-            HandleCircleExpression(circleexp, toDraw);
+            HandleCircleAsignationExpression(circleexp, toDraw, asignation);
         }
         else if (asignation.Value is ArcExpression arcexp)
         {
-            HandleArcExpression(arcexp, toDraw);
+            HandleArcAsignationExpression(arcexp, toDraw, asignation);
+        }
+    }
+
+    private static void HandleArcAsignationExpression(ArcExpression arcexp, List<Types> toDraw, AsignationStatement asignation)
+    {
+        var center = VariableScope.Find(x => x.Item1 == arcexp.Center.Text);
+        var start = VariableScope.Find(x => x.Item1 == arcexp.Start.Text);
+        var end = VariableScope.Find(x => x.Item1 == arcexp.End.Text);
+        var measure = VariableScope.Find(x => x.Item1 == arcexp.Measure.Text);
+        
+        if (center.Item1 != null && start.Item1 != null && end.Item1 != null && measure.Item1 != null)
+        {
+            if (center.Item2.Type == ObjectTypes.Point && start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point && measure.Item2.Type == ObjectTypes.Measure)
+            {
+                VariableScope.Add((asignation.Name.Text, new Arc((Point)center.Item2, (Point)start.Item2, (Point)end.Item2, (Measure)measure.Item2, asignation.Color, asignation.Name.Text)));
+            }
+            else
+            {
+                Errors.AddError($"Invalid type for {arcexp.Center.Text} or {arcexp.Start.Text} or {arcexp.End.Text} or {arcexp.Measure.Text}, Line: {arcexp.Center.Line}, Column: {arcexp.Center.Column}");
+            }
+        }
+        else
+        {
+            Errors.AddError($"Variable {arcexp.Center.Text} or {arcexp.Start.Text} or {arcexp.End.Text} or {arcexp.Measure.Text} not declared, Line: {arcexp.Center.Line}, Column: {arcexp.Center.Column}");
+        }
+    }
+
+    private static void HandleCircleAsignationExpression(CircleExpression circleexp, List<Types> toDraw, AsignationStatement asignation)
+    {
+        var center = VariableScope.Find(x => x.Item1 == circleexp.Center.Text);
+        var radius = VariableScope.Find(x => x.Item1 == circleexp.Radius.Text);
+        if (center.Item1 != null && radius.Item1 != null)
+        {
+            if (center.Item2.Type == ObjectTypes.Point && radius.Item2.Type == ObjectTypes.Measure)
+            {
+                VariableScope.Add((asignation.Name.Text, new Circle((Point)center.Item2, (Measure)radius.Item2, asignation.Color, asignation.Name.Text)));
+            }
+            else
+            {
+                Errors.AddError($"Invalid type for {circleexp.Center.Text} or {circleexp.Radius.Text}, Line: {circleexp.Center.Line}, Column: {circleexp.Center.Column}");
+            }
+        }
+        else
+        {
+            Errors.AddError($"Variable {circleexp.Center.Text} or {circleexp.Radius.Text} not declared, Line: {circleexp.Center.Line}, Column: {circleexp.Center.Column}");
+        }
+    }
+
+    private static void HandleRayAsignationExpression(RayExpression rayexp, List<Types> toDraw, AsignationStatement asignation)
+    {
+        
+    }
+
+    private static void HandleSegmentAsignationExpression(SegmentExpression segmentexp, List<Types> toDraw, AsignationStatement asignation)
+    {
+        var start = VariableScope.Find(x => x.Item1 == segmentexp.Start.Text);
+        var end = VariableScope.Find(x => x.Item1 == segmentexp.End.Text);
+        if (start.Item1 != null && end.Item1 != null)
+        {
+            if (start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point)
+            {
+                VariableScope.Add((asignation.Name.Text, new Segment((Point)start.Item2, (Point)end.Item2, asignation.Color, asignation.Name.Text)));
+            }
+            else
+            {
+                Errors.AddError($"Invalid type for {segmentexp.Start.Text} or {segmentexp.End.Text}, Line: {segmentexp.Start.Line}, Column: {segmentexp.Start.Column}");
+            }
+        }
+        else
+        {
+            Errors.AddError($"Variable {segmentexp.Start.Text} or {segmentexp.End.Text} not declared, Line: {segmentexp.Start.Line}, Column: {segmentexp.Start.Column}");
+        }
+    }
+
+    private static void HandleLineAsignationExpression(LineExpression lineexp, List<Types> toDraw, AsignationStatement asig)
+    {
+        var p1 = VariableScope.Find(x => x.Item1 == lineexp.P1.Text);
+        var p2 = VariableScope.Find(x => x.Item1 == lineexp.P2.Text);
+        if (p1.Item1 != null && p2.Item1 != null)
+        {
+            if (p1.Item2.Type == ObjectTypes.Point && p2.Item2.Type == ObjectTypes.Point)
+            {
+                VariableScope.Add((asig.Name.Text, new Line((Point)p1.Item2, (Point)p2.Item2, asig.Color, asig.Name.Text)));
+            }
+            else
+            {
+                Errors.AddError($"Invalid type for {lineexp.P1.Text} or {lineexp.P2.Text}, Line: {lineexp.P1.Line}, Column: {lineexp.P1.Column}");
+            }
+        }
+        else
+        {
+            Errors.AddError($"Variable {lineexp.P1.Text} or {lineexp.P2.Text} not declared, Line: {lineexp.P1.Line}, Column: {lineexp.P1.Column}");
         }
     }
 
