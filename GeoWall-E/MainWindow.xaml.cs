@@ -27,8 +27,6 @@ namespace GeoWall_E
             // Asignar el Canvas del XAML a la propiedad estática
             MainWindow.DrawingCanvas = this.drawingCanvas;
             this.WindowState = WindowState.Maximized;
-            this.WindowStyle = WindowStyle.None; // Añade esta línea
-            this.ResizeMode = ResizeMode.NoResize; // Añade esta línea
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
