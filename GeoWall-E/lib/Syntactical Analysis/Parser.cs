@@ -23,7 +23,7 @@ public class Parser
     private Token Match(TokenType Type) // comprueba si el token actual es el correcto
     {
         if (Current.Type == Type) return NextToken();
-        errors.AddError($"Expected {Type} but got {Current.Type} ({Peek(-1).Text}), Line: {Current.Line}, Column: {Current.Column}");
+        errors.AddError($"Expected {Type} but got {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
         return new Token(TokenType.Error, "", Current.Line, Current.Column);
     }
 
@@ -363,7 +363,7 @@ public class Parser
         var p2 = Match(TokenType.Identifier);
         Match(TokenType.RParen);
 
-        return new MeasureExpression(p1, p2, color);
+        return new MeasureExpression(p1, p2);
     }
 
     private ArcExpression ParseArc()
