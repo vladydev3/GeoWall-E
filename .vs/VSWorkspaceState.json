@@ -9,6 +9,6 @@
     "\\GeoWall-E\\lib\\Syntactical Analysis",
     "\\GeoWall-E\\lib\\Types"
   ],
-  "SelectedNode": "\\GeoWall-E\\lib\\Errors\\Errors.cs",
+  "SelectedNode": "\\GeoWall-E\\lib\\Semantic Analysis\\Evaluator.cs",
   "PreviewInSolutionExplorer": false
 }
