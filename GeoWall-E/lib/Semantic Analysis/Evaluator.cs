@@ -106,7 +106,7 @@ public class Evaluator
         {
             if (p1.Type == ObjectTypes.Point && p2.Type == ObjectTypes.Point)
             {
-                toDraw.Add(new Ray(new Point(p1.Color), new Point(p2.Color)));
+                toDraw.Add(new Ray(new Point(p1.Color,p1.Name), new Point(p2.Color,p2.Name)));
             }
             else
             {
@@ -127,7 +127,7 @@ public class Evaluator
         {
             if (p1.Type == ObjectTypes.Point && p2.Type == ObjectTypes.Point)
             {
-                toDraw.Add(new Segment(new Point(p1.Color), new Point(p2.Color)));
+                toDraw.Add(new Segment(new Point(p1.Color,p1.Name), new Point(p2.Color,p2.Name)));
             }
             else
             {
@@ -175,7 +175,7 @@ public class Evaluator
         {
             if (p1.Type == ObjectTypes.Point && p2.Type == ObjectTypes.Point)
             {
-                toDraw.Add(new Line(new Point(p1.Color), new Point(p2.Color)));
+                toDraw.Add(new Line(new Point(p1.Color,p1.Name), new Point(p2.Color,p2.Name)));
             }
             else
             {
