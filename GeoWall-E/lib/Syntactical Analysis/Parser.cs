@@ -126,39 +126,39 @@ public class Parser
         switch (Current.Text)
         {
             case "black":
-                PreviousColor = color;
+                PreviousColor = new Color(color.Color_);
                 color.SetColor(Colors.Black);
                 break;
             case "white":
-                PreviousColor = color;
+                PreviousColor = new Color(color.Color_);
                 color.SetColor(Colors.White);
                 break;
             case "red":
-                PreviousColor = color;
+                PreviousColor = new Color(color.Color_);
                 color.SetColor(Colors.Red);
                 break;
             case "green":
-                PreviousColor = color;
+                PreviousColor = new Color(color.Color_);
                 color.SetColor(Colors.Green);
                 break;
             case "blue":
-                PreviousColor = color;
+                PreviousColor = new Color(color.Color_);
                 color.SetColor(Colors.Blue);
                 break;
             case "yellow":
-                PreviousColor = color;
+                PreviousColor = new Color(color.Color_);
                 color.SetColor(Colors.Yellow);
                 break;
             case "magenta":
-                PreviousColor = color;
+                PreviousColor = new Color(color.Color_);
                 color.SetColor(Colors.Magenta);
                 break;
             case "cyan":
-                PreviousColor = color;
+                PreviousColor = new Color(color.Color_);
                 color.SetColor(Colors.Cyan);
                 break;
             case "gray":
-                PreviousColor = color;
+                PreviousColor = new Color(color.Color_);
                 color.SetColor(Colors.Gray);
                 break;
             default:
