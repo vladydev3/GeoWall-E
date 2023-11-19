@@ -3,8 +3,10 @@
     "",
     "\\GeoWall-E",
     "\\GeoWall-E\\lib",
+    "\\GeoWall-E\\lib\\Semantic Analysis",
+    "\\GeoWall-E\\lib\\Statements",
     "\\GeoWall-E\\lib\\Types"
   ],
-  "SelectedNode": "\\GeoWall-E\\lib\\Types\\Types.cs",
+  "SelectedNode": "\\GeoWall-E.sln",
   "PreviewInSolutionExplorer": false
 }

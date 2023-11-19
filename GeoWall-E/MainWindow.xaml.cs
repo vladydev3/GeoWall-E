@@ -41,51 +41,41 @@ namespace GeoWall_E
             var lexer = new Lexer(code);
             var parser = new Parser(lexer.Tokenize(), lexer.errors);
             var ast = parser.Parse_();
-            var evaluator = new Evaluator(ast.Root);
-            var toDraw = evaluator.Evaluate();  // aqui se devolveria una List<Types> con el tipo de dato que hay que imprimir (point solo por ahora) revisa en la carpeta Types la clase Point
-            // despues de esto se puede hacer un foreach y dibujar cada uno de los elementos de la lista toDraw
-
-
-            foreach (var item in toDraw)
+            if (ast.Errors.AnyError())
+            {
+                MessageBox.Show(ast.Errors.diagnostics[0], "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
             {
 
-                if (item is Point point)
+                var evaluator = new Evaluator(ast.Root);
+                if (Evaluator.Errors.AnyError())
                 {
-                    string name = point.Name;
-                    Color color = point.Color;
-                    Random random = new Random();
-                    Ellipse point1 = new Ellipse
-                    {
-                        Width = 10,
-                        Height = 10,
-                        Fill = Brushes.Blue,
-                        ToolTip = name// Asigna el nombre del punto a ToolTip
-                    };
-                    // Crear una etiqueta con el nombre del punto
-                    Label label = new Label
-                    {
-                        Content = name,
-                        Foreground = Brushes.Black
-                    };
-
-                    // Asegurarse de que el punto y la etiqueta se dibujan dentro del Canvas
-                    int drawingCanvasWidth = (int)drawingCanvas.Width - (int)point1.Width;
-                    int drawingCanvasHeight = (int)drawingCanvas.Height - (int)point1.Height;
-
-                    // Posicionar el punto y la etiqueta
-                    double pointCenterX = random.Next((int)point1.Width / 2, drawingCanvasWidth);
-                    double pointCenterY = random.Next((int)point1.Height / 2, drawingCanvasHeight);
-                    point.X = pointCenterX;
-                    point.Y = pointCenterY;
-                    point.Draw(name, color, drawingCanvas, point1, label, pointCenterX, pointCenterY);
+                    MessageBox.Show(Evaluator.Errors.diagnostics[0], "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                if (item is Line line)
+                var toDraw = evaluator.Evaluate();              // aqui se devolveria una List<Types> con el tipo de dato que hay que imprimir (point solo por ahora) revisa en la carpeta Types la clase Point
+                                                    // despues de esto se puede hacer un foreach y dibujar cada uno de los elementos de la lista toDraw
+                foreach (var item in toDraw)
                 {
-                    line.Draw(drawingCanvas);
 
-                }
+                    if (item is Point point)
+                    {
+                        point.Draw(drawingCanvas);
+                    }
+                    if (item is Line line)
+                    {
+                        line.Draw(drawingCanvas);
 
-
+                    }
+                    if (item is Segment segment)
+                    {
+                        segment.Draw(drawingCanvas);
+                    }
+                    if (item is Ray ray)
+                    {
+                        ray.Draw(drawingCanvas);
+                    }
+                }         
             }
 
 
@@ -98,6 +88,7 @@ namespace GeoWall_E
 
             // Borra el Canvas
             drawingCanvas.Children.Clear();
+
 
         }
 

@@ -5,28 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GeoWall_E"
         mc:Ignorable="d"
-        Title="GeoWall-E" Height="2000" Width="2000">
-    <Grid Margin="0,0,0,-647">
+        Title="GeoWall-E" MinHeight="2000" MaxHeight="2000" MinWidth="2000" MaxWidth="2000" Width="1902" Height="1717">
+    <Grid Margin="0,0,16,-297">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1426*"/>
-            <RowDefinition Height="1205*"/>
+            <RowDefinition MinHeight="1426" MaxHeight="1426" Height="1426*"/>
+            <RowDefinition MinHeight="1205" MaxHeight="1205" Height="84*"/>
+            <RowDefinition Height="1121*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1955.17"/>
-            <ColumnDefinition Width="44.83"/>
+            <ColumnDefinition MinWidth="1955.17" MaxWidth="1955.17"/>
+            <ColumnDefinition MinWidth="44.83" MaxWidth="44.83"/>
         </Grid.ColumnDefinitions>
         <Grid.Background>
-            <ImageBrush ImageSource="/R (1).jpg"/>
+            <ImageBrush ImageSource="/R.jpg"/>
 
         </Grid.Background>
-        <ScrollViewer  x:Name="scrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="376,178,52,651" RenderTransformOrigin="0.5,0.463" Grid.RowSpan="2">
-            <Canvas x:Name="drawingCanvas" Width="1500" Height="1737" Margin="407,213,48,309"/>
+        <ScrollViewer  x:Name="scrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="376,210,421,583" RenderTransformOrigin="0.5,0.463">
+            <Canvas x:Name="drawingCanvas" Height="960" Width="1379"/>
         </ScrollViewer>
-        <TextBlock x:Name="Bienvenida" Margin="790,-2,799,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FFA55503" FontWeight="Bold">
+        <TextBlock x:Name="Bienvenida" Margin="655,4,934,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FF1EA7B9" FontWeight="Bold">
             <TextBlock.Effect>
                 <DropShadowEffect/>
             </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text="                                                  "/></TextBlock>
-        <TextBox x:Name="Entrada" AcceptsReturn="True"  BorderThickness="0.5" Margin="2,123,1607,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="973" TextChanged="TextBox_TextChanged" BorderBrush="#FF030304" Background="#FF111321" Foreground="#FFF3EDED" FontFamily="Arial Black" FontSize="14">
+        <TextBox x:Name="Entrada" AcceptsReturn="True"  BorderThickness="3,3,3,3" Margin="1,133,1608,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="713" TextChanged="TextBox_TextChanged" BorderBrush="#FF3491CC" Background="White" Foreground="Black" FontFamily="Arial Black" FontSize="14">
             <TextBox.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -36,8 +37,8 @@
                 </TransformGroup>
             </TextBox.RenderTransform>
         </TextBox>
-        <Button Content="Start"  HorizontalAlignment="Left" Margin="376,127,0,0" VerticalAlignment="Top" Click="Button_Click" RenderTransformOrigin="0.669,-25.522" Height="46" Width="140" FontSize="18" Background="#FF131321" Foreground="#FFCC6802" FontFamily="Arial Black" FontStyle="Italic"/>
-        <Button Content="Restart" HorizontalAlignment="Left" Margin="526,123,0,0" VerticalAlignment="Top" Click="Button_Click_1"  RenderTransformOrigin="2.675,0.631" Height="46" Width="140" FontSize="18" Background="#FF131123" Foreground="#FFAD6F00" FontFamily="Arial Black">
+        <Button Content="Start"  HorizontalAlignment="Left" Margin="353,132,0,0" VerticalAlignment="Top" Click="Button_Click" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF35ADD6" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF588ED6" BorderThickness="2,2,2,2"/>
+        <Button Content="Restart" HorizontalAlignment="Left" Margin="506,127,0,0" VerticalAlignment="Top" Click="Button_Click_1"  RenderTransformOrigin="2.675,0.631" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF41ABC7" FontFamily="Arial Black" BorderThickness="2,2,2,2" BorderBrush="#FF4E75B3">
             <Button.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform ScaleY="1"/>
@@ -47,7 +48,7 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Image HorizontalAlignment="Left" Height="100" Margin="1803,-2,0,0" VerticalAlignment="Top" Width="100" Source="/Logo.jpg" RenderTransformOrigin="0.32,0.46"/>
+        <Image HorizontalAlignment="Left" Height="100" Margin="1434,0,0,0" VerticalAlignment="Top" Width="100" Source="/logo azul.jpg"/>
 
     </Grid>
 </Window>
