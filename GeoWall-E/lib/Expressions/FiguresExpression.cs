@@ -84,13 +84,11 @@ public class MeasureExpression : Expression
     public override TokenType Type => TokenType.Measure;
     public Token P1 { get; set; }
     public Token P2 { get; set; }
-    public Color Color { get; set; }
 
-    public MeasureExpression(Token p1, Token p2, Color color)
+    public MeasureExpression(Token p1, Token p2)
     {
         P1 = p1;
         P2 = p2;
-        Color = color;
     }
 }
 

@@ -1,0 +1,5 @@
+D:\coding\GeoWall-E\GeoWall-E\tests\obj\Debug\net7.0\tests.csproj.AssemblyReference.cache
+D:\coding\GeoWall-E\GeoWall-E\tests\obj\Debug\net7.0\tests.GeneratedMSBuildEditorConfig.editorconfig
+D:\coding\GeoWall-E\GeoWall-E\tests\obj\Debug\net7.0\tests.AssemblyInfoInputs.cache
+D:\coding\GeoWall-E\GeoWall-E\tests\obj\Debug\net7.0\tests.AssemblyInfo.cs
+D:\coding\GeoWall-E\GeoWall-E\tests\obj\Debug\net7.0\tests.csproj.CoreCompileInputs.cache

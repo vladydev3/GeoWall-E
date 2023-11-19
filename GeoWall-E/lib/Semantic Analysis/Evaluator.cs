@@ -25,13 +25,13 @@ public class Evaluator
                     VariableScope.Add((point.Name.Text, new Point(point.Color, point.Name.Text)));
                     break;
                 case LineStatement line:
-                    VariableScope.Add((line.Name.Text, new Line(new Point(line.Color), new Point(line.Color), line.Name.Text)));
+                    VariableScope.Add((line.Name.Text, new Line(new Point(line.Color), new Point(line.Color), line.Color, line.Name.Text)));
                     break;
                 case SegmentStatement segment:
-                    VariableScope.Add((segment.Name.Text, new Segment(new Point(segment.Color), new Point(segment.Color), segment.Name.Text)));
+                    VariableScope.Add((segment.Name.Text, new Segment(new Point(segment.Color), new Point(segment.Color), segment.Color, segment.Name.Text)));
                     break;
                 case RayStatement ray:
-                    VariableScope.Add((ray.Name.Text, new Ray(new Point(ray.Color), new Point(ray.Color), ray.Name.Text)));
+                    VariableScope.Add((ray.Name.Text, new Ray(new Point(ray.Color), new Point(ray.Color), ray.Color, ray.Name.Text)));
                     break;
                 case CircleStatement circle:
                     VariableScope.Add((circle.Name.Text, new Circle(new Point(circle.Color), new Measure(new Point(circle.Color), new Point(circle.Color)), circle.Color, circle.Name.Text)));
@@ -49,6 +49,43 @@ public class Evaluator
         if (asignation.Value is MeasureExpression measure)
         {
             HandleMeasureExpression(measure, asignation.Name.Text);
+        }
+        else if (asignation.Value is VariableExpression variable)
+        {
+            HandleVariableExpression(variable, asignation.Name.Text);
+        }
+        else if (asignation.Value is LineExpression lineexp)
+        {
+            HandleLineExpression(lineexp, toDraw);
+        }
+        else if (asignation.Value is SegmentExpression segmentexp)
+        {
+            HandleSegmentExpression(segmentexp, toDraw);
+        }
+        else if (asignation.Value is RayExpression rayexp)
+        {
+            HandleRayExpression(rayexp, toDraw);
+        }
+        else if (asignation.Value is CircleExpression circleexp)
+        {
+            HandleCircleExpression(circleexp, toDraw);
+        }
+        else if (asignation.Value is ArcExpression arcexp)
+        {
+            HandleArcExpression(arcexp, toDraw);
+        }
+    }
+
+    private static void HandleVariableExpression(VariableExpression variable, string text)
+    {
+        var variableFound = VariableScope.Find(x => x.Item1 == variable.Name.Text);
+        if (variableFound.Item1 != null)
+        {
+            VariableScope.Add((text, variableFound.Item2));
+        }
+        else
+        {
+            Errors.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
         }
     }
 
@@ -103,7 +140,25 @@ public class Evaluator
 
     private static void HandleArcExpression(ArcExpression arcexp, List<Types> toDraw)
     {
-        throw new NotImplementedException();
+        var center = VariableScope.Find(x => x.Item1 == arcexp.Center.Text);
+        var start = VariableScope.Find(x => x.Item1 == arcexp.Start.Text);
+        var end = VariableScope.Find(x => x.Item1 == arcexp.End.Text);
+        var measure = VariableScope.Find(x => x.Item1 == arcexp.Measure.Text);
+        if (center.Item1 != null && start.Item1 != null && end.Item1 != null && measure.Item1 != null)
+        {
+            if (center.Item2.Type == ObjectTypes.Point && start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point && measure.Item2.Type == ObjectTypes.Measure)
+            {
+                toDraw.Add(new Arc((Point)center.Item2, (Point)start.Item2, (Point)end.Item2, (Measure)measure.Item2, arcexp.Color));
+            }
+            else
+            {
+                Errors.AddError($"Invalid type for {arcexp.Center.Text} or {arcexp.Start.Text} or {arcexp.End.Text} or {arcexp.Measure.Text}, Line: {arcexp.Center.Line}, Column: {arcexp.Center.Column}");
+            }
+        }
+        else
+        {
+            Errors.AddError($"Variable {arcexp.Center.Text} or {arcexp.Start.Text} or {arcexp.End.Text} or {arcexp.Measure.Text} not declared, Line: {arcexp.Center.Line}, Column: {arcexp.Center.Column}");
+        }
     }
 
     private static void HandleCircleExpression(CircleExpression circleexp, List<Types> toDraw)
@@ -136,7 +191,7 @@ public class Evaluator
         {
             if (start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point)
             {
-                toDraw.Add(new Ray((Point)start.Item2, (Point)end.Item2));
+                toDraw.Add(new Ray((Point)start.Item2, (Point)end.Item2, rayexp.Color));
             }
             else
             {
@@ -157,7 +212,7 @@ public class Evaluator
         {
             if (start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point)
             {
-                toDraw.Add(new Segment((Point)start.Item2, (Point)end.Item2));
+                toDraw.Add(new Segment((Point)start.Item2, (Point)end.Item2, segmentexp.Color));
             }
             else
             {
@@ -191,7 +246,7 @@ public class Evaluator
         {
             if (p1.Item2.Type == ObjectTypes.Point && p2.Item2.Type == ObjectTypes.Point)
             {
-                toDraw.Add(new Line((Point)p1.Item2, (Point)p2.Item2));
+                toDraw.Add(new Line((Point)p1.Item2, (Point)p2.Item2, lineexp.Color));
             }
             else
             {

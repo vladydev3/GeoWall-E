@@ -86,11 +86,13 @@ public class Line : Types
     public Point P1 { get; set; }
     public Point P2 { get; set; }
     public string Name { get; set; }
+    public Color Color { get; set; }
 
-    public Line(Point p1, Point p2, string name = "")
+    public Line(Point p1, Point p2, Color color, string name = "")
     {
         P1 = p1;
         P2 = p2;
+        Color = color;
         Name = name;
     }
     
@@ -158,18 +160,19 @@ public class Line : Types
 
 }
 
-
 public class Segment : Types
 {
     public override ObjectTypes Type => ObjectTypes.Segment;
     public Point Start { get; set; }
     public Point End { get; set; }
     public string Name { get; set; }
+    public Color Color { get; set; }
 
-    public Segment(Point start, Point end, string name = "")
+    public Segment(Point start, Point end, Color color, string name = "")
     {
         Start = start;
         End = end;
+        Color = color;
         Name = name;
     }
     public void Draw(Canvas drawingCanva) 
@@ -228,11 +231,13 @@ public class Ray : Types
     public Point Start { get; set; }
     public Point End { get; set; }
     public string Name { get; set; }
+    public Color Color { get; set; }
 
-    public Ray(Point start, Point end, string name = "")
+    public Ray(Point start, Point end, Color color, string name = "")
     {
         Start = start;
         End = end;
+        Color = color;
         Name = name;
     }
     public void Draw(Canvas drawingCanva) 
@@ -307,15 +312,17 @@ public class Arc : Types
     public Point Center { get; set; }
     public Point Start { get; set; }
     public Point End { get; set; }
-    public int Measure { get; set; }
+    public Measure Measure { get; set; }
     public string Name { get; set; }
+    public Color Color { get; set; }
 
-    public Arc(Point center, Point start, Point end, int measure, string name = "")
+    public Arc(Point center, Point start, Point end, Measure measure, Color color, string name = "")
     {
         Center = center;
         Start = start;
         End = end;
         Measure = measure;
+        Color = color;
         Name = name;
     }
 }
