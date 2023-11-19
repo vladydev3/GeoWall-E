@@ -127,39 +127,39 @@ public class Parser
         {
             case "black":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.Black);
+                color = new Color(Colors.Black);
                 break;
             case "white":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.White);
+                color = new Color(Colors.White);
                 break;
             case "red":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.Red);
+                color = new Color(Colors.Red);
                 break;
             case "green":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.Green);
+                color = new Color(Colors.Green);
                 break;
             case "blue":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.Blue);
+                color = new Color(Colors.Blue);
                 break;
             case "yellow":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.Yellow);
+                color = new Color(Colors.Yellow);
                 break;
             case "magenta":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.Magenta);
+                color = new Color(Colors.Magenta);
                 break;
             case "cyan":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.Cyan);
+                color = new Color(Colors.Cyan);
                 break;
             case "gray":
                 PreviousColor = new Color(color.Color_);
-                color.SetColor(Colors.Gray);
+                color = new Color(Colors.Gray);
                 break;
             default:
                 errors.AddError($"Unexpected color {Current.Text}, Line: {Current.Line}, Column: {Current.Column}");
