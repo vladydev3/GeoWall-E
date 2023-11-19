@@ -98,7 +98,7 @@ public class Line : Types
     
     public void Draw(Canvas drawingCanva)
     {
-        string colorString = P1.Color.GetString(); // Suponiendo que esto devuelve "blue"
+        string colorString = P1.Color.GetString(); // Suponiendo que esto devuelve un string
         System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
         // Crear una línea
         System.Windows.Shapes.Line line = new System.Windows.Shapes.Line();
