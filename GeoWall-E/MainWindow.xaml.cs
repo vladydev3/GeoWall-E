@@ -148,22 +148,22 @@ namespace GeoWall_E
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 40);
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 100);
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 40);
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 100);
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 40);
+            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 100);
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + 40);
+            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + 100);
         }
 
 
