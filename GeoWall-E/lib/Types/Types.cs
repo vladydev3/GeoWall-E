@@ -29,7 +29,7 @@ public class Point : Types
     {
         Random random = new Random();
         int drawingCanvasWidth = (int)MainWindow.DrawingCanvas.Width;
-        double pointCenterX = random.Next(0, drawingCanvasWidth);
+        double pointCenterX = drawingCanvasWidth / 2 + random.Next(0, 500);
         return pointCenterX;
     }
 
@@ -37,12 +37,13 @@ public class Point : Types
     {
         Random random = new Random();
         int drawingCanvasHeight = (int)MainWindow.DrawingCanvas.Height;
-        double pointCenterY = random.Next(0, drawingCanvasHeight);
+        double pointCenterY = drawingCanvasHeight / 2 - random.Next(0, 500);
         return pointCenterY;
     }
     public void Draw(Canvas drawingCanvas) 
     {
         CreatePointAndLabel(this, drawingCanvas);
+        
 
     }
     void CreatePointAndLabel(Point P, Canvas drawingCanva)
@@ -67,11 +68,13 @@ public class Point : Types
         drawingCanva.Children.Add(point);
         drawingCanva.Children.Add(label);
 
-        Canvas.SetLeft(point, P.X - point.Width / 2);
-        Canvas.SetTop(point, P.Y - point.Height / 2);
+        double centerX = P.X - point.Width / 2;
+        double centerY = P.Y - point.Height / 2;
+        Canvas.SetLeft(point, centerX);
+        Canvas.SetTop(point, centerY);
 
-        double labelCenterX = P.X; // La misma X que el punto
-        double labelCenterY = P.Y - 20; // Un poco por encima del punto
+        double labelCenterX = centerX; // La misma X que el punto
+        double labelCenterY = centerY - 20; // Un poco por encima del punto
 
         Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
         Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
@@ -120,8 +123,8 @@ public class Line : Types
         line.Y2 = m * line.X2 + b;
 
         // Crear los puntos y las etiquetas
-        CreatePointAndLabel(P1, drawingCanva);
-        CreatePointAndLabel(P2, drawingCanva);
+       // CreatePointAndLabel(P1, drawingCanva);
+        //CreatePointAndLabel(P2, drawingCanva);
 
         // Agregar la línea al canvas
         drawingCanva.Children.Add(line);
@@ -139,23 +142,23 @@ public class Line : Types
         };
 
         // Crear una etiqueta con el nombre del punto
-        Label label = new Label
+       /* Label label = new Label
         {
             Content = P.Name,
             Foreground = Brushes.Black
         };
-
+       */
         drawingCanva.Children.Add(point);
-        drawingCanva.Children.Add(label);
+        //drawingCanva.Children.Add(label);
 
         Canvas.SetLeft(point, P.X - point.Width / 2);
         Canvas.SetTop(point, P.Y - point.Height / 2);
 
-        double labelCenterX = P.X; // La misma X que el punto
-        double labelCenterY = P.Y - 20; // Un poco por encima del punto
+        //double labelCenterX = P.X; // La misma X que el punto
+        //double labelCenterY = P.Y - 20; // Un poco por encima del punto
 
-        Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
-        Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
+        //Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
+        //Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
     }
 
 }
@@ -342,6 +345,65 @@ public class Circle : Types
         Color = color;
         Name = name;
     }
+    public void Draw(Canvas drawingCanvas) 
+    {
+        double radio = Radius.GetMeasure();// Establecer el radio
+        // Crear una nueva instancia de Ellipse
+        Ellipse miCirculo = new Ellipse();
+
+        // Establecer las dimensiones del círculo
+         
+        miCirculo.Height = radio * 2; // Establecer la altura
+        miCirculo.Width = radio * 2; // Establecer el ancho
+        string colorString =Color.GetString(); // Suponiendo que esto devuelve "blue"
+        System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
+
+        // Establecer el color del círculo
+        miCirculo.Stroke = new SolidColorBrush(mediaColor);
+        miCirculo.StrokeThickness = 2;
+
+        // Establecer el punto central
+        double centroX =  Center.X; // Establecer la coordenada X del centro
+        double centroY = Center.Y; // Establecer la coordenada Y del centro
+        CreatePointAndLabel(Center, drawingCanvas);
+        // Comprobar si el círculo se pasa de los límites del Canvas
+
+        // Añadir el círculo a un Canvas
+        Canvas.SetTop(miCirculo, centroY - radio); // Establecer la posición superior
+        Canvas.SetLeft(miCirculo, centroX - radio); // Establecer la posición izquierda
+        drawingCanvas.Children.Add(miCirculo); // Añadir el círculo al Canvas
+    }
+    private void CreatePointAndLabel(Point P, Canvas drawingCanva)
+    {
+        string colorString = P.Color.GetString(); // Suponiendo que esto devuelve "blue"
+        System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
+        Ellipse point = new Ellipse
+        {
+            Width = 10,
+            Height = 10,
+            Fill = new SolidColorBrush(mediaColor),
+            ToolTip = P.Name // Asigna el nombre del punto a ToolTip
+        };
+
+        // Crear una etiqueta con el nombre del punto
+        Label label = new Label
+        {
+            Content = P.Name,
+            Foreground = Brushes.Black
+        };
+
+        drawingCanva.Children.Add(point);
+        drawingCanva.Children.Add(label);
+
+        Canvas.SetLeft(point, P.X - point.Width / 2);
+        Canvas.SetTop(point, P.Y - point.Height / 2);
+
+        double labelCenterX = P.X; // La misma X que el punto
+        double labelCenterY = P.Y - 20; // Un poco por encima del punto
+
+        Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
+        Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
+    }
 }
 
 public class Measure : Types
@@ -357,6 +419,11 @@ public class Measure : Types
         Name = name;
         P1 = p1;
         P2 = p2;
+    }
+    public double GetMeasure() 
+    {
+        double measure = Math.Sqrt(Math.Pow(P2.X - P1.X, 2) + Math.Pow(P2.Y - P1.Y, 2));
+        return measure;
     }
 }
 

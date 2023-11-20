@@ -20,6 +20,7 @@
     <None Remove="photo_2023-11-18_18-31-07.jpg" />
     <None Remove="R %281%29.jpg" />
     <None Remove="R.jpg" />
+    <None Remove="turquoise-blue-aqua-teal-line-png-favpng-qzwVFWgqxkTDZ4pnJ1TjCkRWq.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +36,7 @@
     <Resource Include="photo_2023-11-18_18-31-07.jpg" />
     <Resource Include="R (1).jpg" />
     <Resource Include="R.jpg" />
+    <Resource Include="turquoise-blue-aqua-teal-line-png-favpng-qzwVFWgqxkTDZ4pnJ1TjCkRWq.jpg" />
   </ItemGroup>
 
   <ItemGroup>
