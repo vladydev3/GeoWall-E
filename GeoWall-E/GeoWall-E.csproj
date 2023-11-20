@@ -12,7 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" />
     <None Remove="fondo.jpg" />
+    <None Remove="fondoblanco.jpg" />
     <None Remove="logo azul.jpg" />
     <None Remove="Logo.jpg" />
     <None Remove="OIG %281%29.jpg" />
@@ -28,7 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" />
     <Resource Include="fondo.jpg" />
+    <Resource Include="fondoblanco.jpg" />
     <Resource Include="logo azul.jpg" />
     <Resource Include="Logo.jpg" />
     <Resource Include="OIG (1).jpg" />
