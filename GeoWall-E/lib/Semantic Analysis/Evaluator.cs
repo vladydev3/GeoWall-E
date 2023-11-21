@@ -1,24 +1,19 @@
-
-
-
-
-
 namespace GeoWall_E;
 
 public class Evaluator
 {
-    public List<Node> Root { get; set; }
-    public static Errors Errors { get; set; } = new Errors();
-    public static List<(string, Types)> VariableScope { get; set; } = new();
+    private List<Node> Root { get; set; }
+    private Error Errors { public get; private set; }
+    public static List<(string, Type)> VariableScope { get; set; } = new();
 
     public Evaluator(List<Node> root)
     {
         Root = root;
     }
 
-    public List<Types> Evaluate()
+    public List<Type> Evaluate()
     {
-        List<Types> toDraw = new();
+        List<Type> toDraw = new();
         foreach (var node in Root)
         {
             switch (node)
@@ -49,48 +44,33 @@ public class Evaluator
         return toDraw;
     }
 
-    private static void HandleAsignationNode(AsignationStatement asignation, List<Types> toDraw)
+    private static Dictionary<Type, Action<Expression, List<Type>, AsignationStatement>> handlers = new Dictionary<Type, Action<Expression, List<Type>, AsignationStatement>>
     {
-        if (asignation.Value is MeasureExpression measure)
-        {
-            HandleMeasureExpression(measure, asignation.Name.Text);
-        }
-        else if (asignation.Value is VariableExpression variable)
-        {
-            HandleVariableExpression(variable, asignation.Name.Text);
-        }
-        else if (asignation.Value is LineExpression lineexp)
-        {
-            HandleLineAsignationExpression(lineexp, toDraw, asignation);
-        }
-        else if (asignation.Value is SegmentExpression segmentexp)
-        {
-            HandleSegmentAsignationExpression(segmentexp, toDraw, asignation);
-        }
-        else if (asignation.Value is RayExpression rayexp)
-        {
-            HandleRayAsignationExpression(rayexp, toDraw, asignation);
-        }
-        else if (asignation.Value is CircleExpression circleexp)
-        {
-            HandleCircleAsignationExpression(circleexp, toDraw, asignation);
-        }
-        else if (asignation.Value is ArcExpression arcexp)
-        {
-            HandleArcAsignationExpression(arcexp, toDraw, asignation);
-        }
+        { typeof(MeasureExpression), HandleMeasureExpression },
+        { typeof(VariableExpression), HandleVariableExpression },
+        { typeof(LineExpression), HandleLineAsignationExpression },
+        { typeof(SegmentExpression), HandleSegmentAsignationExpression },
+        { typeof(RayExpression), HandleRayAsignationExpression },
+        { typeof(CircleExpression), HandleCircleAsignationExpression },
+        { typeof(ArcExpression), HandleArcAsignationExpression }
+    };
+
+    private static void HandleAsignationNode(AsignationStatement asignation, List<Type> toDraw)
+    {
+        var handler = handlers[asignation.Value.GetType()];
+        handler(asignation.Value, toDraw, asignation);
     }
 
-    private static void HandleArcAsignationExpression(ArcExpression arcexp, List<Types> toDraw, AsignationStatement asignation)
+    private static void HandleArcAsignationExpression(ArcExpression arcexp, List<Type> toDraw, AsignationStatement asignation)
     {
         var center = VariableScope.Find(x => x.Item1 == arcexp.Center.Text);
         var start = VariableScope.Find(x => x.Item1 == arcexp.Start.Text);
         var end = VariableScope.Find(x => x.Item1 == arcexp.End.Text);
         var measure = VariableScope.Find(x => x.Item1 == arcexp.Measure.Text);
-        
+
         if (center.Item1 != null && start.Item1 != null && end.Item1 != null && measure.Item1 != null)
         {
-            if (center.Item2.Type == ObjectTypes.Point && start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point && measure.Item2.Type == ObjectTypes.Measure)
+            if (center.Item2.Type == ObjectType.Point && start.Item2.Type == ObjectType.Point && end.Item2.Type == ObjectType.Point && measure.Item2.Type == ObjectType.Measure)
             {
                 VariableScope.Add((asignation.Name.Text, new Arc((Point)center.Item2, (Point)start.Item2, (Point)end.Item2, (Measure)measure.Item2, asignation.Color, asignation.Name.Text)));
             }
@@ -105,13 +85,13 @@ public class Evaluator
         }
     }
 
-    private static void HandleCircleAsignationExpression(CircleExpression circleexp, List<Types> toDraw, AsignationStatement asignation)
+    private static void HandleCircleAsignationExpression(CircleExpression circleexp, List<Type> toDraw, AsignationStatement asignation)
     {
         var center = VariableScope.Find(x => x.Item1 == circleexp.Center.Text);
         var radius = VariableScope.Find(x => x.Item1 == circleexp.Radius.Text);
         if (center.Item1 != null && radius.Item1 != null)
         {
-            if (center.Item2.Type == ObjectTypes.Point && radius.Item2.Type == ObjectTypes.Measure)
+            if (center.Item2.Type == ObjectType.Point && radius.Item2.Type == ObjectType.Measure)
             {
                 VariableScope.Add((asignation.Name.Text, new Circle((Point)center.Item2, (Measure)radius.Item2, asignation.Color, asignation.Name.Text)));
             }
@@ -126,18 +106,18 @@ public class Evaluator
         }
     }
 
-    private static void HandleRayAsignationExpression(RayExpression rayexp, List<Types> toDraw, AsignationStatement asignation)
+    private static void HandleRayAsignationExpression(RayExpression rayexp, List<Type> toDraw, AsignationStatement asignation)
     {
-        
+
     }
 
-    private static void HandleSegmentAsignationExpression(SegmentExpression segmentexp, List<Types> toDraw, AsignationStatement asignation)
+    private static void HandleSegmentAsignationExpression(SegmentExpression segmentexp, List<Type> toDraw, AsignationStatement asignation)
     {
         var start = VariableScope.Find(x => x.Item1 == segmentexp.Start.Text);
         var end = VariableScope.Find(x => x.Item1 == segmentexp.End.Text);
         if (start.Item1 != null && end.Item1 != null)
         {
-            if (start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point)
+            if (start.Item2.Type == ObjectType.Point && end.Item2.Type == ObjectType.Point)
             {
                 VariableScope.Add((asignation.Name.Text, new Segment((Point)start.Item2, (Point)end.Item2, asignation.Color, asignation.Name.Text)));
             }
@@ -152,13 +132,13 @@ public class Evaluator
         }
     }
 
-    private static void HandleLineAsignationExpression(LineExpression lineexp, List<Types> toDraw, AsignationStatement asig)
+    private static void HandleLineAsignationExpression(LineExpression lineexp, List<Type> toDraw, AsignationStatement asig)
     {
         var p1 = VariableScope.Find(x => x.Item1 == lineexp.P1.Text);
         var p2 = VariableScope.Find(x => x.Item1 == lineexp.P2.Text);
         if (p1.Item1 != null && p2.Item1 != null)
         {
-            if (p1.Item2.Type == ObjectTypes.Point && p2.Item2.Type == ObjectTypes.Point)
+            if (p1.Item2.Type == ObjectType.Point && p2.Item2.Type == ObjectType.Point)
             {
                 VariableScope.Add((asig.Name.Text, new Line((Point)p1.Item2, (Point)p2.Item2, asig.Color, asig.Name.Text)));
             }
@@ -192,7 +172,7 @@ public class Evaluator
         var p2 = VariableScope.Find(x => x.Item1 == measure.P2.Text);
         if (p1.Item1 != null && p2.Item1 != null)
         {
-            if (p1.Item2.Type == ObjectTypes.Point && p2.Item2.Type == ObjectTypes.Point)
+            if (p1.Item2.Type == ObjectType.Point && p2.Item2.Type == ObjectType.Point)
             {
                 VariableScope.Add((name, new Measure((Point)p1.Item2, (Point)p2.Item2, name)));
             }
@@ -207,7 +187,7 @@ public class Evaluator
         }
     }
 
-    private static void HandleDrawNode(Draw draw, List<Types> toDraw)
+    private static void HandleDrawNode(Draw draw, List<Type> toDraw)
     {
         if (draw.Expression is VariableExpression variable)
         {
@@ -235,7 +215,7 @@ public class Evaluator
         }
     }
 
-    private static void HandleArcExpression(ArcExpression arcexp, List<Types> toDraw)
+    private static void HandleArcExpression(ArcExpression arcexp, List<Type> toDraw)
     {
         var center = VariableScope.Find(x => x.Item1 == arcexp.Center.Text);
         var start = VariableScope.Find(x => x.Item1 == arcexp.Start.Text);
@@ -243,7 +223,7 @@ public class Evaluator
         var measure = VariableScope.Find(x => x.Item1 == arcexp.Measure.Text);
         if (center.Item1 != null && start.Item1 != null && end.Item1 != null && measure.Item1 != null)
         {
-            if (center.Item2.Type == ObjectTypes.Point && start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point && measure.Item2.Type == ObjectTypes.Measure)
+            if (center.Item2.Type == ObjectType.Point && start.Item2.Type == ObjectType.Point && end.Item2.Type == ObjectType.Point && measure.Item2.Type == ObjectType.Measure)
             {
                 toDraw.Add(new Arc((Point)center.Item2, (Point)start.Item2, (Point)end.Item2, (Measure)measure.Item2, arcexp.Color));
             }
@@ -258,13 +238,13 @@ public class Evaluator
         }
     }
 
-    private static void HandleCircleExpression(CircleExpression circleexp, List<Types> toDraw)
+    private static void HandleCircleExpression(CircleExpression circleexp, List<Type> toDraw)
     {
         var center = VariableScope.Find(x => x.Item1 == circleexp.Center.Text);
         var radius = VariableScope.Find(x => x.Item1 == circleexp.Radius.Text);
         if (center.Item1 != null && radius.Item1 != null)
         {
-            if (center.Item2.Type == ObjectTypes.Point && radius.Item2.Type == ObjectTypes.Measure)
+            if (center.Item2.Type == ObjectType.Point && radius.Item2.Type == ObjectType.Measure)
             {
                 toDraw.Add(new Circle((Point)center.Item2, (Measure)radius.Item2, circleexp.Color));
             }
@@ -280,13 +260,13 @@ public class Evaluator
 
     }
 
-    private static void HandleRayExpression(RayExpression rayexp, List<Types> toDraw)
+    private static void HandleRayExpression(RayExpression rayexp, List<Type> toDraw)
     {
         var start = VariableScope.Find(x => x.Item1 == rayexp.Start.Text);
         var end = VariableScope.Find(x => x.Item1 == rayexp.End.Text);
         if (start.Item1 != null && end.Item1 != null)
         {
-            if (start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point)
+            if (start.Item2.Type == ObjectType.Point && end.Item2.Type == ObjectType.Point)
             {
                 toDraw.Add(new Ray((Point)start.Item2, (Point)end.Item2, rayexp.Color));
             }
@@ -301,13 +281,13 @@ public class Evaluator
         }
     }
 
-    private static void HandleSegmentExpression(SegmentExpression segmentexp, List<Types> toDraw)
+    private static void HandleSegmentExpression(SegmentExpression segmentexp, List<Type> toDraw)
     {
         var start = VariableScope.Find(x => x.Item1 == segmentexp.Start.Text);
         var end = VariableScope.Find(x => x.Item1 == segmentexp.End.Text);
         if (start.Item1 != null && end.Item1 != null)
         {
-            if (start.Item2.Type == ObjectTypes.Point && end.Item2.Type == ObjectTypes.Point)
+            if (start.Item2.Type == ObjectType.Point && end.Item2.Type == ObjectType.Point)
             {
                 toDraw.Add(new Segment((Point)start.Item2, (Point)end.Item2, segmentexp.Color));
             }
@@ -322,7 +302,7 @@ public class Evaluator
         }
     }
 
-    private static void AddTypeToDraw(VariableExpression variable, List<Types> toDraw)
+    private static void AddTypeToDraw(VariableExpression variable, List<Type> toDraw)
     {
         var variableFound = VariableScope.Find(x => x.Item1 == variable.Name.Text);
         if (variableFound.Item1 != null)
@@ -335,13 +315,13 @@ public class Evaluator
         }
     }
 
-    private static void HandleLineExpression(LineExpression lineexp, List<Types> toDraw)
+    private static void HandleLineExpression(LineExpression lineexp, List<Type> toDraw)
     {
         var p1 = VariableScope.Find(x => x.Item1 == lineexp.P1.Text);
         var p2 = VariableScope.Find(x => x.Item1 == lineexp.P2.Text);
         if (p1.Item1 != null && p2.Item1 != null)
         {
-            if (p1.Item2.Type == ObjectTypes.Point && p2.Item2.Type == ObjectTypes.Point)
+            if (p1.Item2.Type == ObjectType.Point && p2.Item2.Type == ObjectType.Point)
             {
                 toDraw.Add(new Line((Point)p1.Item2, (Point)p2.Item2, lineexp.Color));
             }
@@ -356,5 +336,3 @@ public class Evaluator
         }
     }
 }
-
-

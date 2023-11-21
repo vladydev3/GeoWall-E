@@ -55,7 +55,7 @@ namespace GeoWall_E
             {
 
                 var evaluator = new Evaluator(ast.Root);
-                if (Evaluator.Errors.AnyError())
+                if (evaluator.Errors.AnyError())
                 {
                     MessageBox.Show(Evaluator.Errors.diagnostics[0], "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }

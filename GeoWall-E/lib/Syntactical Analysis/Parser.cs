@@ -4,8 +4,8 @@ public class Parser
 {
     private readonly List<Token> tokens;
     private int position;
-    Color PreviousColor = new(Colors.Black);
-    Color color = new(Colors.Black);
+    private Color PreviousColor = new(Colors.Black);
+    private Color color = new(Colors.Black);
     private readonly Errors errors;
 
     public Parser(List<Token> tokens, Errors errors)
@@ -20,12 +20,14 @@ public class Parser
 
     private Token Current => Peek(0);
 
-    private Token Match(TokenType Type) // comprueba si el token actual es el correcto
+    private bool Match(TokenType Type) // comprueba si el token actual es el correcto
     {
-        if (Current.Type == Type) return NextToken();
-        errors.AddError($"Expected {Type} but got {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
-        return new Token(TokenType.Error, "", Current.Line, Current.Column);
+        return Current.Type == Type;
+        // errors.AddError($"Expected {Type} but got {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
+        // return new Token(TokenType.Error, "", Current.Line, Current.Column);
     }
+
+    
 
     public AST Parse_()
     {
@@ -126,39 +128,39 @@ public class Parser
         switch (Current.Text)
         {
             case "black":
-                PreviousColor = new Color(color.Color_);
+                PreviousColor = new Color(color.GetColor());
                 color = new Color(Colors.Black);
                 break;
             case "white":
-                PreviousColor = new Color(color.Color_);
+                PreviousColor = new Color(color.GetColor());
                 color = new Color(Colors.White);
                 break;
             case "red":
-                PreviousColor = new Color(color.Color_);
+                PreviousColor = new Color(color.GetColor());
                 color = new Color(Colors.Red);
                 break;
             case "green":
-                PreviousColor = new Color(color.Color_);
+                PreviousColor = new Color(color.GetColor());
                 color = new Color(Colors.Green);
                 break;
             case "blue":
-                PreviousColor = new Color(color.Color_);
+                PreviousColor = new Color(color.GetColor());
                 color = new Color(Colors.Blue);
                 break;
             case "yellow":
-                PreviousColor = new Color(color.Color_);
+                PreviousColor = new Color(color.GetColor());
                 color = new Color(Colors.Yellow);
                 break;
             case "magenta":
-                PreviousColor = new Color(color.Color_);
+                PreviousColor = new Color(color.GetColor());
                 color = new Color(Colors.Magenta);
                 break;
             case "cyan":
-                PreviousColor = new Color(color.Color_);
+                PreviousColor = new Color(color.GetColor());
                 color = new Color(Colors.Cyan);
                 break;
             case "gray":
-                PreviousColor = new Color(color.Color_);
+                PreviousColor = new Color(color.GetColor());
                 color = new Color(Colors.Gray);
                 break;
             default:

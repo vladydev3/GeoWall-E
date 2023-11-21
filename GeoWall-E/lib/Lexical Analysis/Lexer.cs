@@ -8,7 +8,7 @@ public class Lexer
     private int currentIndex = 0;   // indice actual para iterar el codigo
     private int line = 1;   // linea actual
     private int column = 1; // columna actual
-    public Errors errors = new();   // para almacenar los posibles errores
+    Error Errors { public get; private set; }   // para almacenar los posibles errores
 
     public Lexer(string input)
     {

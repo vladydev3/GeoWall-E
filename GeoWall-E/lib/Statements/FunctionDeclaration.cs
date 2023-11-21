@@ -2,10 +2,10 @@ namespace GeoWall_E;
 
 public class FunctionDeclaration : Statement
 {
-    public override TokenType Type => TokenType.FunctionDeclaration;
-    public Token Name { get; set; }
-    public List<Expression> Arguments { get; set; }
-    public Expression Body { get; set; }
+    private readonly override TokenType Type => TokenType.FunctionDeclaration;
+    private Token Name { get; set; }
+    private List<Expression> Arguments { get; set; }
+    private Expression Body { get; set; }
 
     public FunctionDeclaration(Token name, List<Expression> arguments, Expression body)
     {

@@ -2,8 +2,6 @@ global using System.Collections.Generic;
 global using System;
 namespace GeoWall_E;
 
-
-
 public enum Colors
 {
     Black,
@@ -19,7 +17,7 @@ public enum Colors
 
 public class Color
 {
-    public Colors Color_ { get; set; }
+    private Colors Color_ { get; set; }
     public Color(Colors color)
     {
         Color_ = color;
@@ -29,21 +27,15 @@ public class Color
     {
         Color_ = color;
     }
-    public string GetString() 
+    public override string ToString() 
     {
         return Color_.ToString();
     }
+
+    public Colors GetColor()
+    {
+        return Color_;
+    }
 }
 
-public enum ObjectTypes
-{
-    Point,
-    Line,
-    Segment,
-    Ray,
-    Circle,
-    Arc,
-    Measure,
-    Sequence,
-    Undefined,
-}
+

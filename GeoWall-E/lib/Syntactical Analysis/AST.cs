@@ -2,8 +2,8 @@ namespace GeoWall_E;
 
 public class AST
 {
-    public List<Node> Root { get; set; }
-    public Errors Errors { get; set; }
+    private readonly List<Node> Root { get; set; }
+    private Error Errors { get; set; }
     public AST(List<Node> root, Errors errors)
     {
         Root = root;

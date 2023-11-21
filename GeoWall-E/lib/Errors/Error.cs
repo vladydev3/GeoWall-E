@@ -1,8 +1,8 @@
 namespace GeoWall_E;
 
-public class Errors
+public class Error
 {
-    public List<string> diagnostics = new();
+    private List<string> diagnostics = new();
 
     public bool AnyError()
     {
