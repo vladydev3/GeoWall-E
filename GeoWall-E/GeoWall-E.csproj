@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
-    <ApplicationIcon>logo.ico.ico</ApplicationIcon>
+    <ApplicationIcon>photo_2023-11-18_22-25-16.ico</ApplicationIcon>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
@@ -20,13 +20,14 @@
     <None Remove="OIG %281%29.jpg" />
     <None Remove="photo-1548614229-c1fe21dfab63.webp" />
     <None Remove="photo_2023-11-18_18-31-07.jpg" />
+    <None Remove="photo_2023-11-18_22-25-16.jpg" />
     <None Remove="R %281%29.jpg" />
     <None Remove="R.jpg" />
     <None Remove="turquoise-blue-aqua-teal-line-png-favpng-qzwVFWgqxkTDZ4pnJ1TjCkRWq.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="logo.ico.ico" />
+    <Content Include="photo_2023-11-18_22-25-16.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +39,7 @@
     <Resource Include="OIG (1).jpg" />
     <Resource Include="photo-1548614229-c1fe21dfab63.webp" />
     <Resource Include="photo_2023-11-18_18-31-07.jpg" />
+    <Resource Include="photo_2023-11-18_22-25-16.jpg" />
     <Resource Include="R (1).jpg" />
     <Resource Include="R.jpg" />
     <Resource Include="turquoise-blue-aqua-teal-line-png-favpng-qzwVFWgqxkTDZ4pnJ1TjCkRWq.jpg" />

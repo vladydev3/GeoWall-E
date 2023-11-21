@@ -47,7 +47,7 @@
 			</Canvas>
 		</ScrollViewer>
 
-        <TextBlock x:Name="Bienvenida" Margin="655,4,934,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FF1EA7B9" FontWeight="Bold" Height="70">
+        <TextBlock x:Name="Bienvenida" Margin="655,4,934,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FF20C1D6" FontWeight="Bold" Height="70">
             <TextBlock.Effect>
                 <DropShadowEffect/>
             </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text="                                                  "/></TextBlock>
@@ -72,7 +72,7 @@
                 </TransformGroup>
             </Button.RenderTransform>
         </Button>
-        <Image HorizontalAlignment="Left" Height="100" Margin="1434,0,0,0" VerticalAlignment="Top" Width="100" Source="/logo azul.jpg"/>
+        <Image HorizontalAlignment="Left" Height="100" Margin="1434,0,0,0" VerticalAlignment="Top" Width="100" Source="/photo_2023-11-18_22-25-16.jpg"/>
         <Button HorizontalAlignment="Left" BorderThickness="0" Margin="859,147,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
             <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
         </Button>

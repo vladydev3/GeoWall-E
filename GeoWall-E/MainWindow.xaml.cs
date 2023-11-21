@@ -13,6 +13,7 @@ global using System.Windows.Media.Imaging;
 global using System.Windows.Navigation;
 global using System.Windows.Shapes;
 global using System.Windows.Threading;
+using System.Drawing.Drawing2D;
 using System.Windows.Media.Media3D;
 
 namespace GeoWall_E
@@ -113,6 +114,20 @@ namespace GeoWall_E
                         zoomSlider.Value = 1;
                         scrollViewer.ScrollToHorizontalOffset(circle.Center.X - 400);
                         scrollViewer.ScrollToVerticalOffset(circle.Center.Y - 250);
+                    }
+                    if (item is Arc arc)
+                    {
+                        Point center= arc.Center;
+                        center.Draw(drawingCanvas);
+                        Ray ray1 = new Ray(arc.Center, arc.Start,arc.Color);
+                        ray1.Draw(drawingCanvas);
+                        Ray ray2=new Ray(arc.Center, arc.End,arc.Color);
+                        ray2.Draw(drawingCanvas);
+                        scrollViewer.ScrollToHorizontalOffset(center.X-400);
+                        scrollViewer.ScrollToVerticalOffset(center.Y - 250);
+                        arc.Draw(drawingCanvas);
+
+
                     }
                 }
             }
