@@ -29,7 +29,7 @@ public class Point : Types
     {
         Random random = new Random();
         int drawingCanvasWidth = (int)MainWindow.DrawingCanvas.Width;
-        double pointCenterX = random.Next(0, drawingCanvasWidth);
+        double pointCenterX = drawingCanvasWidth / 2 + random.Next(0, 500);
         return pointCenterX;
     }
 
@@ -37,12 +37,13 @@ public class Point : Types
     {
         Random random = new Random();
         int drawingCanvasHeight = (int)MainWindow.DrawingCanvas.Height;
-        double pointCenterY = random.Next(0, drawingCanvasHeight);
+        double pointCenterY = drawingCanvasHeight / 2 - random.Next(0, 500);
         return pointCenterY;
     }
     public void Draw(Canvas drawingCanvas) 
     {
         CreatePointAndLabel(this, drawingCanvas);
+        
 
     }
     void CreatePointAndLabel(Point P, Canvas drawingCanva)
@@ -67,11 +68,13 @@ public class Point : Types
         drawingCanva.Children.Add(point);
         drawingCanva.Children.Add(label);
 
-        Canvas.SetLeft(point, P.X - point.Width / 2);
-        Canvas.SetTop(point, P.Y - point.Height / 2);
+        double centerX = P.X - point.Width / 2;
+        double centerY = P.Y - point.Height / 2;
+        Canvas.SetLeft(point, centerX);
+        Canvas.SetTop(point, centerY);
 
-        double labelCenterX = P.X; // La misma X que el punto
-        double labelCenterY = P.Y - 20; // Un poco por encima del punto
+        double labelCenterX = centerX; // La misma X que el punto
+        double labelCenterY = centerY - 20; // Un poco por encima del punto
 
         Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
         Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
@@ -120,7 +123,7 @@ public class Line : Types
         line.Y2 = m * line.X2 + b;
 
         // Crear los puntos y las etiquetas
-        CreatePointAndLabel(P1, drawingCanva);
+       CreatePointAndLabel(P1, drawingCanva);
         CreatePointAndLabel(P2, drawingCanva);
 
         // Agregar la línea al canvas
@@ -144,7 +147,7 @@ public class Line : Types
             Content = P.Name,
             Foreground = Brushes.Black
         };
-
+       
         drawingCanva.Children.Add(point);
         drawingCanva.Children.Add(label);
 
@@ -325,6 +328,122 @@ public class Arc : Types
         Color = color;
         Name = name;
     }
+    public void Draw(Canvas drawingCanvas) 
+    {
+        string colorString = this.Color.GetString(); // Suponiendo que esto devuelve "blue"
+        System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
+
+
+        double measure = Measure.GetMeasure();
+        Point pointOnRay1=GetPointOnRay(Center, Start,measure);
+        CreatePointAndLabel(pointOnRay1, drawingCanvas);
+        Point pointOnRay2= GetPointOnRay(Center, End, measure);
+        CreatePointAndLabel(pointOnRay2 , drawingCanvas);
+        // Dibujar el arco
+        DrawArc(drawingCanvas, pointOnRay1, pointOnRay2, Center, mediaColor);
+
+
+
+
+
+    }
+    public void DrawArc(Canvas drawingCanvas, Point start, Point end, Point center, System.Windows.Media.Color color)
+    {
+        // Crear un nuevo objeto Path
+        Path arcPath = new Path();
+        
+        arcPath.Stroke = new SolidColorBrush(color);
+        arcPath.StrokeThickness = 2;
+
+        // Crear un nuevo objeto PathGeometry
+        PathGeometry pathGeometry = new PathGeometry();
+
+        // Crear un nuevo objeto PathFigure
+        PathFigure pathFigure = new PathFigure();
+        System.Windows.Point startPoint = new System.Windows.Point(start.X, start.Y);
+        pathFigure.StartPoint = startPoint;
+
+        // Calcular la dirección del barrido
+        SweepDirection sweepDirection = SweepDirection.Clockwise;
+        if ((end.X < center.X && start.X >= center.X) || (end.Y < center.Y && start.Y >= center.Y))
+        {
+            sweepDirection = SweepDirection.Counterclockwise;
+        }
+
+        // Crear un nuevo objeto ArcSegment
+        ArcSegment arcSegment = new ArcSegment();
+        System.Windows.Point endPoint = new System.Windows.Point(end.X, end.Y);
+        arcSegment.Point = endPoint;
+        arcSegment.Size = new Size(Math.Abs(end.X - start.X), Math.Abs(end.Y - start.Y));
+        arcSegment.SweepDirection = sweepDirection;
+
+        // Añadir ArcSegment a PathFigure
+        pathFigure.Segments.Add(arcSegment);
+
+        // Añadir PathFigure a PathGeometry
+        pathGeometry.Figures.Add(pathFigure);
+
+        // Añadir PathGeometry a Path
+        arcPath.Data = pathGeometry;
+
+        // Añadir Path al Canvas
+        drawingCanvas.Children.Add(arcPath);
+    }
+    public Point GetPointOnRay(Point origin,Point direction, double distance)
+    {
+        double pentienteRay = (direction.Y - origin.Y) / (direction.X - origin.X);
+        // Calcular el ángulo del rayo usando la pendiente
+        double angle = Math.Atan2(direction.Y - origin.Y, direction.X - origin.X);
+        // Ajustar el ángulo en función de la dirección del rayo
+        if (direction.X < origin.X && Math.Cos(angle) > 0)
+        {
+            angle += Math.PI;
+        }
+        else if (direction.X > origin.X && Math.Cos(angle) < 0)
+        {
+            angle -= Math.PI;
+        }
+
+
+        // Calcular las coordenadas del punto
+        double x = origin.X + distance * Math.Cos(angle);
+        double y = origin.Y + distance * Math.Sin(angle);
+        Point newPoint = new Point(origin.Color);
+        newPoint.X = x;
+        newPoint.Y = y; 
+        return newPoint;
+    }
+    private void CreatePointAndLabel(Point P, Canvas drawingCanva)
+    {
+        string colorString = P.Color.GetString(); // Suponiendo que esto devuelve "blue"
+        System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
+        Ellipse point = new Ellipse
+        {
+            Width = 10,
+            Height = 10,
+            Fill = new SolidColorBrush(mediaColor),
+            ToolTip = P.Name // Asigna el nombre del punto a ToolTip
+        };
+
+        // Crear una etiqueta con el nombre del punto
+        Label label = new Label
+        {
+            Content = P.Name,
+            Foreground = Brushes.Black
+        };
+
+        drawingCanva.Children.Add(point);
+        drawingCanva.Children.Add(label);
+
+        Canvas.SetLeft(point, P.X - point.Width / 2);
+        Canvas.SetTop(point, P.Y - point.Height / 2);
+
+        double labelCenterX = P.X; // La misma X que el punto
+        double labelCenterY = P.Y - 20; // Un poco por encima del punto
+
+        Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
+        Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
+    }
 }
 
 public class Circle : Types
@@ -342,6 +461,65 @@ public class Circle : Types
         Color = color;
         Name = name;
     }
+    public void Draw(Canvas drawingCanvas) 
+    {
+        double radio = Radius.GetMeasure();// Establecer el radio
+        // Crear una nueva instancia de Ellipse
+        Ellipse miCirculo = new Ellipse();
+
+        // Establecer las dimensiones del círculo
+         
+        miCirculo.Height = radio * 2; // Establecer la altura
+        miCirculo.Width = radio * 2; // Establecer el ancho
+        string colorString =Color.GetString(); // Suponiendo que esto devuelve "blue"
+        System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
+
+        // Establecer el color del círculo
+        miCirculo.Stroke = new SolidColorBrush(mediaColor);
+        miCirculo.StrokeThickness = 2;
+
+        // Establecer el punto central
+        double centroX =  Center.X; // Establecer la coordenada X del centro
+        double centroY = Center.Y; // Establecer la coordenada Y del centro
+        CreatePointAndLabel(Center, drawingCanvas);
+        // Comprobar si el círculo se pasa de los límites del Canvas
+
+        // Añadir el círculo a un Canvas
+        Canvas.SetTop(miCirculo, centroY - radio); // Establecer la posición superior
+        Canvas.SetLeft(miCirculo, centroX - radio); // Establecer la posición izquierda
+        drawingCanvas.Children.Add(miCirculo); // Añadir el círculo al Canvas
+    }
+    private void CreatePointAndLabel(Point P, Canvas drawingCanva)
+    {
+        string colorString = P.Color.GetString(); // Suponiendo que esto devuelve "blue"
+        System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
+        Ellipse point = new Ellipse
+        {
+            Width = 10,
+            Height = 10,
+            Fill = new SolidColorBrush(mediaColor),
+            ToolTip = P.Name // Asigna el nombre del punto a ToolTip
+        };
+
+        // Crear una etiqueta con el nombre del punto
+        Label label = new Label
+        {
+            Content = P.Name,
+            Foreground = Brushes.Black
+        };
+
+        drawingCanva.Children.Add(point);
+        drawingCanva.Children.Add(label);
+
+        Canvas.SetLeft(point, P.X - point.Width / 2);
+        Canvas.SetTop(point, P.Y - point.Height / 2);
+
+        double labelCenterX = P.X; // La misma X que el punto
+        double labelCenterY = P.Y - 20; // Un poco por encima del punto
+
+        Canvas.SetLeft(label, labelCenterX - label.ActualWidth / 2);
+        Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
+    }
 }
 
 public class Measure : Types
@@ -357,6 +535,11 @@ public class Measure : Types
         Name = name;
         P1 = p1;
         P2 = p2;
+    }
+    public double GetMeasure() 
+    {
+        double measure = Math.Sqrt(Math.Pow(P2.X - P1.X, 2) + Math.Pow(P2.Y - P1.Y, 2));
+        return measure;
     }
 }
 
