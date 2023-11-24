@@ -11,11 +11,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == ''">
-    <TargetFrameworkIdentifier>.NETCOREAPP</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>2.1</TargetFrameworkVersion>
-  </PropertyGroup>
-  
   <ItemGroup>
     <None Remove="depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" />
     <None Remove="fondo.jpg" />
@@ -50,5 +45,8 @@
     <Resource Include="turquoise-blue-aqua-teal-line-png-favpng-qzwVFWgqxkTDZ4pnJ1TjCkRWq.jpg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.6.2" />
+  </ItemGroup>
 
 </Project>
