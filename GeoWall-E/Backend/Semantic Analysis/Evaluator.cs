@@ -5,16 +5,17 @@ namespace GeoWall_E
     public class Evaluator
     {
         private List<Node> Root { get; set; }
-        private static Error Errors_ { get; set; }
-        public static List<(string, Type)> VariableScope { get; set; } = new();
+        private Error Errors_ { get; set; }
+        private SymbolTable SymbolTable { get; set; }
 
         public Evaluator(List<Node> root, Error error)
         {
             Root = root;
             Errors_ = error;
+            SymbolTable = new SymbolTable();
         }
 
-        public static Error Errors => Errors_;
+        public Error Errors => Errors_;
 
         public List<Type> Evaluate()
         {
@@ -27,19 +28,19 @@ namespace GeoWall_E
                         HandleAsignationNode(asignation, toDraw);
                         break;
                     case PointStatement point:
-                        VariableScope.Add((point.Name.Text, new Point(point.Color, point.Name.Text)));
+                        SymbolTable.Define(point.Name.Text, new Point(point.Color, point.Name.Text));
                         break;
                     case LineStatement line:
-                        VariableScope.Add((line.Name.Text, new Line(new Point(line.Color), new Point(line.Color), line.Color, line.Name.Text)));
+                        SymbolTable.Define(line.Name.Text, new Line(new Point(line.Color), new Point(line.Color), line.Color, line.Name.Text));
                         break;
                     case SegmentStatement segment:
-                        VariableScope.Add((segment.Name.Text, new Segment(new Point(segment.Color), new Point(segment.Color), segment.Color, segment.Name.Text)));
+                        SymbolTable.Define(segment.Name.Text, new Segment(new Point(segment.Color), new Point(segment.Color), segment.Color, segment.Name.Text));
                         break;
                     case RayStatement ray:
-                        VariableScope.Add((ray.Name.Text, new Ray(new Point(ray.Color), new Point(ray.Color), ray.Color, ray.Name.Text)));
+                        SymbolTable.Define(ray.Name.Text, new Ray(new Point(ray.Color), new Point(ray.Color), ray.Color, ray.Name.Text));
                         break;
                     case CircleStatement circle:
-                        VariableScope.Add((circle.Name.Text, new Circle(new Point(circle.Color), new Measure(new Point(circle.Color), new Point(circle.Color)), circle.Color, circle.Name.Text)));
+                        SymbolTable.Define(circle.Name.Text, new Circle(new Point(circle.Color), new Measure(new Point(circle.Color), new Point(circle.Color), circle.Name.Text), circle.Color, circle.Name.Text));
                         break;
                     case Draw draw_:
                         HandleDrawNode(draw_, toDraw);
@@ -49,7 +50,7 @@ namespace GeoWall_E
             return toDraw;
         }
 
-        private static void HandleAsignationNode(AsignationStatement asignation, List<Type> toDraw)
+        private void HandleAsignationNode(AsignationStatement asignation, List<Type> toDraw)
         {
             switch (asignation.Value)
             {
@@ -77,18 +78,18 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleArcAsignationExpression(ArcExpression arcexp, AsignationStatement asignation)
+        private void HandleArcAsignationExpression(ArcExpression arcexp, AsignationStatement asignation)
         {
-            var center = VariableScope.Find(x => x.Item1 == arcexp.Center.Text);
-            var start = VariableScope.Find(x => x.Item1 == arcexp.Start.Text);
-            var end = VariableScope.Find(x => x.Item1 == arcexp.End.Text);
-            var measure = VariableScope.Find(x => x.Item1 == arcexp.Measure.Text);
+            var center = SymbolTable.Resolve(arcexp.Center.Text);
+            var start = SymbolTable.Resolve(arcexp.Start.Text);
+            var end = SymbolTable.Resolve(arcexp.End.Text);
+            var measure = SymbolTable.Resolve(arcexp.Measure.Text);
 
-            if (center.Item1 != null && start.Item1 != null && end.Item1 != null && measure.Item1 != null)
+            if (center is not ErrorType && start is not ErrorType && end is not ErrorType && measure is not ErrorType)
             {
-                if (center.Item2.ObjectType == ObjectTypes.Point && start.Item2.ObjectType == ObjectTypes.Point && end.Item2.ObjectType == ObjectTypes.Point && measure.Item2.ObjectType == ObjectTypes.Measure)
+                if (center.ObjectType == ObjectTypes.Point && start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point && measure.ObjectType == ObjectTypes.Measure)
                 {
-                    VariableScope.Add((asignation.Name.Text, new Arc((Point)center.Item2, (Point)start.Item2, (Point)end.Item2, (Measure)measure.Item2, asignation.Color, asignation.Name.Text)));
+                    SymbolTable.Define(asignation.Name.Text, new Arc((Point)center, (Point)start, (Point)end, (Measure)measure, asignation.Color, asignation.Name.Text));
                 }
                 else
                 {
@@ -101,15 +102,15 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleCircleAsignationExpression(CircleExpression circleexp, AsignationStatement asignation)
+        private void HandleCircleAsignationExpression(CircleExpression circleexp, AsignationStatement asignation)
         {
-            var center = VariableScope.Find(x => x.Item1 == circleexp.Center.Text);
-            var radius = VariableScope.Find(x => x.Item1 == circleexp.Radius.Text);
-            if (center.Item1 != null && radius.Item1 != null)
+            var center = SymbolTable.Resolve(circleexp.Center.Text);
+            var radius = SymbolTable.Resolve(circleexp.Radius.Text);
+            if (center is not ErrorType && radius is not ErrorType)
             {
-                if (center.Item2.ObjectType == ObjectTypes.Point && radius.Item2.ObjectType == ObjectTypes.Measure)
+                if (center.ObjectType == ObjectTypes.Point && radius.ObjectType == ObjectTypes.Measure)
                 {
-                    VariableScope.Add((asignation.Name.Text, new Circle((Point)center.Item2, (Measure)radius.Item2, asignation.Color, asignation.Name.Text)));
+                    SymbolTable.Define(asignation.Name.Text, new Circle((Point)center, (Measure)radius, asignation.Color, asignation.Name.Text));
                 }
                 else
                 {
@@ -122,15 +123,15 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleRayAsignationExpression(RayExpression rayexp, AsignationStatement asignation)
+        private void HandleRayAsignationExpression(RayExpression rayexp, AsignationStatement asignation)
         {
-            var start = VariableScope.Find(x => x.Item1 == rayexp.Start.Text);
-            var end = VariableScope.Find(x => x.Item1 == rayexp.End.Text);
-            if (start.Item1 != null && end.Item1 != null)
+            var start = SymbolTable.Resolve(rayexp.Start.Text);
+            var end = SymbolTable.Resolve(rayexp.End.Text);
+            if (start is not ErrorType && end is not ErrorType)
             {
-                if (start.Item2.ObjectType == ObjectTypes.Point && end.Item2.ObjectType == ObjectTypes.Point)
+                if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point)
                 {
-                    VariableScope.Add((asignation.Name.Text, new Ray((Point)start.Item2, (Point)end.Item2, asignation.Color, asignation.Name.Text)));
+                    SymbolTable.Define(asignation.Name.Text, new Ray((Point)start, (Point)end, asignation.Color, asignation.Name.Text));
                 }
                 else
                 {
@@ -143,15 +144,15 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleSegmentAsignationExpression(SegmentExpression segmentexp, AsignationStatement asignation)
+        private void HandleSegmentAsignationExpression(SegmentExpression segmentexp, AsignationStatement asignation)
         {
-            var start = VariableScope.Find(x => x.Item1 == segmentexp.Start.Text);
-            var end = VariableScope.Find(x => x.Item1 == segmentexp.End.Text);
-            if (start.Item1 != null && end.Item1 != null)
+            var start = SymbolTable.Resolve(segmentexp.Start.Text);
+            var end = SymbolTable.Resolve(segmentexp.End.Text);
+            if (start is not ErrorType && end is not ErrorType)
             {
-                if (start.Item2.ObjectType == ObjectTypes.Point && end.Item2.ObjectType == ObjectTypes.Point)
+                if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point)
                 {
-                    VariableScope.Add((asignation.Name.Text, new Segment((Point)start.Item2, (Point)end.Item2, asignation.Color, asignation.Name.Text)));
+                    SymbolTable.Define(asignation.Name.Text, new Segment((Point)start, (Point)end, asignation.Color, asignation.Name.Text));
                 }
                 else
                 {
@@ -164,15 +165,15 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleLineAsignationExpression(LineExpression lineexp, AsignationStatement asig)
+        private void HandleLineAsignationExpression(LineExpression lineexp, AsignationStatement asig)
         {
-            var p1 = VariableScope.Find(x => x.Item1 == lineexp.P1.Text);
-            var p2 = VariableScope.Find(x => x.Item1 == lineexp.P2.Text);
-            if (p1.Item1 != null && p2.Item1 != null)
+            var p1 = SymbolTable.Resolve(lineexp.P1.Text);
+            var p2 = SymbolTable.Resolve(lineexp.P2.Text);
+            if (p1 is not ErrorType && p2 is not ErrorType)
             {
-                if (p1.Item2.ObjectType == ObjectTypes.Point && p2.Item2.ObjectType == ObjectTypes.Point)
+                if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point)
                 {
-                    VariableScope.Add((asig.Name.Text, new Line((Point)p1.Item2, (Point)p2.Item2, asig.Color, asig.Name.Text)));
+                    SymbolTable.Define(asig.Name.Text, new Line((Point)p1, (Point)p2, asig.Color, asig.Name.Text));
                 }
                 else
                 {
@@ -185,12 +186,35 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleVariableExpression(VariableExpression variable, string text)
+        private void HandleVariableExpression(VariableExpression variable, string text)
         {
-            var variableFound = VariableScope.Find(x => x.Item1 == variable.Name.Text);
-            if (variableFound.Item1 != null)
+            var variableFound = SymbolTable.Resolve(variable.Name.Text);
+            if (variableFound is not ErrorType)
             {
-                VariableScope.Add((text, variableFound.Item2));
+                if (variableFound.ObjectType == ObjectTypes.Point)
+                {
+                    SymbolTable.Define(text, variableFound);
+                }
+                else if (variableFound.ObjectType == ObjectTypes.Line)
+                {
+                    SymbolTable.Define(text, variableFound);
+                }
+                else if (variableFound.ObjectType == ObjectTypes.Segment)
+                {
+                    SymbolTable.Define(text, variableFound);
+                }
+                else if (variableFound.ObjectType == ObjectTypes.Ray)
+                {
+                    SymbolTable.Define(text, variableFound);
+                }
+                else if (variableFound.ObjectType == ObjectTypes.Circle)
+                {
+                    SymbolTable.Define(text, variableFound);
+                }
+                else if (variableFound.ObjectType == ObjectTypes.Arc)
+                {
+                    SymbolTable.Define(text, variableFound);
+                }
             }
             else
             {
@@ -198,15 +222,15 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleMeasureExpression(MeasureExpression measure, string name)
+        private void HandleMeasureExpression(MeasureExpression measure, string name)
         {
-            var p1 = VariableScope.Find(x => x.Item1 == measure.P1.Text);
-            var p2 = VariableScope.Find(x => x.Item1 == measure.P2.Text);
-            if (p1.Item1 != null && p2.Item1 != null)
+            var p1 = SymbolTable.Resolve(measure.P1.Text);
+            var p2 = SymbolTable.Resolve(measure.P2.Text);
+            if (p1 is not ErrorType && p2 is not ErrorType)
             {
-                if (p1.Item2.ObjectType == ObjectTypes.Point && p2.Item2.ObjectType == ObjectTypes.Point)
+                if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point)
                 {
-                    VariableScope.Add((name, new Measure((Point)p1.Item2, (Point)p2.Item2, name)));
+                    SymbolTable.Define(name, new Measure((Point)p1, (Point)p2, name));
                 }
                 else
                 {
@@ -219,45 +243,42 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleDrawNode(Draw draw, List<Type> toDraw)
+        private void HandleDrawNode(Draw draw, List<Type> toDraw)
         {
-            if (draw.Expression is VariableExpression variable)
+            switch (draw.Expression)
             {
-                AddTypeToDraw(variable, toDraw);
-            }
-            else if (draw.Expression is LineExpression lineexp)
-            {
-                HandleLineExpression(lineexp, toDraw);
-            }
-            else if (draw.Expression is SegmentExpression segmentexp)
-            {
-                HandleSegmentExpression(segmentexp, toDraw);
-            }
-            else if (draw.Expression is RayExpression rayexp)
-            {
-                HandleRayExpression(rayexp, toDraw);
-            }
-            else if (draw.Expression is CircleExpression circleexp)
-            {
-                HandleCircleExpression(circleexp, toDraw);
-            }
-            else if (draw.Expression is ArcExpression arcexp)
-            {
-                HandleArcExpression(arcexp, toDraw);
+                case VariableExpression variable:
+                    AddTypeToDraw(variable, toDraw);
+                    break;
+                case LineExpression lineexp:
+                    HandleLineExpression(lineexp, toDraw);
+                    break;
+                case SegmentExpression segmentexp:
+                    HandleSegmentExpression(segmentexp, toDraw);
+                    break;
+                case RayExpression rayexp:
+                    HandleRayExpression(rayexp, toDraw);
+                    break;
+                case CircleExpression circleexp:
+                    HandleCircleExpression(circleexp, toDraw);
+                    break;
+                case ArcExpression arcexp:
+                    HandleArcExpression(arcexp, toDraw);
+                    break;
             }
         }
 
-        private static void HandleArcExpression(ArcExpression arcexp, List<Type> toDraw)
+        private void HandleArcExpression(ArcExpression arcexp, List<Type> toDraw)
         {
-            var center = VariableScope.Find(x => x.Item1 == arcexp.Center.Text);
-            var start = VariableScope.Find(x => x.Item1 == arcexp.Start.Text);
-            var end = VariableScope.Find(x => x.Item1 == arcexp.End.Text);
-            var measure = VariableScope.Find(x => x.Item1 == arcexp.Measure.Text);
-            if (center.Item1 != null && start.Item1 != null && end.Item1 != null && measure.Item1 != null)
+            var center = SymbolTable.Resolve(arcexp.Center.Text);
+            var start = SymbolTable.Resolve(arcexp.Start.Text);
+            var end = SymbolTable.Resolve(arcexp.End.Text);
+            var measure = SymbolTable.Resolve(arcexp.Measure.Text);
+            if (center is not ErrorType && start is not ErrorType && end is not ErrorType && measure is not ErrorType)
             {
-                if (center.Item2.ObjectType == ObjectTypes.Point && start.Item2.ObjectType == ObjectTypes.Point && end.Item2.ObjectType == ObjectTypes.Point && measure.Item2.ObjectType == ObjectTypes.Measure)
+                if (center.ObjectType == ObjectTypes.Point && start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point && measure.ObjectType == ObjectTypes.Measure)
                 {
-                    toDraw.Add(new Arc((Point)center.Item2, (Point)start.Item2, (Point)end.Item2, (Measure)measure.Item2, arcexp.Color));
+                    toDraw.Add(new Arc((Point)center, (Point)start, (Point)end, (Measure)measure, arcexp.Color));
                 }
                 else
                 {
@@ -270,15 +291,15 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleCircleExpression(CircleExpression circleexp, List<Type> toDraw)
+        private void HandleCircleExpression(CircleExpression circleexp, List<Type> toDraw)
         {
-            var center = VariableScope.Find(x => x.Item1 == circleexp.Center.Text);
-            var radius = VariableScope.Find(x => x.Item1 == circleexp.Radius.Text);
-            if (center.Item1 != null && radius.Item1 != null)
+            var center = SymbolTable.Resolve(circleexp.Center.Text);
+            var radius = SymbolTable.Resolve(circleexp.Radius.Text);
+            if (center is not ErrorType && radius is not ErrorType)
             {
-                if (center.Item2.ObjectType == ObjectTypes.Point && radius.Item2.ObjectType == ObjectTypes.Measure)
+                if (center.ObjectType == ObjectTypes.Point && radius.ObjectType == ObjectTypes.Measure)
                 {
-                    toDraw.Add(new Circle((Point)center.Item2, (Measure)radius.Item2, circleexp.Color));
+                    toDraw.Add(new Circle((Point)center, (Measure)radius, circleexp.Color));
                 }
                 else
                 {
@@ -292,15 +313,15 @@ namespace GeoWall_E
 
         }
 
-        private static void HandleRayExpression(RayExpression rayexp, List<Type> toDraw)
+        private void HandleRayExpression(RayExpression rayexp, List<Type> toDraw)
         {
-            var start = VariableScope.Find(x => x.Item1 == rayexp.Start.Text);
-            var end = VariableScope.Find(x => x.Item1 == rayexp.End.Text);
-            if (start.Item1 != null && end.Item1 != null)
+            var start = SymbolTable.Resolve(rayexp.Start.Text);
+            var end = SymbolTable.Resolve(rayexp.End.Text);
+            if (start is not ErrorType && end is not ErrorType)
             {
-                if (start.Item2.ObjectType == ObjectTypes.Point && end.Item2.ObjectType == ObjectTypes.Point)
+                if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point)
                 {
-                    toDraw.Add(new Ray((Point)start.Item2, (Point)end.Item2, rayexp.Color));
+                    toDraw.Add(new Ray((Point)start, (Point)end, rayexp.Color));
                 }
                 else
                 {
@@ -313,15 +334,15 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleSegmentExpression(SegmentExpression segmentexp, List<Type> toDraw)
+        private void HandleSegmentExpression(SegmentExpression segmentexp, List<Type> toDraw)
         {
-            var start = VariableScope.Find(x => x.Item1 == segmentexp.Start.Text);
-            var end = VariableScope.Find(x => x.Item1 == segmentexp.End.Text);
-            if (start.Item1 != null && end.Item1 != null)
+            var start = SymbolTable.Resolve(segmentexp.Start.Text);
+            var end = SymbolTable.Resolve(segmentexp.End.Text);
+            if (start is not ErrorType && end is not ErrorType)
             {
-                if (start.Item2.ObjectType == ObjectTypes.Point && end.Item2.ObjectType == ObjectTypes.Point)
+                if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point)
                 {
-                    toDraw.Add(new Segment((Point)start.Item2, (Point)end.Item2, segmentexp.Color));
+                    toDraw.Add(new Segment((Point)start, (Point)end, segmentexp.Color));
                 }
                 else
                 {
@@ -334,34 +355,34 @@ namespace GeoWall_E
             }
         }
 
-        private static void AddTypeToDraw(VariableExpression variable, List<Type> toDraw)
+        private void AddTypeToDraw(VariableExpression variable, List<Type> toDraw)
         {
-            var variableFound = VariableScope.Find(x => x.Item1 == variable.Name.Text);
-            if (variableFound.Item1 != null)
+            var variableFound = SymbolTable.Resolve(variable.Name.Text);
+            if (variableFound is not ErrorType)
             {
-                if (variableFound.Item2.ObjectType == ObjectTypes.Point)
+                if (variableFound.ObjectType == ObjectTypes.Point)
                 {
-                    toDraw.Add((Point)variableFound.Item2);
+                    toDraw.Add((Point)variableFound);
                 }
-                else if (variableFound.Item2.ObjectType == ObjectTypes.Line)
+                else if (variableFound.ObjectType == ObjectTypes.Line)
                 {
-                    toDraw.Add((Line)variableFound.Item2);
+                    toDraw.Add((Line)variableFound);
                 }
-                else if (variableFound.Item2.ObjectType == ObjectTypes.Segment)
+                else if (variableFound.ObjectType == ObjectTypes.Segment)
                 {
-                    toDraw.Add((Segment)variableFound.Item2);
+                    toDraw.Add((Segment)variableFound);
                 }
-                else if (variableFound.Item2.ObjectType == ObjectTypes.Ray)
+                else if (variableFound.ObjectType == ObjectTypes.Ray)
                 {
-                    toDraw.Add((Ray)variableFound.Item2);
+                    toDraw.Add((Ray)variableFound);
                 }
-                else if (variableFound.Item2.ObjectType == ObjectTypes.Circle)
+                else if (variableFound.ObjectType == ObjectTypes.Circle)
                 {
-                    toDraw.Add((Circle)variableFound.Item2);
+                    toDraw.Add((Circle)variableFound);
                 }
-                else if (variableFound.Item2.ObjectType == ObjectTypes.Arc)
+                else if (variableFound.ObjectType == ObjectTypes.Arc)
                 {
-                    toDraw.Add((Arc)variableFound.Item2);
+                    toDraw.Add((Arc)variableFound);
                 }
             }
             else
@@ -370,15 +391,15 @@ namespace GeoWall_E
             }
         }
 
-        private static void HandleLineExpression(LineExpression lineexp, List<Type> toDraw)
+        private void HandleLineExpression(LineExpression lineexp, List<Type> toDraw)
         {
-            var p1 = VariableScope.Find(x => x.Item1 == lineexp.P1.Text);
-            var p2 = VariableScope.Find(x => x.Item1 == lineexp.P2.Text);
-            if (p1.Item1 != null && p2.Item1 != null)
+            var p1 = SymbolTable.Resolve(lineexp.P1.Text);
+            var p2 = SymbolTable.Resolve(lineexp.P2.Text);
+            if (p1 is not ErrorType && p2 is not ErrorType)
             {
-                if (p1.Item2.ObjectType == ObjectTypes.Point && p2.Item2.ObjectType == ObjectTypes.Point)
+                if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point)
                 {
-                    toDraw.Add(new Line((Point)p1.Item2, (Point)p2.Item2, lineexp.Color));
+                    toDraw.Add(new Line((Point)p1, (Point)p2, lineexp.Color));
                 }
                 else
                 {

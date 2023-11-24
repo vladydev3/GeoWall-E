@@ -136,8 +136,6 @@ namespace GeoWall_E
         {
             // Borra el TextBox
             Entrada.Text = "";
-            // Reinica el Scope
-            Evaluator.VariableScope = new();
             // Borra el Canvas
             drawingCanvas.Children.Clear();
             scaleTransform.ScaleX = 1;
