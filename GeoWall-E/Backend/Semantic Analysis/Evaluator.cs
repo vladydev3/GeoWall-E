@@ -5,7 +5,7 @@ namespace GeoWall_E
     public class Evaluator
     {
         private List<Node> Root { get; set; }
-        private static Error Errors_ { get; set; }
+        private Error Errors_ { get; set; }
         private SymbolTable SymbolTable { get; set; }
 
         public Evaluator(List<Node> root, Error error)
@@ -15,7 +15,7 @@ namespace GeoWall_E
             SymbolTable = new SymbolTable();
         }
 
-        public static Error Errors => Errors_;
+        public Error Errors => Errors_;
 
         public List<Type> Evaluate()
         {
@@ -245,29 +245,26 @@ namespace GeoWall_E
 
         private void HandleDrawNode(Draw draw, List<Type> toDraw)
         {
-            if (draw.Expression is VariableExpression variable)
+            switch (draw.Expression)
             {
-                AddTypeToDraw(variable, toDraw);
-            }
-            else if (draw.Expression is LineExpression lineexp)
-            {
-                HandleLineExpression(lineexp, toDraw);
-            }
-            else if (draw.Expression is SegmentExpression segmentexp)
-            {
-                HandleSegmentExpression(segmentexp, toDraw);
-            }
-            else if (draw.Expression is RayExpression rayexp)
-            {
-                HandleRayExpression(rayexp, toDraw);
-            }
-            else if (draw.Expression is CircleExpression circleexp)
-            {
-                HandleCircleExpression(circleexp, toDraw);
-            }
-            else if (draw.Expression is ArcExpression arcexp)
-            {
-                HandleArcExpression(arcexp, toDraw);
+                case VariableExpression variable:
+                    AddTypeToDraw(variable, toDraw);
+                    break;
+                case LineExpression lineexp:
+                    HandleLineExpression(lineexp, toDraw);
+                    break;
+                case SegmentExpression segmentexp:
+                    HandleSegmentExpression(segmentexp, toDraw);
+                    break;
+                case RayExpression rayexp:
+                    HandleRayExpression(rayexp, toDraw);
+                    break;
+                case CircleExpression circleexp:
+                    HandleCircleExpression(circleexp, toDraw);
+                    break;
+                case ArcExpression arcexp:
+                    HandleArcExpression(arcexp, toDraw);
+                    break;
             }
         }
 
