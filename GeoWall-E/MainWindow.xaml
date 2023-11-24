@@ -5,131 +5,113 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GeoWall_E"
         mc:Ignorable="d"
-        Title="GeoWall-E" MinHeight="2000" MaxHeight="2000" MinWidth="2000" MaxWidth="2000" Width="1902" Height="1717">
-    <Grid Margin="0,0,432,570">
-        
+        Title="GeoWall-E"  >
+    <Viewbox Stretch="UniformToFill" >
+        <Grid Height="1050" Width="2000" RenderTransformOrigin="0.549,0.445">
+            <Button x:Name="zoomInButton" Content="+" Click="zoomInButton_Click" 
+     HorizontalAlignment="Right" VerticalAlignment="Top" 
+     Width="20" Height="18" Margin="0,125,979,0" FontSize="9" />
 
-        <Grid.RowDefinitions>
+            <Button x:Name="zoomOutButton" Content="-" Click="zoomOutButton_Click" 
+     HorizontalAlignment="Right" VerticalAlignment="Top" 
+     Width="20" Height="18" Margin="0,125,1204,0" />
 
-            <RowDefinition MinHeight="1426" MaxHeight="1426" Height="1426*"/>
-            <RowDefinition MinHeight="1205" MaxHeight="1205" Height="84*"/>
-            <RowDefinition Height="1121*"/>
-        </Grid.RowDefinitions>
+            <Slider x:Name="zoomSlider" Minimum="0.5" Maximum="4" Value="1"
+				HorizontalAlignment="Right" VerticalAlignment="Top"
+				Width="200" Margin="0,125,999,0" ValueChanged="Slider_ValueChanged" />
+            <ScrollViewer x:Name="scrollViewer"  HorizontalScrollBarVisibility="Hidden"
+     VerticalScrollBarVisibility="Hidden" Margin="460,221,310,97"
+     RenderTransformOrigin="0.5,0.463">
+                <Canvas x:Name="drawingCanvas" Height="10000" Width="10000" MouseDown="DrawingCanvas_MouseDown">
+                    <Canvas.LayoutTransform>
+                        <TransformGroup x:Name="transformGroup">
+                            <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
+                            <TranslateTransform x:Name="translateTransform" X="0" Y="0" />
+                        </TransformGroup>
+                    </Canvas.LayoutTransform>
+                </Canvas>
+            </ScrollViewer>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="1955.17" MaxWidth="1955.17"/>
-            <ColumnDefinition MinWidth="44.83" MaxWidth="44.83"/>
-        </Grid.ColumnDefinitions>
-        <Grid.Background>
-            <ImageBrush ImageSource="/fondoblanco.jpg"/>
-        </Grid.Background>
-        <Button x:Name="zoomInButton" Content="+" Click="zoomInButton_Click" 
-            HorizontalAlignment="Right" VerticalAlignment="Top" 
-            Width="20" Height="18" Margin="0,110,710,0" FontSize="9" />
-
-        <Button x:Name="zoomOutButton" Content="-" Click="zoomOutButton_Click" 
-            HorizontalAlignment="Right" VerticalAlignment="Top" 
-            Width="20" Height="18" Margin="0,110,930,0" />
-		
-		<Slider x:Name="zoomSlider" Minimum="0.5" Maximum="4" Value="1"
-					HorizontalAlignment="Right" VerticalAlignment="Top"
-					Width="200" Margin="0,110,730,0" ValueChanged="Slider_ValueChanged" />
-		<ScrollViewer x:Name="scrollViewer"  HorizontalScrollBarVisibility="Hidden"
-            VerticalScrollBarVisibility="Hidden" Margin="460,221,610,713"
-            RenderTransformOrigin="0.5,0.463">
-			<Canvas x:Name="drawingCanvas" Height="10000" Width="10000" MouseDown="DrawingCanvas_MouseDown">
-				<Canvas.LayoutTransform>
-					<TransformGroup x:Name="transformGroup">
-						<ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
-						<TranslateTransform x:Name="translateTransform" X="0" Y="0" />
-					</TransformGroup>
-				</Canvas.LayoutTransform>
-			</Canvas>
-		</ScrollViewer>
-
-        <TextBlock x:Name="Bienvenida" Margin="655,4,934,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FF20C1D6" FontWeight="Bold" Height="70">
-            <TextBlock.Effect>
-                <DropShadowEffect/>
-            </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text="                                                  "/></TextBlock>
-        <TextBox x:Name="Entrada" AcceptsReturn="True"  BorderThickness="3,3,3,3" Margin="8,109,1611,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="604" ScrollViewer.VerticalScrollBarVisibility="Auto"   TextChanged="TextBox_TextChanged" BorderBrush="#FF3491CC" Background="White" Foreground="Black" FontFamily="Arial Black" FontSize="14">
-            <TextBox.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="-0.316"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </TextBox.RenderTransform>
-        </TextBox>
-        <Button Content="Start"  HorizontalAlignment="Left" Margin="351,110,0,0" VerticalAlignment="Top" Click="Button_Click" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF35ADD6" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF588ED6" BorderThickness="2,2,2,2"/>
-        <Button Content="Restart" HorizontalAlignment="Left" Margin="507,105,0,0" VerticalAlignment="Top" Click="Button_Click_1"  RenderTransformOrigin="2.675,0.631" Height="49" Width="140" FontSize="18" Background="White" Foreground="#FF41ABC7" FontFamily="Arial Black" BorderThickness="2,2,2,2" BorderBrush="#FF4E75B3">
-            <Button.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform ScaleY="1"/>
-                    <SkewTransform AngleY="-0.896" AngleX="-0.158"/>
-                    <RotateTransform/>
-                    <TranslateTransform Y="-1.699" X="-0.076"/>
-                </TransformGroup>
-            </Button.RenderTransform>
-        </Button>
-        <Image HorizontalAlignment="Left" Height="100" Margin="1434,0,0,0" VerticalAlignment="Top" Width="100" Source="/photo_2023-11-18_22-25-16.jpg"/>
-        <Button HorizontalAlignment="Left" BorderThickness="0" Margin="859,147,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
-            <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
-        </Button>
-        <Button HorizontalAlignment="Left" BorderThickness="0" Margin="859,718,0,0" VerticalAlignment="Top" Click="Button_Click_2" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
-            <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" RenderTransformOrigin="0.5,0.5">
-                <Image.RenderTransform>
+            <TextBlock x:Name="Bienvenida" Margin="918,4,672,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FF20C1D6" FontWeight="Bold" Height="70">
+                <TextBlock.Effect>
+                    <DropShadowEffect/>
+                </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text="                                                  "/></TextBlock>
+            <TextBox x:Name="Entrada" AcceptsReturn="True"  BorderThickness="3,3,3,3" Margin="9,109,1610,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="844" ScrollViewer.VerticalScrollBarVisibility="Auto"   TextChanged="TextBox_TextChanged" BorderBrush="#FF3491CC" Background="White" Foreground="Black" FontFamily="Arial Black" FontSize="14">
+                <TextBox.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
                         <SkewTransform/>
-                        <RotateTransform Angle="179.63"/>
+                        <RotateTransform Angle="-0.316"/>
                         <TranslateTransform/>
                     </TransformGroup>
-                </Image.RenderTransform>
-            </Image>
-        </Button>
-        <Button HorizontalAlignment="Left" BorderThickness="0" Margin="392,437,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
-            <Button.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="-90.59"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Button.RenderTransform>
-        </Button>
-        <Button HorizontalAlignment="Left" BorderThickness="0" Margin="1352,443,0,0" VerticalAlignment="Top" Click="Button_Click_5" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
-            <Button.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="90.392"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Button.RenderTransform>
-            <Image HorizontalAlignment="Center"  Height="53" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
-        </Button>
-        <Button HorizontalAlignment="Left" BorderThickness="0" Margin="407,440,0,0" VerticalAlignment="Top" Click="Button_Click_4" Height="54" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
-            <Button.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="-90.184"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Button.RenderTransform>
-            <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" RenderTransformOrigin="0.5,0.5">
-                <Image.RenderTransform>
+                </TextBox.RenderTransform>
+            </TextBox>
+            <Button Content="Start"  HorizontalAlignment="Left" Margin="429,110,0,0" VerticalAlignment="Top" Click="Start" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF35ADD6" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF588ED6" BorderThickness="2,2,2,2"/>
+            <Button Content="Restart"  HorizontalAlignment="Left" Margin="606,110,0,0" VerticalAlignment="Top" Click="Restart" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF35ADD6" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF588ED6" BorderThickness="2,2,2,2"/>
+            <Image HorizontalAlignment="Left" Height="100" Margin="1890,4,0,0" VerticalAlignment="Top" Width="100" Source="/photo_2023-11-18_22-25-16.jpg"/>
+            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="1075,173,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
+                <Image HorizontalAlignment="Left"  Height="54" VerticalAlignment="Top" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
+            </Button>
+            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="1075,953,0,0" VerticalAlignment="Top" Click="Button_Click_2" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
+                <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" RenderTransformOrigin="0.5,0.5">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="179.63"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+            </Button>
+            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="392,437,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
+                <Button.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
                         <SkewTransform/>
-                        <RotateTransform Angle="-2.322"/>
+                        <RotateTransform Angle="-90.59"/>
                         <TranslateTransform/>
                     </TransformGroup>
-                </Image.RenderTransform>
-            </Image>
-        </Button>
-        <Button Content="About" HorizontalAlignment="Left" Margin="21,35,0,0" VerticalAlignment="Top" Click="Button_Click_6"/>
-    </Grid>
+                </Button.RenderTransform>
+            </Button>
+            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="1718,560,0,0" VerticalAlignment="Top" Click="Button_Click_5" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
+                <Button.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="90.392"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Button.RenderTransform>
+                <Image HorizontalAlignment="Center"  Height="53" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
+            </Button>
+            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="410,553,0,0" VerticalAlignment="Top" Click="Button_Click_4" Height="54" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
+                <Button.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-90.184"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Button.RenderTransform>
+                <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" RenderTransformOrigin="0.5,0.5">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="-2.322"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+            </Button>
+            <Button Content="About"  HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Click="About" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF35ADD6" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF588ED6" BorderThickness="2,2,2,2"/>
+            <Button Content="Import"  HorizontalAlignment="Left" Margin="1048,110,0,0" VerticalAlignment="Top" Click="Import" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF35ADD6" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF588ED6" BorderThickness="2,2,2,2"/>
+            <Button Content="Export"  HorizontalAlignment="Left" Margin="1218,110,0,0" VerticalAlignment="Top" Click="Export" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF35ADD6" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF588ED6" BorderThickness="2,2,2,2"/>
+        </Grid>
+
+
+
+    </Viewbox>
 </Window>
     
