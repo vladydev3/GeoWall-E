@@ -58,7 +58,8 @@ namespace GeoWall_E
 
                     if (item is Point point)
                     {
-                        point.Draw(drawingCanvas);
+                        Picasso drawer= new Picasso( drawingCanvas,point);
+                        drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
                         // Restablece el valor del Slider al valor predeterminado
@@ -69,7 +70,8 @@ namespace GeoWall_E
                     }
                     if (item is Line line)
                     {
-                        line.Draw(drawingCanvas);
+                        Picasso drawer = new Picasso(drawingCanvas, line);
+                        drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
                         // Restablece el valor del Slider al valor predeterminado
@@ -77,9 +79,11 @@ namespace GeoWall_E
                         scrollViewer.ScrollToHorizontalOffset(line.P1.X - 400);
                         scrollViewer.ScrollToVerticalOffset(line.P1.Y - 250);
                     }
+                    
                     if (item is Segment segment)
                     {
-                        segment.Draw(drawingCanvas);
+                        Picasso drawer = new Picasso(drawingCanvas, segment);
+                        drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
                         // Restablece el valor del Slider al valor predeterminado
@@ -87,9 +91,11 @@ namespace GeoWall_E
                         scrollViewer.ScrollToHorizontalOffset(segment.Start.X - 400);
                         scrollViewer.ScrollToVerticalOffset(segment.Start.Y - 250);
                     }
+                    
                     if (item is Ray ray)
                     {
-                        ray.Draw(drawingCanvas);
+                        Picasso drawer = new Picasso(drawingCanvas, ray);
+                        drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
                         // Restablece el valor del Slider al valor predeterminado
@@ -97,9 +103,11 @@ namespace GeoWall_E
                         scrollViewer.ScrollToHorizontalOffset(ray.Start.X - 400);
                         scrollViewer.ScrollToVerticalOffset(ray.Start.Y - 250);
                     }
+                   
                     if (item is Circle circle)
                     {
-                        circle.Draw(drawingCanvas);
+                        Picasso drawer = new Picasso(drawingCanvas, circle);
+                        drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
                         // Restablece el valor del Slider al valor predeterminado
@@ -107,20 +115,16 @@ namespace GeoWall_E
                         scrollViewer.ScrollToHorizontalOffset(circle.Center.X - 400);
                         scrollViewer.ScrollToVerticalOffset(circle.Center.Y - 250);
                     }
-                    if (item is Arc arc)
-                    {
-                        Point center= arc.Center;
-                        center.Draw(drawingCanvas);
-                        Ray ray1 = new(arc.Center, arc.Start,arc.Color);
-                        ray1.Draw(drawingCanvas);
-                        Ray ray2=new Ray(arc.Center, arc.End,arc.Color);
-                        ray2.Draw(drawingCanvas);
-                        scrollViewer.ScrollToHorizontalOffset(center.X-400);
-                        scrollViewer.ScrollToVerticalOffset(center.Y - 250);
-                        arc.Draw(drawingCanvas);
-
-
-                    }
+                    
+                   if (item is Arc arc)
+                   {
+                       Picasso drawer = new Picasso(drawingCanvas, arc);
+                       drawer.Draw();
+                       scrollViewer.ScrollToHorizontalOffset(arc.Center.X-400);
+                       scrollViewer.ScrollToVerticalOffset(arc.Center.Y - 250);
+                       
+                   }
+                   
                 }
             }
 

@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class Point : Type, IDrawable
+    public class Point : Type
     {
         public override ObjectTypes ObjectType => ObjectTypes.Point;
         private double X_ { get; set; }
@@ -36,7 +36,7 @@ namespace GeoWall_E
         public static double SetX()
         {
             Random random = new();
-            int drawingCanvasWidth = 1000;
+            int drawingCanvasWidth = 10000;
             double pointCenterX = drawingCanvasWidth / 2 + random.Next(0, 500);
             return pointCenterX;
         }
@@ -44,13 +44,10 @@ namespace GeoWall_E
         public static double SetY()
         {
             Random random = new();
-            int drawingCanvasHeight = 1000;
+            int drawingCanvasHeight = 10000;
             double pointCenterY = drawingCanvasHeight / 2 - random.Next(0, 500);
             return pointCenterY;
         }
-        public void Draw(Canvas drawingCanvas)
-        {
-            IDrawable.CreatePointAndLabel(this, drawingCanvas);
-        }
+        
     }
 }
