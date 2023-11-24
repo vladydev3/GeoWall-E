@@ -14,7 +14,7 @@ namespace GeoWall_E
             var ast = parser.Parse_();
             var evaluator = new Evaluator(ast.Root, ast.Errors);
             toDraw = evaluator.Evaluate();
-            errors = Evaluator.Errors;
+            errors = evaluator.Errors;
         }
 
         public bool CheckErrors()

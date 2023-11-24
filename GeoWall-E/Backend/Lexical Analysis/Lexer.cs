@@ -23,6 +23,22 @@ namespace GeoWall_E
             errors.AddError(error);
         }
 
+        private static readonly Dictionary<char, TokenType> singleCharTokens = new()
+        {
+            { ';', TokenType.EOL },
+            { '(', TokenType.LParen },
+            { ')', TokenType.RParen },
+            { '{', TokenType.LBracket },
+            { '}', TokenType.RBracket },
+            { ',', TokenType.Comma },
+            { '+', TokenType.Plus },
+            { '-', TokenType.Minus },
+            { '*', TokenType.Mult },
+            { '%', TokenType.Mod },
+            { '^', TokenType.Pow },
+            { '_', TokenType.Underline },
+        };
+
         public List<Token> Tokenize()
         {
             List<Token> tokens = new();
@@ -71,75 +87,38 @@ namespace GeoWall_E
                     continue;
                 }
 
-                if (currentChar == ';')
+                if (singleCharTokens.TryGetValue(currentChar, out TokenType tokenType))
                 {
-                    tokens.Add(new Token(TokenType.EOL, ";", line, column - 1));
-                    currentIndex++;
-                    line++;
-                    column = 0;
-                    continue;
-                }
-
-                if (currentChar == '(')
-                {
-                    tokens.Add(new Token(TokenType.LParen, "(", line, column - 1));
+                    tokens.Add(new Token(tokenType, currentChar.ToString(), line, column - 1));
                     currentIndex++;
                     column++;
                     continue;
                 }
 
-                if (currentChar == ')')
+                if (currentChar == '<')
                 {
-                    tokens.Add(new Token(TokenType.RParen, ")", line, column - 1));
                     currentIndex++;
+                    if (input[currentIndex] == '=')
+                    {
+                        tokens.Add(new Token(TokenType.LessOrEqual, "<=", line, column - 1));
+                        currentIndex++;
+                        column++;
+                    }
+                    else tokens.Add(new Token(TokenType.Less, "<", line, column - 1));
                     column++;
                     continue;
                 }
 
-                if (currentChar == '{')
+                if (currentChar == '>')
                 {
-                    tokens.Add(new Token(TokenType.LBracket, "{", line, column - 1));
                     currentIndex++;
-                    column++;
-                    continue;
-                }
-
-                if (currentChar == '}')
-                {
-                    tokens.Add(new Token(TokenType.RBracket, "}", line, column - 1));
-                    currentIndex++;
-                    column++;
-                    continue;
-                }
-
-                if (currentChar == ',')
-                {
-                    tokens.Add(new Token(TokenType.Comma, ",", line, column - 1));
-                    currentIndex++;
-                    column++;
-                    continue;
-                }
-
-                if (currentChar == '+')
-                {
-                    tokens.Add(new Token(TokenType.Plus, "+", line, column - 1));
-                    currentIndex++;
-                    column++;
-                    continue;
-                }
-
-                if (currentChar == '-')
-                {
-                    tokens.Add(new Token(TokenType.Minus, "-", line, column - 1));
-                    currentIndex++;
-                    column++;
-                    continue;
-                }
-
-                if (currentChar == '*')
-                {
-                    tokens.Add(new Token(TokenType.Mult, "*", line, column - 1));
-                    currentIndex++;
+                    if (input[currentIndex] == '=')
+                    {
+                        tokens.Add(new Token(TokenType.GreaterOrEqual, ">=", line, column - 1));
+                        currentIndex++;
+                        column++;
+                    }
+                    else tokens.Add(new Token(TokenType.Greater, ">", line, column - 1));
                     column++;
                     continue;
                 }
@@ -171,34 +150,11 @@ namespace GeoWall_E
                     continue;
                 }
 
-                if (currentChar == '%')
-                {
-                    tokens.Add(new Token(TokenType.Mod, "%", line, column - 1));
-                    currentIndex++;
-                    column++;
-                    continue;
-                }
-
-                if (currentChar == '^')
-                {
-                    tokens.Add(new Token(TokenType.Pow, "^", line, column - 1));
-                    currentIndex++;
-                    column++;
-                    continue;
-                }
-
                 if (currentChar == '=')
                 {
-                    tokens.Add(new Token(TokenType.Asignation, "=", line, column - 1));
                     currentIndex++;
-                    column++;
-                    continue;
-                }
-
-                if (currentChar == '_')
-                {
-                    tokens.Add(new Token(TokenType.Underline, "_", line, column - 1));
-                    currentIndex++;
+                    if (input[currentIndex] == '=') tokens.Add(new Token(TokenType.Equal, "==", line, column - 1));
+                    else tokens.Add(new Token(TokenType.Asignation, "=", line, column - 1));
                     column++;
                     continue;
                 }
@@ -264,6 +220,35 @@ namespace GeoWall_E
             column++;
             return new Token(TokenType.String, str, line, column - str.Length - 1);
         }
+
+        private static readonly Dictionary<string, TokenType> keywords = new()
+        {
+            { "undefined", TokenType.Undefined },
+            { "rest", TokenType.Rest },
+            { "sequence", TokenType.Sequence },
+            { "line", TokenType.Line },
+            { "segment", TokenType.Segment },
+            { "ray", TokenType.Ray },
+            { "circle", TokenType.Circle },
+            { "color", TokenType.Color },
+            { "restore", TokenType.Restore },
+            { "import", TokenType.Import },
+            { "draw", TokenType.Draw },
+            { "arc", TokenType.Arc },
+            { "measure", TokenType.Measure },
+            { "intersect", TokenType.Intersect },
+            { "count", TokenType.Count },
+            { "randoms", TokenType.Randoms },
+            { "point", TokenType.Point },
+            { "points", TokenType.Points },
+            { "samples", TokenType.Samples },
+            { "let", TokenType.Let },
+            { "in", TokenType.In },
+            { "if", TokenType.If },
+            { "then", TokenType.Then },
+            { "else", TokenType.Else },
+        };
+
         private Token ReadIdentificator()
         {
             string identificator = string.Empty;
@@ -275,99 +260,9 @@ namespace GeoWall_E
                 column++;
             }
 
-            if (identificator == "sequence")
+            if (keywords.TryGetValue(identificator, out TokenType tokenType))
             {
-                return new Token(TokenType.Sequence, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "line")
-            {
-                return new Token(TokenType.Line, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "segment")
-            {
-                return new Token(TokenType.Segment, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "ray")
-            {
-                return new Token(TokenType.Ray, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "circle")
-            {
-                return new Token(TokenType.Circle, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "color")
-            {
-                return new Token(TokenType.Color, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "restore")
-            {
-                return new Token(TokenType.Restore, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "import")
-            {
-                return new Token(TokenType.Import, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "draw")
-            {
-                return new Token(TokenType.Draw, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "arc")
-            {
-                return new Token(TokenType.Arc, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "measure")
-            {
-                return new Token(TokenType.Measure, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "intersect")
-            {
-                return new Token(TokenType.Intersect, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "count")
-            {
-                return new Token(TokenType.Count, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "randoms")
-            {
-                return new Token(TokenType.Randoms, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "point")
-            {
-                return new Token(TokenType.Point, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "points")
-            {
-                return new Token(TokenType.Points, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "samples")
-            {
-                return new Token(TokenType.Samples, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "let")
-            {
-                return new Token(TokenType.Let, identificator, line, column - identificator.Length);
-            }
-
-            if (identificator == "in")
-            {
-                return new Token(TokenType.In, identificator, line, column - identificator.Length);
+                return new Token(tokenType, identificator, line, column - identificator.Length);
             }
 
             return new Token(TokenType.Identifier, identificator, line, column - identificator.Length);
