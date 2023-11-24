@@ -44,7 +44,7 @@ namespace GeoWall_E
         public static double SetY()
         {
             Random random = new();
-            int drawingCanvasHeight = 10000;
+            int drawingCanvasHeight =10000;
             double pointCenterY = drawingCanvasHeight / 2 - random.Next(0, 500);
             return pointCenterY;
         }
