@@ -64,7 +64,7 @@ namespace GeoWall_E
         private Node ParseFunction(bool canBeDeclaration = true)
         {
             var name = NextToken();
-            NextToken();
+            Match(TokenType.LParen);
             List<Expression> arguments = new();
             if (Current.Type != TokenType.RParen)
             {
@@ -175,7 +175,7 @@ namespace GeoWall_E
         private Node ParseIdentifier()
         {
             var name = NextToken();
-            if (Current.Type == TokenType.Asignation) return ParseAsignation(name);
+            if (Current.Type == TokenType.Asignation || Current.Type == TokenType.Comma) return ParseAsignation(name);
             return new VariableExpression(name);
         }
 
@@ -235,6 +235,9 @@ namespace GeoWall_E
                     return new NumberExpression(NextToken());
                 case TokenType.String:
                     return new StringExpression(NextToken());
+                case TokenType.Undefined:
+                    NextToken();
+                    return new UndefinedExpression();
                 case TokenType.LParen:
                     NextToken();
                     var expression = ParseExpression();
@@ -252,7 +255,11 @@ namespace GeoWall_E
 
         private Node ParseAsignation(Token name)
         {
-            NextToken();
+            if (Current.Type == TokenType.Comma) NextToken();
+            else
+            {
+                NextToken();
+            }
             var value = ParseExpression();
             Match(TokenType.EOL);
             return new AsignationStatement(name, value, color);
@@ -260,9 +267,12 @@ namespace GeoWall_E
 
         private Expression ParseLet()
         {
-            // NO PINCHA
             NextToken();
-            var instructions = ParseMembers();
+            List<Statement> instructions = new();
+            while (Current.Type != TokenType.In)
+            {
+                instructions.Add((Statement)ParseStatement());
+            }
             Match(TokenType.In);
             var inExpression = ParseExpression();
             return new LetInExpression(instructions, inExpression);

@@ -1,9 +1,11 @@
-using System.Windows.Controls;
 
 namespace GeoWall_E
 {
     public enum ObjectTypes
     {
+        String,
+        Number,
+        Constant,
         Point,
         Line,
         Segment,

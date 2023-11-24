@@ -120,6 +120,34 @@ namespace GeoWall_E
                     continue;
                 }
 
+                if (currentChar == '<')
+                {
+                    currentIndex++;
+                    if (input[currentIndex] == '=')
+                    {
+                        tokens.Add(new Token(TokenType.LessOrEqual, "<=", line, column - 1));
+                        currentIndex++;
+                        column++;
+                    }
+                    else tokens.Add(new Token(TokenType.Less, "<", line, column - 1));
+                    column++;
+                    continue;
+                }
+
+                if (currentChar == '>')
+                {
+                    currentIndex++;
+                    if (input[currentIndex] == '=')
+                    {
+                        tokens.Add(new Token(TokenType.GreaterOrEqual, ">=", line, column - 1));
+                        currentIndex++;
+                        column++;
+                    }
+                    else tokens.Add(new Token(TokenType.Greater, ">", line, column - 1));
+                    column++;
+                    continue;
+                }
+
                 if (currentChar == '+')
                 {
                     tokens.Add(new Token(TokenType.Plus, "+", line, column - 1));
@@ -189,8 +217,9 @@ namespace GeoWall_E
 
                 if (currentChar == '=')
                 {
-                    tokens.Add(new Token(TokenType.Asignation, "=", line, column - 1));
                     currentIndex++;
+                    if (input[currentIndex] == '=') tokens.Add(new Token(TokenType.Equal, "==", line, column - 1));
+                    else tokens.Add(new Token(TokenType.Asignation, "=", line, column - 1));
                     column++;
                     continue;
                 }
@@ -273,6 +302,16 @@ namespace GeoWall_E
                 identificator += input[currentIndex];
                 currentIndex++;
                 column++;
+            }
+
+            if (identificator == "undefined")
+            {
+                return new Token(TokenType.Undefined, identificator, line, column - identificator.Length);
+            }
+
+            if (identificator == "rest")
+            {
+                return new Token(TokenType.Rest, identificator, line, column - identificator.Length);
             }
 
             if (identificator == "sequence")
@@ -368,6 +407,21 @@ namespace GeoWall_E
             if (identificator == "in")
             {
                 return new Token(TokenType.In, identificator, line, column - identificator.Length);
+            }
+
+            if (identificator == "if")
+            {
+                return new Token(TokenType.If, identificator, line, column -identificator.Length);
+            }
+
+            if (identificator == "then")
+            {
+                return new Token(TokenType.Then, identificator, line, column - identificator.Length);
+            }
+
+            if (identificator == "else")
+            {
+                return new Token(TokenType.Else, identificator, line, column - identificator.Length);
             }
 
             return new Token(TokenType.Identifier, identificator, line, column - identificator.Length);

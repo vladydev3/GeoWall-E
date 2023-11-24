@@ -6,7 +6,7 @@ namespace GeoWall_E
         {
             return kind switch
             {
-                TokenType.Plus or TokenType.Minus => 3,
+                TokenType.Plus or TokenType.Minus => 4,
                 _ => 0,
             };
         }
@@ -14,11 +14,12 @@ namespace GeoWall_E
         {
             return type switch
             {
-                TokenType.Pow => 5,
-                TokenType.Mult or TokenType.Slash => 4,
-                TokenType.Plus or TokenType.Minus => 3,
-                TokenType.Greater or TokenType.GreaterOrEqual or TokenType.Less or TokenType.LessOrEqual or TokenType.Mod => 2,
-                TokenType.And or TokenType.Or => 1,
+                TokenType.Pow => 6,
+                TokenType.Mult or TokenType.Slash => 5,
+                TokenType.Plus or TokenType.Minus => 4,
+                TokenType.Equal or TokenType.Greater or TokenType.GreaterOrEqual or TokenType.Less or TokenType.LessOrEqual or TokenType.Mod => 3,
+                TokenType.And => 2,
+                TokenType.Or => 1,
                 _ => 0,
             };
         }

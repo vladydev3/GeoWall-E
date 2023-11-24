@@ -22,8 +22,10 @@ public enum TokenType
     Samples, // samples()
     Number,
     String,
+    Undefined,
     Variable,
     Underline,
+    Rest,
     Plus,
     Minus,
     Mult,

@@ -20,6 +20,11 @@ public class StringExpression : Expression
     }
 }
 
+public class UndefinedExpression : Expression
+{
+    public override TokenType Type => TokenType.Undefined;
+}
+
 public class SequenceExpression : Expression
 {
     public override TokenType Type => TokenType.Sequence;
