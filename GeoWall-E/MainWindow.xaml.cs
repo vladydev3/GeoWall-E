@@ -43,25 +43,17 @@ namespace GeoWall_E
             drawingCanvas.Children.Clear();
 
             // Asi se procesaria el codigo del usuario
+            
             string code = Entrada.Text;
-            var lexer = new Lexer(code);
-            var parser = new Parser(lexer.Tokenize(), lexer.errors);
-            var ast = parser.Parse_();
-            if (ast.Errors.AnyError())
+            // esto es lo q te hace todo el proceso y te devuelve la lista de Type que es lo q tienes q dibujar
+            var handler = new Handler(code);
+            if (handler.CheckErrors())
             {
-                MessageBox.Show(ast.Errors.diagnostics[0], "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(handler.Errors.GetError, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
-
-                var evaluator = new Evaluator(ast.Root);
-                if (Evaluator.Errors.AnyError())
-                {
-                    MessageBox.Show(Evaluator.Errors.diagnostics[0], "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                var toDraw = evaluator.Evaluate();              // aqui se devolveria una List<Types> con el tipo de dato que hay que imprimir (point solo por ahora) revisa en la carpeta Types la clase Point
-                                                                // despues de esto se puede hacer un foreach y dibujar cada uno de los elementos de la lista toDraw
-                foreach (var item in toDraw)
+                foreach (var item in handler.ToDraw)
                 {
 
                     if (item is Point point)
@@ -119,7 +111,7 @@ namespace GeoWall_E
                     {
                         Point center= arc.Center;
                         center.Draw(drawingCanvas);
-                        Ray ray1 = new Ray(arc.Center, arc.Start,arc.Color);
+                        Ray ray1 = new(arc.Center, arc.Start,arc.Color);
                         ray1.Draw(drawingCanvas);
                         Ray ray2=new Ray(arc.Center, arc.End,arc.Color);
                         ray2.Draw(drawingCanvas);
