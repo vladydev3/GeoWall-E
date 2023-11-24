@@ -30,13 +30,14 @@ namespace GeoWall_E
         public MainWindow()
         {
             InitializeComponent();
+            this.WindowState = WindowState.Maximized;
             // Asignar el Canvas del XAML a la propiedad estática
             MainWindow.DrawingCanvas = this.drawingCanvas;
-            this.WindowState = WindowState.Maximized;
+            
             zoomCenter = new System.Windows.Point(drawingCanvas.Width / 2, drawingCanvas.Height / 2);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Start(object sender, RoutedEventArgs e)
 
         {
             // Borra el Canvas
@@ -131,7 +132,7 @@ namespace GeoWall_E
 
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Restart(object sender, RoutedEventArgs e)
         {
             // Borra el TextBox
             Entrada.Text = "";
@@ -228,9 +229,45 @@ namespace GeoWall_E
             }
         }
 
-        private void Button_Click_6(object sender, RoutedEventArgs e)
+      
+
+        private void About(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("| Comando | Descripción |\r\n|---------|-------------|\r\n| point <id> | Declara que se recibe un argumento de tipo punto con nombre <id> |\r\n| line <id> | Declara que se recibe un argumento de tipo recta con nombre <id> |\r\n| segment <id> | Declara que se recibe un argumento de tipo segmento con nombre <id> |\r\n| ray <id> | Declara que se recibe un argumento de tipo semirecta con nombre <id> |\r\n| circle <id> | Declara que se recibe un argumento de tipo circunferencia con nombre <id> |\r\n| point sequence <id> | Declara que se recibe un argumento de tipo secuencia de puntos con nombre <id> |\r\n| line sequence <id> | … |\r\n| color | Establece el color a ser utilizado |\r\n| restore | Restablece el color anterior |\r\n| import <string> | Incluye en el programa actual las definiciones del fichero indicado. |\r\n| draw <exp> <string> | Dibuja el o los objetos definidos en <exp> |\r\n| line(p1,p2) | Devuelve una recta que pasa por los puntos p1 y p2. |\r\n| segment(p1,p2) | Devuelve un segmento con extremos en los puntos p1 y p2. |\r\n| ray(p1,p2) | Devuelve una semirecta que comienza en p1 y pasa por p2. |\r\n| arc(p1,p2,p3,m) | Devuelve un arco que tiene centro en p1, se extiende desde una semirecta que pasa por p2 hasta una semirecta que pasa por p3 y tiene medida m. |\r\n| circle(p,m) | Devuelve una circunferencia con centro en p y medida m. |\r\n| measure(p1,p2) | Devuelve una medida entre los puntos p1 y p2. |\r\n| intersect(f1,f2) | Intersecta dos figuras (puntos, rectas, etc.) y devuelve la secuencia de puntos de intersección. Si la intersección coincide en infinitos puntos devuelve undefined. |\r\n| count(s) | Devuelve la cantidad de elementos de una secuencia. Si la secuencia es infinita devuelve undefined. |\r\n| randoms() | Devuelve una secuencia de valores aleatorios numéricos entre 0 y 1. |\r\n| points(f) | Devuelve una secuencia de puntos aleatorios en una figura. |\r\n| samples() | Devuelve una secuencia de puntos aleatorios en el lienzo. |\r\n");
+            
+                MessageBox.Show("| Comando | Descripción |\r\n|---------|-------------|\r\n| point <id> | Declara que se recibe un argumento de tipo punto con nombre <id> |\r\n| line <id> | Declara que se recibe un argumento de tipo recta con nombre <id> |\r\n| segment <id> | Declara que se recibe un argumento de tipo segmento con nombre <id> |\r\n| ray <id> | Declara que se recibe un argumento de tipo semirecta con nombre <id> |\r\n| circle <id> | Declara que se recibe un argumento de tipo circunferencia con nombre <id> |\r\n| point sequence <id> | Declara que se recibe un argumento de tipo secuencia de puntos con nombre <id> |\r\n| line sequence <id> | … |\r\n| color | Establece el color a ser utilizado |\r\n| restore | Restablece el color anterior |\r\n| import <string> | Incluye en el programa actual las definiciones del fichero indicado. |\r\n| draw <exp> <string> | Dibuja el o los objetos definidos en <exp> |\r\n| line(p1,p2) | Devuelve una recta que pasa por los puntos p1 y p2. |\r\n| segment(p1,p2) | Devuelve un segmento con extremos en los puntos p1 y p2. |\r\n| ray(p1,p2) | Devuelve una semirecta que comienza en p1 y pasa por p2. |\r\n| arc(p1,p2,p3,m) | Devuelve un arco que tiene centro en p1, se extiende desde una semirecta que pasa por p2 hasta una semirecta que pasa por p3 y tiene medida m. |\r\n| circle(p,m) | Devuelve una circunferencia con centro en p y medida m. |\r\n| measure(p1,p2) | Devuelve una medida entre los puntos p1 y p2. |\r\n| intersect(f1,f2) | Intersecta dos figuras (puntos, rectas, etc.) y devuelve la secuencia de puntos de intersección. Si la intersección coincide en infinitos puntos devuelve undefined. |\r\n| count(s) | Devuelve la cantidad de elementos de una secuencia. Si la secuencia es infinita devuelve undefined. |\r\n| randoms() | Devuelve una secuencia de valores aleatorios numéricos entre 0 y 1. |\r\n| points(f) | Devuelve una secuencia de puntos aleatorios en una figura. |\r\n| samples() | Devuelve una secuencia de puntos aleatorios en el lienzo. |\r\n");
+            
+        }
+
+        private void Import(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string contenido=System.IO.File.ReadAllText(openFileDialog.FileName);
+                string entrada=Entrada.Text = contenido;
+                Start( sender, e);
+                    
+            }
+        }
+
+        private void Export(object sender, RoutedEventArgs e)
+        {
+            string text= Entrada.Text;
+            System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            saveFileDialog.Filter = "Archivos de texto(*.txt)|*.txt";
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                string filePath= saveFileDialog.FileName;
+                System.IO.File.WriteAllText(filePath, text);
+                MessageBox.Show("Texto guardado correctamente");
+            }
+            else
+
+            {
+                MessageBox.Show("Ocurrio un error");
+            }
         }
     }
-}
+
+    }
+
