@@ -277,6 +277,10 @@ namespace GeoWall_E
         {
 
         }
+        private void Exit(object sender, RoutedEventArgs e) 
+        { 
+            this.Close();
+        }
     }
 
     }

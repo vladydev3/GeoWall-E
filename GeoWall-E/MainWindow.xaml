@@ -32,7 +32,7 @@
                 </Canvas>
             </ScrollViewer>
 
-            <TextBlock x:Name="Bienvenida" Margin="843,4,747,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FF08B1B5" FontWeight="Bold" Height="70">
+            <TextBlock x:Name="Bienvenida" Margin="801,4,789,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FF08B1B5" FontWeight="Bold" Height="70">
                 <TextBlock.Effect>
                     <DropShadowEffect/>
                 </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text="                                                  "/></TextBlock>
@@ -41,7 +41,7 @@
             </TextBox>
             <Button Content="Start"  HorizontalAlignment="Left" Margin="429,110,0,0" VerticalAlignment="Top" Click="Start" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
             <Button Content="Restart"  HorizontalAlignment="Left" Margin="606,110,0,0" VerticalAlignment="Top" Click="Restart" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
-            <Image HorizontalAlignment="Left" Height="100" Margin="1752,4,0,0" VerticalAlignment="Top" Width="100" Source="/photo_2023-11-18_22-25-16.jpg"/>
+            <Image HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100" Source="/photo_2023-11-18_22-25-16.jpg"/>
             <Button HorizontalAlignment="Left" BorderThickness="0" Margin="1075,173,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
                 <Image HorizontalAlignment="Left"  Height="54" VerticalAlignment="Top" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
             </Button>
@@ -101,6 +101,9 @@
             <Button Content="Import"  HorizontalAlignment="Left" Margin="1048,110,0,0" VerticalAlignment="Top" Click="Import" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
             <Button Content="Export"  HorizontalAlignment="Left" Margin="1218,110,0,0" VerticalAlignment="Top" Click="Export" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
             <TextBox x:Name="Enumerador"  HorizontalAlignment="Left" IsReadOnly="True"  Margin="347,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Height="837" TextChanged="TextBox_TextChanged_1" BorderThickness="0" FontSize="16" FontFamily="Arial Black" ScrollViewer.VerticalScrollBarVisibility="Hidden" />
+            <Button HorizontalAlignment="Left" Background="Transparent" BorderBrush="Transparent" Click="Exit"   Margin="1810,4,0,0" VerticalAlignment="Top">
+                <Image Height="34" Width="48" Source="/big_x.7fa8a138.png"/>
+            </Button>
         </Grid>
 
 
