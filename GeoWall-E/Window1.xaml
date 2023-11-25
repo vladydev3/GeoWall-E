@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         Title="Window1" Height="450" Width="800">
     <Grid>
-        <Button Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click" Width="140" Height="40" BorderBrush="Snow" Background="White" FontFamily="Consolas" FontSize="20"/>
+        <Button Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Start" Width="140" Height="40" BorderBrush="Black" Background="White" FontFamily="Consolas" FontSize="20"/>
+        <Button Content="About" HorizontalAlignment="Left" VerticalAlignment="Top" Click="About" Width="67" Height="29" BorderBrush="Black" Background="White" FontFamily="Consolas" FontSize="14" Margin="82,10,0,0"/>
+        <Button Content="Import" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Import" Width="67" Height="29" BorderBrush="Black" Background="White" FontFamily="Consolas" FontSize="14" Margin="10,10,0,0"/>
         <Grid.Background>
             <ImageBrush ImageSource="/OIG (1).jpg"/>
         </Grid.Background>
