@@ -147,7 +147,20 @@ namespace GeoWall_E
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            // Obtener el número y el contenido de cada línea
+            string[] lines = Entrada.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
+            // Crear una variable para almacenar los números de línea
+            string lineNumbers = "";
+
+            // Recorrer cada línea y agregar el número correspondiente
+            for (int i = 0; i < lines.Length; i++)
+            {
+                lineNumbers += (i + 1) + "\n";
+            }
+
+            // Asignar los números de línea al TextBox de la numeración
+            Enumerador.Text = lineNumbers;
         }
 
         private void ScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -266,6 +279,11 @@ namespace GeoWall_E
             {
                 MessageBox.Show("Ocurrio un error");
             }
+        }
+
+        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 
