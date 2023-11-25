@@ -42,6 +42,9 @@ namespace GeoWall_E
                     case CircleStatement circle:
                         SymbolTable.Define(circle.Name.Text, new Circle(new Point(circle.Color), new Measure(new Point(circle.Color), new Point(circle.Color), circle.Name.Text), circle.Color, circle.Name.Text));
                         break;
+                    case FunctionDeclaration function:
+                        SymbolTable.Define(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
+                        break;
                     case Draw draw_:
                         HandleDrawNode(draw_, toDraw);
                         break;

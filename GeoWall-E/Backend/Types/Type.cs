@@ -3,6 +3,7 @@ namespace GeoWall_E
 {
     public enum ObjectTypes
     {
+        Function,
         String,
         Number,
         Constant,
