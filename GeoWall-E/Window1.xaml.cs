@@ -22,6 +22,10 @@ namespace GeoWall_E
         public Window1()
         {
             InitializeComponent();
+            // Establecer el estilo de la ventana a None para ocultar la barra de título
+            this.WindowStyle = WindowStyle.None;
+
+            // Establecer el estado de la ventana a Maximized para hacer que se abra en pantalla completa
             this.WindowState = WindowState.Maximized;
         }
 
