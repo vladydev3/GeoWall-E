@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class Segment : Type
+    public class Segment : Type, IDraw
     {
         public override ObjectTypes ObjectType => ObjectTypes.Segment;
         private Point Start_ { get; set; }

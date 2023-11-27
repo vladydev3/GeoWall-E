@@ -1,12 +1,16 @@
 using System.ComponentModel;
+using System.Reflection.Metadata;
 
 namespace GeoWall_E
 {
     public class Evaluator
     {
-        private List<Node> Root { get; set; }
+        private List<Node>? Root { get; set; }
+        private List<Statement>? LetBlock { get; set; }
         private Error Errors_ { get; set; }
         private SymbolTable SymbolTable { get; set; }
+        // Esta variable es temporal para comprobar que se evaluen bien las expresiones que no se pintan
+        public Type? Result;
 
         public Evaluator(List<Node> root, Error error)
         {
@@ -15,7 +19,219 @@ namespace GeoWall_E
             SymbolTable = new SymbolTable();
         }
 
+        public Evaluator(List<Statement> functblock, Error error)
+        {
+            LetBlock = functblock;
+            Errors_ = error;
+            SymbolTable = new SymbolTable();
+        }
+
         public Error Errors => Errors_;
+
+        public Dictionary<string, Type> EvaluateLetBlock()
+        {
+            Dictionary<string, Type> addToScope = new();
+            foreach (var statement in LetBlock)
+            {
+                switch (statement)
+                {
+                    case AsignationStatement asignation:
+                        addToScope.Add(asignation.Name.Text, HandleAsignationLet(asignation));
+                        break;
+                    case PointStatement point:
+                        addToScope.Add(point.Name.Text, new Point(point.Color, point.Name.Text));
+                        break;
+                    case LineStatement line:
+                        addToScope.Add(line.Name.Text, new Line(new Point(line.Color), new Point(line.Color), line.Color, line.Name.Text));
+                        break;
+                    case SegmentStatement segment:
+                        addToScope.Add(segment.Name.Text, new Segment(new Point(segment.Color), new Point(segment.Color), segment.Color, segment.Name.Text));
+                        break;
+                    case RayStatement ray:
+                        addToScope.Add(ray.Name.Text, new Ray(new Point(ray.Color), new Point(ray.Color), ray.Color, ray.Name.Text));
+                        break;
+                    case CircleStatement circle:
+                        addToScope.Add(circle.Name.Text, new Circle(new Point(circle.Color), new Measure(new Point(circle.Color), new Point(circle.Color), circle.Name.Text), circle.Color, circle.Name.Text));
+                        break;
+                    case FunctionDeclaration function:
+                        addToScope.Add(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
+                        break;
+                }
+            }
+            return addToScope;
+        }
+
+        private Type HandleAsignationLet(AsignationStatement asignation)
+        {
+            return asignation.Value switch
+            {
+                VariableExpression variable => HandleVariableExpressionInLet(variable, asignation.Name.Text),
+                MeasureExpression measure => HandleMeasureExpressionInLet(measure, asignation.Name.Text),
+                LineExpression lineexp => HandleLineAsignationExpressionInLet(lineexp, asignation),
+                SegmentExpression segmentexp => HandleSegmentAsignationExpressionInLet(segmentexp, asignation),
+                RayExpression rayexp => HandleAsignationRayExpression(rayexp, asignation),
+                CircleExpression circleexp => HandleAsignationCircleExpression(circleexp, asignation),
+                ArcExpression arcexp => HandleAsignationArcExpression(arcexp, asignation),
+                LetInExpression letin => HandleAsignationLetExpression(letin),
+                _ => new ErrorType(),
+            };
+        }
+
+        private Type HandleMeasureExpressionInLet(MeasureExpression measure, string name)
+        {
+            var p1 = SymbolTable.Resolve(measure.P1.Text);
+            var p2 = SymbolTable.Resolve(measure.P2.Text);
+            if (p1 is not ErrorType && p2 is not ErrorType)
+            {
+                if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point)
+                {
+                    return new Measure((Point)p1, (Point)p2, name);
+                }
+                else
+                {
+                    Errors.AddError($"Invalid type for {measure.P1.Text} or {measure.P2.Text}, Line: {measure.P1.Line}, Column: {measure.P1.Column}");
+                    return new ErrorType();
+                }
+            }
+            else
+            {
+                Errors.AddError($"Variable {measure.P1.Text} or {measure.P2.Text} not declared, Line: {measure.P1.Line}, Column: {measure.P1.Column}");
+                return new ErrorType();
+            }
+        }
+
+        private Type HandleLineAsignationExpressionInLet(LineExpression lineexp, AsignationStatement asig)
+        {
+            var p1 = SymbolTable.Resolve(lineexp.P1.Text);
+            var p2 = SymbolTable.Resolve(lineexp.P2.Text);
+            if (p1 is not ErrorType && p2 is not ErrorType)
+            {
+                if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point)
+                {
+                    return new Line((Point)p1, (Point)p2, asig.Color, asig.Name.Text);
+                }
+                else
+                {
+                    Errors.AddError($"Invalid type for {lineexp.P1.Text} or {lineexp.P2.Text}, Line: {lineexp.P1.Line}, Column: {lineexp.P1.Column}");
+                    return new ErrorType();
+                }
+            }
+            else
+            {
+                Errors.AddError($"Variable {lineexp.P1.Text} or {lineexp.P2.Text} not declared, Line: {lineexp.P1.Line}, Column: {lineexp.P1.Column}");
+                return new ErrorType();
+            }
+        }
+
+        private Type HandleSegmentAsignationExpressionInLet(SegmentExpression segmentexp, AsignationStatement asignation)
+        {
+            var start = SymbolTable.Resolve(segmentexp.Start.Text);
+            var end = SymbolTable.Resolve(segmentexp.End.Text);
+            if (start is not ErrorType && end is not ErrorType)
+            {
+                if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point)
+                {
+                    return new Segment((Point)start, (Point)end, asignation.Color, asignation.Name.Text);
+                }
+                else
+                {
+                    Errors.AddError($"Invalid type for {segmentexp.Start.Text} or {segmentexp.End.Text}, Line: {segmentexp.Start.Line}, Column: {segmentexp.Start.Column}");
+                    return new ErrorType();
+                }
+            }
+            else
+            {
+                Errors.AddError($"Variable {segmentexp.Start.Text} or {segmentexp.End.Text} not declared, Line: {segmentexp.Start.Line}, Column: {segmentexp.Start.Column}");
+                return new ErrorType();
+            }
+        }
+
+        private Type HandleVariableExpressionInLet(VariableExpression variable, string text)
+        {
+            var variableFound = SymbolTable.Resolve(variable.Name.Text);
+            if (variableFound is not ErrorType)
+            {
+                return variableFound;
+            }
+            else
+            {
+                Errors_.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
+                return new ErrorType();
+            }
+        }
+
+        private Type HandleAsignationRayExpression(RayExpression rayexp, AsignationStatement asignation)
+        {
+            var start = SymbolTable.Resolve(rayexp.Start.Text);
+            var end = SymbolTable.Resolve(rayexp.End.Text);
+            if (start is not ErrorType && end is not ErrorType)
+            {
+                if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point)
+                {
+                    return new Ray((Point)start, (Point)end, asignation.Color, asignation.Name.Text);
+                }
+                else
+                {
+                    Errors.AddError($"Invalid type for {rayexp.Start.Text} or {rayexp.End.Text}, Line: {rayexp.Start.Line}, Column: {rayexp.Start.Column}");
+                    return new ErrorType();
+                }
+            }
+            else
+            {
+                Errors.AddError($"Variable {rayexp.Start.Text} or {rayexp.End.Text} not declared, Line: {rayexp.Start.Line}, Column: {rayexp.Start.Column}");
+                return new ErrorType();
+            }
+        }
+
+        private Type HandleAsignationCircleExpression(CircleExpression circleexp, AsignationStatement asignation)
+        {
+            var center = SymbolTable.Resolve(circleexp.Center.Text);
+            var radius = SymbolTable.Resolve(circleexp.Radius.Text);
+            if (center is not ErrorType && radius is not ErrorType)
+            {
+                if (center.ObjectType == ObjectTypes.Point && radius.ObjectType == ObjectTypes.Measure)
+                {
+                    return new Circle((Point)center, (Measure)radius, asignation.Color, asignation.Name.Text);
+                }
+                else
+                {
+                    Errors.AddError($"Invalid type for {circleexp.Center.Text} or {circleexp.Radius.Text}, Line: {circleexp.Center.Line}, Column: {circleexp.Center.Column}");
+                    return new ErrorType();
+                }
+            }
+            else
+            {
+                Errors.AddError($"Variable {circleexp.Center.Text} or {circleexp.Radius.Text} not declared, Line: {circleexp.Center.Line}, Column: {circleexp.Center.Column}");
+                return new ErrorType();
+            }
+        }
+
+        private Type HandleAsignationArcExpression(ArcExpression arcexp, AsignationStatement asignation)
+        {
+            var center = SymbolTable.Resolve(arcexp.Center.Text);
+            var start = SymbolTable.Resolve(arcexp.Start.Text);
+            var end = SymbolTable.Resolve(arcexp.End.Text);
+            var measure = SymbolTable.Resolve(arcexp.Measure.Text);
+
+            if (center is not ErrorType && start is not ErrorType && end is not ErrorType && measure is not ErrorType)
+            {
+                if (center.ObjectType == ObjectTypes.Point && start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point && measure.ObjectType == ObjectTypes.Measure)
+                {
+                    return new Arc((Point)center, (Point)start, (Point)end, (Measure)measure, asignation.Color, asignation.Name.Text);
+                }
+                else
+                {
+                    Errors.AddError($"Invalid type for {arcexp.Center.Text} or {arcexp.Start.Text} or {arcexp.End.Text} or {arcexp.Measure.Text}, Line: {arcexp.Center.Line}, Column: {arcexp.Center.Column}");
+
+                    return new ErrorType();
+                }
+            }
+            else
+            {
+                Errors.AddError($"Variable {arcexp.Center.Text} or {arcexp.Start.Text} or {arcexp.End.Text} or {arcexp.Measure.Text} not declared, Line: {arcexp.Center.Line}, Column: {arcexp.Center.Column}");
+                return new ErrorType();
+            }
+        }
 
         public List<Type> Evaluate()
         {
@@ -25,7 +241,7 @@ namespace GeoWall_E
                 switch (node)
                 {
                     case AsignationStatement asignation:
-                        HandleAsignationNode(asignation, toDraw);
+                        HandleAsignationNode(asignation);
                         break;
                     case PointStatement point:
                         SymbolTable.Define(point.Name.Text, new Point(point.Color, point.Name.Text));
@@ -48,12 +264,16 @@ namespace GeoWall_E
                     case Draw draw_:
                         HandleDrawNode(draw_, toDraw);
                         break;
+                    default:
+                        var exp = (IEvaluable)node;
+                        Result = exp.Evaluate(SymbolTable, Errors_);
+                        break;
                 }
             }
             return toDraw;
         }
 
-        private void HandleAsignationNode(AsignationStatement asignation, List<Type> toDraw)
+        private void HandleAsignationNode(AsignationStatement asignation)
         {
             switch (asignation.Value)
             {
@@ -78,7 +298,40 @@ namespace GeoWall_E
                 case ArcExpression arcexp:
                     HandleArcAsignationExpression(arcexp, asignation);
                     break;
+                case LetInExpression letin:
+                    HandleLetInAsignationExpression(letin, asignation);
+                    break;
             }
+        }
+
+        private Type HandleAsignationLetExpression(LetInExpression letin)
+        {
+            SymbolTable.EnterScope();
+            var evaluator = new Evaluator(letin.Let, Errors);
+            var toAddtoScope = evaluator.EvaluateLetBlock();
+            foreach (var item in toAddtoScope)
+            {
+                SymbolTable.Define(item.Key, item.Value);
+            }
+            var evaluatedIn = (IEvaluable)letin.In;
+            var result = evaluatedIn.Evaluate(SymbolTable, Errors);
+            SymbolTable.ExitScope();
+            return result;
+        }
+
+        private void HandleLetInAsignationExpression(LetInExpression letin, AsignationStatement asignation)
+        {
+            // SymbolTable.EnterScope();
+            var evaluator = new Evaluator(letin.Let, Errors);
+            var toAddtoScope = evaluator.EvaluateLetBlock();
+            foreach (var item in toAddtoScope)
+            {
+                SymbolTable.Define(item.Key, item.Value);
+            }
+            var evaluatedIn = (IEvaluable)letin.In;
+            var result = evaluatedIn.Evaluate(SymbolTable, Errors);
+            // SymbolTable.ExitScope();
+            SymbolTable.Define(asignation.Name.Text, result);
         }
 
         private void HandleArcAsignationExpression(ArcExpression arcexp, AsignationStatement asignation)
@@ -268,7 +521,30 @@ namespace GeoWall_E
                 case ArcExpression arcexp:
                     HandleArcExpression(arcexp, toDraw);
                     break;
+                case FunctionCallExpression function:
+                    HandleFunctionCallExpression(function, toDraw);
+                    break;
+                case LetInExpression letin:
+                    HandleLetInExpression(letin, toDraw);
+                    break;
             }
+            if (draw.Sequence is not null)
+            {
+                foreach (var id in draw.Sequence)
+                {
+                    AddTypeToDraw(id, toDraw);
+                }
+            }
+        }
+
+        private void HandleLetInExpression(LetInExpression letin, List<Type> toDraw)
+        {
+            toDraw.Add(letin.Evaluate(SymbolTable, Errors));
+        }
+
+        private void HandleFunctionCallExpression(FunctionCallExpression function, List<Type> toDraw)
+        {
+            toDraw.Add(function.Evaluate(SymbolTable, Errors));
         }
 
         private void HandleArcExpression(ArcExpression arcexp, List<Type> toDraw)
@@ -361,36 +637,17 @@ namespace GeoWall_E
         private void AddTypeToDraw(VariableExpression variable, List<Type> toDraw)
         {
             var variableFound = SymbolTable.Resolve(variable.Name.Text);
-            if (variableFound is not ErrorType)
+            if (variableFound is not ErrorType && variableFound is IDraw)
             {
-                if (variableFound.ObjectType == ObjectTypes.Point)
-                {
-                    toDraw.Add((Point)variableFound);
-                }
-                else if (variableFound.ObjectType == ObjectTypes.Line)
-                {
-                    toDraw.Add((Line)variableFound);
-                }
-                else if (variableFound.ObjectType == ObjectTypes.Segment)
-                {
-                    toDraw.Add((Segment)variableFound);
-                }
-                else if (variableFound.ObjectType == ObjectTypes.Ray)
-                {
-                    toDraw.Add((Ray)variableFound);
-                }
-                else if (variableFound.ObjectType == ObjectTypes.Circle)
-                {
-                    toDraw.Add((Circle)variableFound);
-                }
-                else if (variableFound.ObjectType == ObjectTypes.Arc)
-                {
-                    toDraw.Add((Arc)variableFound);
-                }
+                toDraw.Add(variableFound);
+            }
+            else if (variableFound is ErrorType)
+            {
+                Errors.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
             }
             else
             {
-                Errors.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
+                Errors.AddError($"Variable {variable.Name.Text} is not drawable, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
             }
         }
 

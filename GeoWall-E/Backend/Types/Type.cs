@@ -6,6 +6,7 @@ namespace GeoWall_E
         Function,
         String,
         Number,
+        Boolean,
         Constant,
         Point,
         Line,

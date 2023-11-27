@@ -4,10 +4,10 @@ namespace GeoWall_E
     {
         public override TokenType Type => TokenType.FunctionDeclaration;
         private Token Name_ { get; }
-        private List<Expression> Arguments_ { get; }
+        private List<Token> Arguments_ { get; }
         private Expression Body_ { get; }
 
-        public FunctionDeclaration(Token name, List<Expression> arguments, Expression body)
+        public FunctionDeclaration(Token name, List<Token> arguments, Expression body)
         {
             Name_ = name;
             Arguments_ = arguments;
@@ -16,7 +16,7 @@ namespace GeoWall_E
 
         public Token Name => Name_;
 
-        public List<Expression> Arguments => Arguments_;
+        public List<Token> Arguments => Arguments_;
 
         public Expression Body => Body_;
     }

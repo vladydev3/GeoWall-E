@@ -10,10 +10,10 @@ namespace GeoWall_E
     {
         public override ObjectTypes ObjectType => ObjectTypes.Function;
         private Token Name_ { get; }
-        private List<Expression> Arguments_ { get; }
+        private List<Token> Arguments_ { get; }
         private Expression Body_ { get; }
 
-        public Function(Token name, List<Expression> arguments, Expression body)
+        public Function(Token name, List<Token> arguments, Expression body)
         {
             Name_ = name;
             Arguments_ = arguments;
@@ -22,7 +22,7 @@ namespace GeoWall_E
 
         public Token Name => Name_;
 
-        public List<Expression> Arguments => Arguments_;
+        public List<Token> Arguments => Arguments_;
 
         public Expression Body => Body_;
     }
