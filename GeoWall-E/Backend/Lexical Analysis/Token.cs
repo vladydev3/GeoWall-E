@@ -32,6 +32,7 @@ public enum TokenType
     Slash,
     DobleSlash,
     Mod,
+    Not,
     Pow,
     Or,
     And,
