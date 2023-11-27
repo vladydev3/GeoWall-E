@@ -1,14 +1,35 @@
 namespace GeoWall_E;
 
-public class LetInExpression : Expression
+public class LetInExpression : Expression, IEvaluable
 {
     public override TokenType Type => TokenType.LetInExpression;
-    public List<Statement> Let { get; set; }
-    public Expression In { get; set; }
+    private List<Statement> Let_ { get; set; }
+    private Expression In_ { get; set; }
 
     public LetInExpression(List<Statement> letStatement, Expression inExpression)
     {
-        Let = letStatement;
-        In = inExpression;
+        Let_ = letStatement;
+        In_ = inExpression;
+    }
+
+    public List<Statement> Let => Let_;
+    public Expression In => In_;
+
+    public Type Evaluate(SymbolTable symbolTable, Error error)
+    {
+        symbolTable.EnterScope();
+        
+        var evaluator = new Evaluator(Let, error);
+        var toAddtoScope = evaluator.EvaluateLetBlock();
+        
+        foreach (var (name, type) in toAddtoScope)
+        {
+            symbolTable.Define(name, type);
+        }
+
+        var evaluatedIn = (IEvaluable)In;
+        var result = evaluatedIn.Evaluate(symbolTable, error);
+        symbolTable.ExitScope();
+        return result;
     }
 }

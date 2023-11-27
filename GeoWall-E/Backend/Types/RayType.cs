@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class Ray : Type
+    public class Ray : Type, IDraw
     {
         public override ObjectTypes ObjectType => ObjectTypes.Ray;
         private Point Start_ { get; set; }

@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class Line : Type
+    public class Line : Type, IDraw
     {
         public override ObjectTypes ObjectType => ObjectTypes.Line;
         private Point P1_ { get; set; }

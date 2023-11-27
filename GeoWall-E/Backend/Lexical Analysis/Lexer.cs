@@ -36,6 +36,7 @@ namespace GeoWall_E
             { '*', TokenType.Mult },
             { '%', TokenType.Mod },
             { '^', TokenType.Pow },
+            { '!', TokenType.Not },
             { '_', TokenType.Underline },
         };
 

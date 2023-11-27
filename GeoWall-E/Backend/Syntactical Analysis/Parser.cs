@@ -1,3 +1,4 @@
+
 namespace GeoWall_E
 {
     public class Parser
@@ -55,42 +56,38 @@ namespace GeoWall_E
         {
             if (Current.Type == TokenType.Identifier && Peek(1).Type == TokenType.LParen)
             {
-                var function = ParseFunction();
+                var function = ParseFunctionDeclaration();
                 if (function is FunctionDeclaration) return function;
             }
             return ParseStatement();
         }
 
-        private Node ParseFunction(bool canBeDeclaration = true)
+        private Node ParseFunctionDeclaration()
         {
             var name = NextToken();
             Match(TokenType.LParen);
-            List<Expression> arguments = new();
+            List<Token> arguments = new();
             if (Current.Type != TokenType.RParen)
             {
-                arguments.Add(ParseExpression());
+                arguments.Add(Match(TokenType.Identifier));
                 int overflow = 0;
                 while (Current.Type == TokenType.Comma)
                 {
-                    if (overflow > 100)
+                    if (overflow > 100) // TODO: hacer que NextToken() si llega al final, para de devolver el ultimo token
                     {
                         errors.AddError($"Can't parse, Line: {Current.Line}, Column: {Current.Column}");
                         return new ErrorExpression();
                     }
                     NextToken();
-                    arguments.Add(ParseExpression());
+                    arguments.Add(Match(TokenType.Identifier));
                     overflow++;
                 }
             }
             Match(TokenType.RParen);
-            if (Current.Type == TokenType.Asignation && canBeDeclaration)
-            {
-                NextToken();
-                var value = ParseExpression();
-                Match(TokenType.EOL);
-                return new FunctionDeclaration(name, arguments, value);
-            }
-            return new FunctionCallExpression(name, arguments);
+            Match(TokenType.Asignation);
+            var value = ParseExpression();
+            Match(TokenType.EOL);
+            return new FunctionDeclaration(name, arguments, value);
         }
 
         private Node ParseStatement() => Current.Type switch
@@ -228,7 +225,7 @@ namespace GeoWall_E
                     Match(TokenType.RParen);
                     return new Samples();
                 case TokenType.Identifier:
-                    if (Peek(1).Type == TokenType.LParen) return (Expression)ParseFunction(false);
+                    if (Peek(1).Type == TokenType.LParen) return ParseFunctionCall();
                     var name = NextToken();
                     return new VariableExpression(name);
                 case TokenType.Number:
@@ -251,6 +248,24 @@ namespace GeoWall_E
                     errors.AddError($"Unexpected token {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
                     return new ErrorExpression();
             }
+        }
+
+        private Expression ParseFunctionCall()
+        {
+            var name = NextToken();
+            Match(TokenType.LParen);
+            List<Expression> arguments = new();
+            if (Current.Type != TokenType.RParen)
+            {
+                arguments.Add(ParseExpression());
+                while (Current.Type == TokenType.Comma)
+                {
+                    NextToken();
+                    arguments.Add(ParseExpression());
+                }
+            }
+            Match(TokenType.RParen);
+            return new FunctionCallExpression(name, arguments);
         }
 
         private Node ParseAsignation(Token name)
@@ -324,8 +339,10 @@ namespace GeoWall_E
         private Node ParseDrawSequence()
         {
             NextToken();
-            List<VariableExpression> ids = new();
-            ids.Add(new VariableExpression(Match(TokenType.Identifier)));
+            List<VariableExpression> ids = new()
+            {
+                new VariableExpression(Match(TokenType.Identifier))
+            };
             while (Current.Type != TokenType.RBracket)
             {
                 Match(TokenType.Comma);
