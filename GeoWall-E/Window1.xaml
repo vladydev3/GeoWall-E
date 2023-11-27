@@ -9,9 +9,12 @@
     <Viewbox Stretch="UniformToFill" >
         <Grid>
             <Button Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Start" Width="66" Height="23" BorderBrush="Black" Background="#FFC3BFBF" FontFamily="Consolas" FontSize="16"/>
-            <Button Content="About" HorizontalAlignment="Left" VerticalAlignment="Top" Click="About" Width="48" Height="20" BorderBrush="Snow" Background="White" FontFamily="Consolas" FontSize="14" Margin="63,10,0,0"/>
-            <Button Content="Import" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Import" Width="48" Height="20" BorderBrush="Black" Background="White" FontFamily="Consolas" FontSize="14" Margin="10,10,0,0"/>
+            <Button Content="About" HorizontalAlignment="Left" VerticalAlignment="Top" Click="About" Width="48" Height="20" BorderBrush="Black" Background="#FFC3BFBF" FontFamily="Consolas" FontSize="14" Margin="63,10,0,0"/>
+            <Button Content="Import" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Import" Width="48" Height="20" BorderBrush="Black" Background="#FFC3BFBF" FontFamily="Consolas" FontSize="14" Margin="10,10,0,0"/>
             <TextBlock HorizontalAlignment="Left" Margin="599,398,0,0" TextWrapping="Wrap" Text="Powered by Pixel-Odyssey" VerticalAlignment="Top" Foreground="White" Height="26" Width="191"/>
+            <Button Margin="738,0,42,405"  Background="Transparent" BorderBrush="Transparent" Click="Button_Click" >
+                <Image Height="19" Width="19" Source="/lool.jpg"/>
+            </Button>
             <Grid.Background>
                 <ImageBrush ImageSource="/OIG (1).jpg"/>
             </Grid.Background>

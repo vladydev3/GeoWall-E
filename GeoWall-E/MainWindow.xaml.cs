@@ -13,6 +13,7 @@ global using System.Windows.Media.Imaging;
 global using System.Windows.Navigation;
 global using System.Windows.Shapes;
 global using System.Windows.Threading;
+using System.Collections;
 using System.Drawing.Drawing2D;
 using System.Windows.Media.Media3D;
 
@@ -54,7 +55,10 @@ namespace GeoWall_E
             var handler = new Handler(code);
             if (handler.CheckErrors())
             {
-                MessageBox.Show(handler.Errors.GetError, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                foreach (string error in handler.Errors.GetAllErrors)
+                {
+                    Consola.Text += error + Environment.NewLine;
+                }
             }
             else
             {
@@ -140,6 +144,8 @@ namespace GeoWall_E
         {
             // Borra el TextBox
             Entrada.Text = "";
+            Consola.Text = "";
+            Enumerador.Text = "";
             // Borra el Canvas
             drawingCanvas.Children.Clear();
             scaleTransform.ScaleX = 1;
@@ -272,10 +278,9 @@ namespace GeoWall_E
                 MessageBox.Show("Ocurrio un error");
             }
         }
-
-        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
-        {
-
+        private void Exit(object sender, RoutedEventArgs e) 
+        { 
+            this.Close();
         }
     }
 
