@@ -66,13 +66,6 @@ namespace GeoWall_E
                     continue;
                 }
 
-                if (char.IsWhiteSpace(currentChar))
-                {
-                    currentIndex++;
-                    column++;
-                    continue;
-                }
-
                 if (currentChar == '\n') // salto de linea
                 {
                     column = 0;
@@ -81,10 +74,10 @@ namespace GeoWall_E
                     continue;
                 }
 
-                if (currentChar == '\t') // tabulacion
+                if (char.IsWhiteSpace(currentChar))
                 {
-                    column += 4;
                     currentIndex++;
+                    column++;
                     continue;
                 }
 
