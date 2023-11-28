@@ -107,7 +107,7 @@
             <Button HorizontalAlignment="Left" Background="Transparent" BorderBrush="Transparent" Click="Exit"   Margin="292,4,0,0" VerticalAlignment="Top" Grid.Column="1">
                 <Image Height="34" Width="48" Source="/big_x.7fa8a138.png"/>
             </Button>
-            <TextBox x:Name="Consola" ScrollViewer.VerticalScrollBarVisibility="Auto"  Foreground="Red"  HorizontalAlignment="Left" Margin="9,799,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="378" Height="199" BorderBrush="#FF08B1B5"/>
+            <TextBox x:Name="Consola" ScrollViewer.VerticalScrollBarVisibility="Auto"  Foreground="Red"  HorizontalAlignment="Left" Margin="9,799,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="378" Height="199" BorderBrush="#FF08B1B5" IsReadOnly="True"/>
         </Grid>
 
 
