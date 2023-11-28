@@ -47,6 +47,7 @@ namespace GeoWall_E
         {
             // Borra el Canvas
             drawingCanvas.Children.Clear();
+            Consola.Text = "";
 
             // Asi se procesaria el codigo del usuario
             
