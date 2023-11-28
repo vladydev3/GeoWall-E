@@ -103,7 +103,7 @@
                 </Image>
             </Button>
             <Button Content="Export"  HorizontalAlignment="Left" Margin="1059,110,0,0" VerticalAlignment="Top" Click="Export" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
-            <TextBox x:Name="Enumerador"  HorizontalAlignment="Left" IsReadOnly="True"  Margin="347,110,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Height="656" BorderThickness="0" FontSize="16" FontFamily="Arial Black" ScrollViewer.VerticalScrollBarVisibility="Hidden" />
+            <TextBox x:Name="Enumerador"  HorizontalAlignment="Left" IsReadOnly="True"  Margin="347,114,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Height="656" BorderThickness="0" FontSize="16" FontFamily="Arial Black" ScrollViewer.VerticalScrollBarVisibility="Hidden" />
             <Button HorizontalAlignment="Left" Background="Transparent" BorderBrush="Transparent" Click="Exit"   Margin="292,4,0,0" VerticalAlignment="Top" Grid.Column="1">
                 <Image Height="34" Width="48" Source="/big_x.7fa8a138.png"/>
             </Button>
