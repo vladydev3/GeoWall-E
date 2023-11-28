@@ -55,7 +55,7 @@ namespace GeoWall_E
             var handler = new Handler(code);
             if (handler.CheckErrors())
             {
-                // Obtiene todos los errores y los convierte en una lista
+                // Obtiene todos los errores 
                 List<string> errors = handler.Errors.GetAllErrors.ToList();
 
                 // Invierte la lista de errores
