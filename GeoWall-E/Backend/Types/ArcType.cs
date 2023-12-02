@@ -8,15 +8,13 @@ namespace GeoWall_E
         private Point End_ { get; set; }
         private Measure Measure_ { get; set; }
         private string Name_ { get; set; }
-        private Color Color_ { get; set; }
 
-        public Arc(Point center, Point start, Point end, Measure measure, Color color, string name = "")
+        public Arc(Point center, Point start, Point end, Measure measure, string name = "")
         {
             Center_ = center;
             Start_ = start;
             End_ = end;
             Measure_ = measure;
-            Color_ = color;
             Name_ = name;
         }
 
@@ -30,8 +28,5 @@ namespace GeoWall_E
 
         public string Name => Name_;
 
-        public Color Color => Color_;
-        
-       
     }
 }

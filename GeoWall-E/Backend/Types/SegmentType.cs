@@ -6,13 +6,11 @@ namespace GeoWall_E
         private Point Start_ { get; set; }
         private Point End_ { get; set; }
         private string Name_ { get; set; }
-        private Color Color_ { get; set; }
 
-        public Segment(Point start, Point end, Color color, string name = "")
+        public Segment(Point start, Point end, string name = "")
         {
             Start_ = start;
             End_ = end;
-            Color_ = color;
             Name_ = name;
         }
 
@@ -22,7 +20,6 @@ namespace GeoWall_E
 
         public string Name => Name_;
 
-        public Color Color => Color_;
 
        
     }

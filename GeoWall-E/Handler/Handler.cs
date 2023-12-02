@@ -1,3 +1,6 @@
+using ICSharpCode.AvalonEdit.Rendering;
+using System.Runtime.CompilerServices;
+
 namespace GeoWall_E
 {
     /// <summary>
@@ -5,16 +8,42 @@ namespace GeoWall_E
     /// </summary>
     public class Handler
     {
-        private readonly Error errors;
-        private readonly List<Type> toDraw;
+        private readonly string code;
+        private Error errors;
+        private List<Tuple<Type,Color>> toDraw;
+        private List<Token> tokens;
+        private AST? ast;
+
         public Handler(string code)
         {
+            this.code = code;
+            errors = new Error();
+            toDraw = new List<Tuple<Type, Color>>();
+            tokens = new List<Token>();
+
+            HandleLexer();
+            HandleParse();
+            HandleEvaluator();
+        }
+
+        public void HandleLexer() { 
             var lexer = new Lexer(code);
-            var parser = new Parser(lexer.Tokenize(), lexer.Errors);
-            var ast = parser.Parse_();
-            var evaluator = new Evaluator(ast.Root, ast.Errors);
+            tokens = lexer.Tokenize();
+            errors = lexer.Errors;
+        }
+
+        public void HandleParse()
+        {
+            var parser = new Parser(tokens,errors);
+            ast = parser.Parse_();
+            errors = parser.Errors;
+        }
+
+        public void HandleEvaluator()
+        {
+            if (ast == null) return;
+            var evaluator = new Evaluator(ast.Root, errors);
             toDraw = evaluator.Evaluate();
-            errors = evaluator.Errors;
         }
 
         public bool CheckErrors()
@@ -22,7 +51,7 @@ namespace GeoWall_E
             return errors.AnyError();
         }
 
-        public List<Type> ToDraw => toDraw;
+        public List<Tuple<Type,Color>> ToDraw => toDraw;
 
         public Error Errors => errors;
     }

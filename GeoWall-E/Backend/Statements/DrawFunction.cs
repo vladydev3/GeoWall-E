@@ -7,16 +7,19 @@ namespace GeoWall_E
         private string Name_ { get; set; }
         private Expression? Expression_ { get; set; }
         private List<VariableExpression>? Sequence_ { get; set; }
+        private Color Color_ { get; set; }
 
-        public Draw(Expression expression, string name = "")
+        public Draw(Expression expression, Color color, string name = "")
         {
             Expression_ = expression;
+            Color_ = color;
             Name_ = name;
         }
 
-        public Draw(List<VariableExpression> ids, string name = "")
+        public Draw(List<VariableExpression> ids, Color color, string name = "")
         {
             Sequence_ = ids;
+            Color_ = color;
             Name_ = name;
         }
 
@@ -25,5 +28,7 @@ namespace GeoWall_E
         public Expression? Expression => Expression_;
 
         public List<VariableExpression>? Sequence => Sequence_;
+        
+        public Color Color => Color_;
     }
 }

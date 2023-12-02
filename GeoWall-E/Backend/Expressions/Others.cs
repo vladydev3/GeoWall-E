@@ -31,14 +31,3 @@ public class Samples : Expression // random points
 {
     public override TokenType Type => TokenType.Samples;
 }
-
-public class ParenExpression : Expression
-{
-    public override TokenType Type => TokenType.ParenExpression;
-    public Expression Expression { get; set; }
-
-    public ParenExpression(Expression expression)
-    {
-        Expression = expression;
-    }
-}

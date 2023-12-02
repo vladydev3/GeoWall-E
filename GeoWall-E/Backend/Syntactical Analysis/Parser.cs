@@ -1,4 +1,5 @@
 
+
 namespace GeoWall_E
 {
     public class Parser
@@ -69,7 +70,8 @@ namespace GeoWall_E
             List<Token> arguments = new();
             if (Current.Type != TokenType.RParen)
             {
-                arguments.Add(Match(TokenType.Identifier));
+                var id = Match(TokenType.Identifier);
+                if (id.Type != TokenType.Error) arguments.Add(id);
                 int overflow = 0;
                 while (Current.Type == TokenType.Comma)
                 {
@@ -244,10 +246,34 @@ namespace GeoWall_E
                     return ParseLet();
                 case TokenType.If:
                     return ParseIf();
+                case TokenType.LBracket:
+                    return ParseSequence();
                 default:
                     errors.AddError($"Unexpected token {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
                     return new ErrorExpression();
             }
+        }
+
+        private Expression ParseSequence()
+        {
+            NextToken();
+            if (Peek(1).Type == TokenType.InfiniteSequence)
+            {
+                var number = Match(TokenType.Number);
+                NextToken();
+                Match(TokenType.RBracket);
+                return new SequenceExpression(number);
+            }
+            List<Expression> sequenceElements = new();
+            var element = ParseExpression();
+            if (element is not ErrorExpression) sequenceElements.Add(element);
+            while (Current.Type == TokenType.Comma)
+            {
+                NextToken();
+                sequenceElements.Add(ParseExpression());
+            }
+            Match(TokenType.RBracket);
+            return new SequenceExpression(sequenceElements);
         }
 
         private Expression ParseFunctionCall()
@@ -330,10 +356,10 @@ namespace GeoWall_E
                 var name = Current.Text;
                 NextToken();
                 Match(TokenType.EOL);
-                return new Draw(exp, name);
+                return new Draw(exp, color,name);
             }
             Match(TokenType.EOL);
-            return new Draw(exp);
+            return new Draw(exp, color);
         }
 
         private Node ParseDrawSequence()
@@ -349,8 +375,15 @@ namespace GeoWall_E
                 ids.Add(new VariableExpression(Match(TokenType.Identifier)));
             }
             Match(TokenType.RBracket);
+            if (Current.Type == TokenType.String)
+            {
+                string name = Current.Text;
+                NextToken();
+                Match(TokenType.EOL);
+                return new Draw(ids, color, name);
+            }
             Match(TokenType.EOL);
-            return new Draw(ids);
+            return new Draw(ids, color);
         }
 
         private RandomPointsInFigure ParsePoints()
@@ -409,7 +442,7 @@ namespace GeoWall_E
             var m = Match(TokenType.Identifier);
             Match(TokenType.RParen);
 
-            return new ArcExpression(c, p1, p2, m, color);
+            return new ArcExpression(c, p1, p2, m);
         }
 
         private Node ParseCircle()
@@ -436,7 +469,7 @@ namespace GeoWall_E
             Match(TokenType.Comma);
             var m = Match(TokenType.Identifier);
             Match(TokenType.RParen);
-            return new CircleExpression(c, m, color);
+            return new CircleExpression(c, m);
         }
 
         private Node ParseRay()
@@ -463,7 +496,7 @@ namespace GeoWall_E
             Match(TokenType.Comma);
             var p2 = Match(TokenType.Identifier);
             Match(TokenType.RParen);
-            return new RayExpression(p1, p2, color);
+            return new RayExpression(p1, p2);
         }
 
         private Node ParseSegment()
@@ -492,7 +525,7 @@ namespace GeoWall_E
             Match(TokenType.Comma);
             var p2 = Match(TokenType.Identifier);
             Match(TokenType.RParen);
-            return new SegmentExpression(p1, p2, color);
+            return new SegmentExpression(p1, p2);
         }
 
         private Node ParseLine()
@@ -520,7 +553,7 @@ namespace GeoWall_E
             Match(TokenType.Comma);
             var p2 = Match(TokenType.Identifier);
             Match(TokenType.RParen);
-            return new LineExpression(p1, p2, color);
+            return new LineExpression(p1, p2);
         }
 
         private PointStatement ParsePoint()
