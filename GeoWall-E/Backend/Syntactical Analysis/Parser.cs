@@ -413,42 +413,55 @@ namespace GeoWall_E
 
         IntersectExpression ParseIntersect()
         {
-            NextToken();
-            Match(TokenType.LParen);
+            Dictionary<string, Tuple<int, int>> positions = new();
+            var intersectToken = NextToken();
+            positions.Add(intersectToken.Text, new Tuple<int, int>(intersectToken.Line, intersectToken.Column));
+            var lParenToken = Match(TokenType.LParen);
+            positions.Add("f1", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
             var f1 = ParseExpression();
-            Match(TokenType.Comma);
+            var commaToken = Match(TokenType.Comma);
+            positions.Add("f2", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
             var f2 = ParseExpression();
             Match(TokenType.RParen);
 
-            return new IntersectExpression(f1, f2);
+            return new IntersectExpression(f1, f2, positions);
         }
 
         MeasureExpression ParseMeasure()
         {
-            NextToken();
-            Match(TokenType.LParen);
-            var p1 = Match(TokenType.Identifier);
-            Match(TokenType.Comma);
-            var p2 = Match(TokenType.Identifier);
+            Dictionary<string, Tuple<int, int>> positions = new();
+            var tokenMeasure = NextToken();
+            positions.Add(tokenMeasure.Text, new Tuple<int, int>(tokenMeasure.Line, tokenMeasure.Column));
+            var lParenToken = Match(TokenType.LParen);
+            positions.Add("p1", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
+            var p1 = ParseExpression();
+            var commaToken = Match(TokenType.Comma);
+            positions.Add("p2", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
+            var p2 = ParseExpression();
             Match(TokenType.RParen);
 
-            return new MeasureExpression(p1, p2);
+            return new MeasureExpression(p1, p2, positions);
         }
 
         ArcExpression ParseArc()
         {
-            NextToken();
-            Match(TokenType.LParen);
-            var c = Match(TokenType.Identifier);
-            Match(TokenType.Comma);
-            var p1 = Match(TokenType.Identifier);
-            Match(TokenType.Comma);
-            var p2 = Match(TokenType.Identifier);
-            Match(TokenType.Comma);
-            var m = Match(TokenType.Identifier);
+            Dictionary<string, Tuple<int, int>> positions = new();
+            var arcToken = Match(TokenType.Arc);
+            positions.Add(arcToken.Text, new Tuple<int, int>(arcToken.Line, arcToken.Column));
+            var lParenToken = Match(TokenType.LParen);
+            positions.Add("center", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
+            var c = ParseExpression();
+            var commaToken = Match(TokenType.Comma);
+            positions.Add("start", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
+            var s = ParseExpression();
+            var commaToken2 = Match(TokenType.Comma);
+            positions.Add("end", new Tuple<int, int>(commaToken2.Line, commaToken2.Column + 1));
+            var e = ParseExpression();
+            var commaToken3 = Match(TokenType.Comma);
+            positions.Add("measure", new Tuple<int, int>(commaToken3.Line, commaToken3.Column + 1));
+            var m = ParseExpression();
             Match(TokenType.RParen);
-
-            return new ArcExpression(c, p1, p2, m);
+            return new ArcExpression(c, s, e, m, positions);
         }
 
         Node ParseCircle()
@@ -460,22 +473,26 @@ namespace GeoWall_E
                 NextToken();
                 var id_ = Match(TokenType.Identifier);
                 Match(TokenType.EOL);
-                return new CircleStatement(id_, color, true);
+                return new CircleStatement(id_, true);
             }
             var id = Match(TokenType.Identifier);
             Match(TokenType.EOL);
-            return new CircleStatement(id, color);
+            return new CircleStatement(id);
         }
 
         CircleExpression ParseCircleExpression()
         {
-            Match(TokenType.Circle);
-            Match(TokenType.LParen);
-            var c = Match(TokenType.Identifier);
-            Match(TokenType.Comma);
-            var m = Match(TokenType.Identifier);
+            Dictionary<string, Tuple<int, int>> positions = new();
+            var circleToken = Match(TokenType.Circle);
+            positions.Add(circleToken.Text, new Tuple<int, int>(circleToken.Line, circleToken.Column));
+            var lParenToken = Match(TokenType.LParen);
+            positions.Add("c", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
+            var c = ParseExpression();
+            var commaToken = Match(TokenType.Comma);
+            positions.Add("m", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
+            var m = ParseExpression();
             Match(TokenType.RParen);
-            return new CircleExpression(c, m);
+            return new CircleExpression(c, m, positions);
         }
 
         Node ParseRay()
@@ -487,22 +504,27 @@ namespace GeoWall_E
                 NextToken();
                 var id_ = Match(TokenType.Identifier);
                 Match(TokenType.EOL);
-                return new RayStatement(id_, color, true);
+                return new RayStatement(id_, true);
             }
             var id = Match(TokenType.Identifier);
             Match(TokenType.EOL);
-            return new RayStatement(id, color);
+            return new RayStatement(id);
         }
 
         RayExpression ParseRayExpression()
         {
-            Match(TokenType.Ray);
-            Match(TokenType.LParen);
-            var p1 = Match(TokenType.Identifier);
-            Match(TokenType.Comma);
-            var p2 = Match(TokenType.Identifier);
+            // This dict is used to store the position of the tokens in the expression
+            Dictionary<string, Tuple<int, int>> positions = new();
+            var rayToken = Match(TokenType.Ray);
+            positions.Add(rayToken.Text, new Tuple<int, int>(rayToken.Line, rayToken.Column));
+            var lParenToken = Match(TokenType.LParen);
+            positions.Add("p1", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
+            var p1 = ParseExpression();
+            var commaToken = Match(TokenType.Comma);
+            positions.Add("p2", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
+            var p2 = ParseExpression();
             Match(TokenType.RParen);
-            return new RayExpression(p1, p2);
+            return new RayExpression(p1, p2, positions);
         }
 
         Node ParseSegment()
@@ -515,23 +537,27 @@ namespace GeoWall_E
                 NextToken();
                 var id_ = Match(TokenType.Identifier);
                 Match(TokenType.EOL);
-                return new SegmentStatement(id_, color, true);
+                return new SegmentStatement(id_, true);
             }
 
             var id = Match(TokenType.Identifier);
             Match(TokenType.EOL);
-            return new SegmentStatement(id, color);
+            return new SegmentStatement(id);
         }
 
         SegmentExpression ParseSegmentExpression()
         {
-            Match(TokenType.Segment);
-            Match(TokenType.LParen);
-            var p1 = Match(TokenType.Identifier);
-            Match(TokenType.Comma);
-            var p2 = Match(TokenType.Identifier);
+            Dictionary<string, Tuple<int, int>> positions = new();
+            var segmentToken = Match(TokenType.Segment);
+            positions.Add(segmentToken.Text, new Tuple<int, int>(segmentToken.Line, segmentToken.Column));
+            var lParenToken = Match(TokenType.LParen);
+            positions.Add("p1", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
+            var p1 = ParseExpression();
+            var commaToken = Match(TokenType.Comma);
+            positions.Add("p1", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
+            var p2 = ParseExpression();
             Match(TokenType.RParen);
-            return new SegmentExpression(p1, p2);
+            return new SegmentExpression(p1, p2, positions);
         }
 
         Node ParseLine()
@@ -544,22 +570,26 @@ namespace GeoWall_E
                 NextToken();
                 var id_ = Match(TokenType.Identifier);
                 Match(TokenType.EOL);
-                return new LineStatement(id_, color, true);
+                return new LineStatement(id_, true);
             }
             var id = Match(TokenType.Identifier);
             Match(TokenType.EOL);
-            return new LineStatement(id, color);
+            return new LineStatement(id);
         }
 
         LineExpression ParseLineExpression()
         {
-            Match(TokenType.Line);
-            Match(TokenType.LParen);
-            var p1 = Match(TokenType.Identifier);
-            Match(TokenType.Comma);
-            var p2 = Match(TokenType.Identifier);
+            Dictionary<string, Tuple<int, int>> positions = new();
+            var lineToken = Match(TokenType.Line);
+            positions.Add(lineToken.Text, new Tuple<int, int>(lineToken.Line, lineToken.Column));
+            var lParenToken = Match(TokenType.LParen);
+            positions.Add("p1", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
+            var p1 = ParseExpression();
+            var commaToken = Match(TokenType.Comma);
+            positions.Add("p2", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
+            var p2 = ParseExpression();
             Match(TokenType.RParen);
-            return new LineExpression(p1, p2);
+            return new LineExpression(p1, p2, positions);
         }
 
         PointStatement ParsePoint()
