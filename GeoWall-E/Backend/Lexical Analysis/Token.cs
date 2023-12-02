@@ -9,6 +9,7 @@ public enum TokenType
     Ray, // ray <id> | ray(<id>, <id>)
     Circle, // circle <id> | circle(<id>, <id>)
     Sequence,
+    InfiniteSequence,
     Color, // color <black> | <white> | <red> | <green> | <blue> | <yellow>
     Restore,
     Import, // import <string>
