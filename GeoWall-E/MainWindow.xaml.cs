@@ -84,9 +84,9 @@ namespace GeoWall_E
                 foreach (var item in handler.ToDraw)
                 {
 
-                    if (item is Point point)
+                    if (item.Item1 is Point point)
                     {
-                        Picasso drawer = new Picasso(drawingCanvas, point);
+                        Picasso drawer = new Picasso(drawingCanvas, point,item.Item2);
                         drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
@@ -96,9 +96,9 @@ namespace GeoWall_E
                         scrollViewer.ScrollToVerticalOffset(point.Y - 250);
 
                     }
-                    if (item is Line line)
+                    if ( item.Item1 is Line line)
                     {
-                        Picasso drawer = new Picasso(drawingCanvas, line);
+                        Picasso drawer = new Picasso(drawingCanvas, line, item.Item2);
                         drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
@@ -108,9 +108,9 @@ namespace GeoWall_E
                         scrollViewer.ScrollToVerticalOffset(line.P1.Y - 250);
                     }
 
-                    if (item is Segment segment)
+                    if ( item.Item1 is Segment segment)
                     {
-                        Picasso drawer = new Picasso(drawingCanvas, segment);
+                        Picasso drawer = new Picasso(drawingCanvas, segment, item.Item2);
                         drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
@@ -120,9 +120,9 @@ namespace GeoWall_E
                         scrollViewer.ScrollToVerticalOffset(segment.Start.Y - 250);
                     }
 
-                    if (item is Ray ray)
+                    if ( item.Item1 is Ray ray)
                     {
-                        Picasso drawer = new Picasso(drawingCanvas, ray);
+                        Picasso drawer = new Picasso(drawingCanvas, ray, item.Item2);
                         drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
@@ -132,9 +132,9 @@ namespace GeoWall_E
                         scrollViewer.ScrollToVerticalOffset(ray.Start.Y - 250);
                     }
 
-                    if (item is Circle circle)
+                    if ( item.Item1 is Circle circle)
                     {
-                        Picasso drawer = new Picasso(drawingCanvas, circle);
+                        Picasso drawer = new Picasso(drawingCanvas, circle, item.Item2);
                         drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
@@ -144,16 +144,14 @@ namespace GeoWall_E
                         scrollViewer.ScrollToVerticalOffset(circle.Center.Y - 250);
                     }
 
-                    if (item is Arc arc)
+                    if ( item.Item1 is Arc arc)
                     {
-                        Picasso drawer = new Picasso(drawingCanvas, arc);
+                        Picasso drawer = new Picasso(drawingCanvas, arc, item.Item2);
                         drawer.Draw();
                         scrollViewer.ScrollToHorizontalOffset(arc.Center.X - 400);
                         scrollViewer.ScrollToVerticalOffset(arc.Center.Y - 250);
 
                     }
-
-
                 }
             }
             else
