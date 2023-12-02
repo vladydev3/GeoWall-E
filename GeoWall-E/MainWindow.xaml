@@ -43,26 +43,34 @@
             <TextBox x:Name="Entrada" AcceptsReturn="True"  BorderThickness="2,2,0,2" Margin="9,109,1171,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="671" ScrollViewer.VerticalScrollBarVisibility="Auto"   TextChanged="TextBox_TextChanged" BorderBrush="#FF08B1B5" Background="White" Foreground="Black" FontFamily="Arial Black" FontSize="16">
 
             </TextBox>
-            <Button Content="Compile"  HorizontalAlignment="Left" Margin="417,110,0,0" VerticalAlignment="Top" Click="Compile" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
-            <Button Content="Run" x:Name="Run" IsEnabled="False"  HorizontalAlignment="Left" Margin="575,110,0,0" VerticalAlignment="Top"  RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2" Click="RunClick"/>
-            <Button Content="Restart"  HorizontalAlignment="Left" Margin="734,110,0,0" VerticalAlignment="Top" Click="Restart" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
+            <Button Content="Compile" Cursor="Hand"  HorizontalAlignment="Left" Margin="417,110,0,0" VerticalAlignment="Top" Click="Compile" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
+            <Button Content="Run" Cursor="Hand" x:Name="Run" IsEnabled="False"  HorizontalAlignment="Left" Margin="575,110,0,0" VerticalAlignment="Top"  RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2" Click="RunClick"/>
+            <Button Content="Restart" Cursor="Hand"  HorizontalAlignment="Left" Margin="734,110,0,0" VerticalAlignment="Top" Click="Restart" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
             <Image HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100" Source="/photo_2023-11-18_22-25-16.jpg"/>
-            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="1075,173,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
-                <Image HorizontalAlignment="Left"  Height="54" VerticalAlignment="Top" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
+            <Button HorizontalAlignment="Left" Cursor="Hand" FocusVisualStyle="{x:Null}" BorderThickness="0" Margin="1075,173,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Image HorizontalAlignment="Left" Height="54" VerticalAlignment="Top" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
-            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="1074,985,0,0" VerticalAlignment="Top" Click="Button_Click_2" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
-                <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" RenderTransformOrigin="0.5,0.5">
-                    <Image.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="179.63"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Image.RenderTransform>
-                </Image>
+            <Button HorizontalAlignment="Left" Cursor="Hand" FocusVisualStyle="{x:Null}" BorderThickness="0" Margin="1074,985,0,0" VerticalAlignment="Top" Click="Button_Click_2" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" RenderTransformOrigin="0.5,0.5">
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="179.63"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
-            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="392,437,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
+            <Button HorizontalAlignment="Left" Cursor="Hand" BorderThickness="0" Margin="392,437,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
                 <Button.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -72,7 +80,7 @@
                     </TransformGroup>
                 </Button.RenderTransform>
             </Button>
-            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="200,560,0,0" VerticalAlignment="Top" Click="Button_Click_5" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent" Grid.Column="1">
+            <Button HorizontalAlignment="Left" Cursor="Hand" FocusVisualStyle="{x:Null}" BorderThickness="0" Margin="200,560,0,0" VerticalAlignment="Top" Click="Button_Click_5" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent" Grid.Column="1">
                 <Button.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -81,9 +89,13 @@
                         <TranslateTransform/>
                     </TransformGroup>
                 </Button.RenderTransform>
-                <Image HorizontalAlignment="Center"  Height="53" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Image HorizontalAlignment="Center"  Height="53" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg"/>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
-            <Button HorizontalAlignment="Left" BorderThickness="0" Margin="410,553,0,0" VerticalAlignment="Top" Click="Button_Click_4" Height="54" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
+            <Button HorizontalAlignment="Left" Cursor="Hand" FocusVisualStyle="{x:Null}" BorderThickness="0" Margin="410,553,0,0" VerticalAlignment="Top" Click="Button_Click_4" Height="54" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
                 <Button.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform/>
@@ -92,24 +104,32 @@
                         <TranslateTransform/>
                     </TransformGroup>
                 </Button.RenderTransform>
-                <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" RenderTransformOrigin="0.5,0.5">
-                    <Image.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-2.322"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Image.RenderTransform>
-                </Image>
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Image HorizontalAlignment="Center"  Height="55" VerticalAlignment="Center" Width="46" Source="/depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" RenderTransformOrigin="0.5,0.5">
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="-2.322"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
-            <Button Content="Save"  HorizontalAlignment="Left" Margin="1191,110,0,0" VerticalAlignment="Top" Click="Export" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
-            <Button Content="Menu"  HorizontalAlignment="Left" Margin="1352,110,0,0" VerticalAlignment="Top" Click="ReturnMenu" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
-            <TextBox x:Name="Enumerador"  HorizontalAlignment="Left" IsReadOnly="True"  Margin="347,109,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Height="671" BorderThickness="0,2,2,2" FontSize="16" FontFamily="Arial Black" ScrollViewer.VerticalScrollBarVisibility="Hidden" BorderBrush="#FF08B1B5"  />
-            <Button HorizontalAlignment="Left" Background="Transparent" BorderBrush="Transparent" Click="Exit"   Margin="292,4,0,0" VerticalAlignment="Top" Grid.Column="1">
-                <Image Height="34" Width="48" Source="/big_x.7fa8a138.png"/>
+            <Button Content="Save" Cursor="Hand" HorizontalAlignment="Left" Margin="1191,110,0,0" VerticalAlignment="Top" Click="Export" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
+            <Button Content="Menu" Cursor="Hand" HorizontalAlignment="Left" Margin="1352,110,0,0" VerticalAlignment="Top" Click="ReturnMenu" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
+            <TextBox x:Name="Enumerador" HorizontalAlignment="Left" IsReadOnly="True"  Margin="347,109,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Height="671" BorderThickness="0,2,2,2" FontSize="16" FontFamily="Arial Black" ScrollViewer.VerticalScrollBarVisibility="Hidden" BorderBrush="#FF08B1B5"  />
+            <Button HorizontalAlignment="Left" Cursor="Hand" Background="Transparent" BorderBrush="Transparent" Click="Exit" FocusVisualStyle="{x:Null}" Margin="292,4,0,0" VerticalAlignment="Top" Grid.Column="1">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Image Height="34" Width="48" Source="/big_x.7fa8a138.png"/>
+                    </ControlTemplate>
+                </Button.Template>
             </Button>
-            <TextBox x:Name="Consola" ScrollViewer.VerticalScrollBarVisibility="Auto"  Foreground="Red"  HorizontalAlignment="Left" Margin="9,799,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="378" Height="199" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2" IsReadOnly="True" FontSize="14"/>
+            <TextBox x:Name="Consola" Cursor="Arrow" ScrollViewer.VerticalScrollBarVisibility="Auto"  Foreground="Red"  HorizontalAlignment="Left" Margin="9,799,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="378" Height="199" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2" IsReadOnly="True" FontSize="14"/>
         </Grid>
 
 
