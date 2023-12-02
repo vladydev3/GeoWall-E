@@ -21,8 +21,8 @@ namespace GeoWall_E
         {
             Name_ = name;
             Measure_ = measure;
-            P1_ = new Point(new Color(Colors.Black));
-            P2_ = new Point(new Color(Colors.Black));
+            P1_ = new Point();
+            P2_ = new Point();
         }
 
         public Point P1 => P1_;
