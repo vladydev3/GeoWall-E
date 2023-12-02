@@ -79,8 +79,6 @@ namespace GeoWall_E
             // Borra el Canvas
             drawingCanvas.Children.Clear();
             Consola.Text = "";
-            if (runner == true)
-            {
                 foreach (var item in handler.ToDraw)
                 {
 
@@ -152,11 +150,6 @@ namespace GeoWall_E
                         scrollViewer.ScrollToVerticalOffset(arc.Center.Y - 250);
 
                     }
-                }
-            }
-            else
-            {
-                MessageBox.Show("ERROR IN COMPILATION", "Compilation Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
