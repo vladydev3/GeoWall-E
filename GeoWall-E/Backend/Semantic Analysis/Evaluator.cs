@@ -189,22 +189,22 @@ namespace GeoWall_E
             switch (draw.Expression)
             {
                 case VariableExpression variable:
-                    AddTypeToDraw(variable, toDraw, draw.Color);
+                    AddTypeToDraw(variable, toDraw, draw.Color, draw.Name);
                     break;
                 case LineExpression lineexp:
-                    lineexp.HandleLineExpression(toDraw, Errors, SymbolTable, draw.Color);
+                    lineexp.HandleLineExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case SegmentExpression segmentexp:
-                    segmentexp.HandleSegmentExpression(toDraw, Errors, SymbolTable, draw.Color);
+                    segmentexp.HandleSegmentExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case RayExpression rayexp:
-                    rayexp.HandleRayExpression(toDraw, Errors, SymbolTable, draw.Color);
+                    rayexp.HandleRayExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case CircleExpression circleexp:
-                    circleexp.HandleCircleExpression(toDraw, Errors, SymbolTable, draw.Color);
+                    circleexp.HandleCircleExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case ArcExpression arcexp:
-                    arcexp.HandleArcExpression(toDraw, Errors, SymbolTable, draw.Color);
+                    arcexp.HandleArcExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case FunctionCallExpression function:
                     HandleFunctionCallExpression(function, toDraw, draw.Color);
@@ -217,7 +217,7 @@ namespace GeoWall_E
             {
                 foreach (var id in draw.Sequence)
                 {
-                    AddTypeToDraw(id, toDraw, draw.Color);
+                    AddTypeToDraw(id, toDraw, draw.Color,draw.Name);
                 }
             }
         }
@@ -226,10 +226,14 @@ namespace GeoWall_E
 
         void HandleFunctionCallExpression(FunctionCallExpression function, List<Tuple<Type, Color>> toDraw, Color color) => toDraw.Add(new Tuple<Type, Color>(function.Evaluate(SymbolTable, Errors), color));
 
-        void AddTypeToDraw(VariableExpression variable, List<Tuple<Type, Color>> toDraw, Color color)
+        void AddTypeToDraw(VariableExpression variable, List<Tuple<Type, Color>> toDraw, Color color, string name)
         {
             var variableFound = SymbolTable.Resolve(variable.Name.Text);
-            if (variableFound is not ErrorType && variableFound is IDraw) toDraw.Add(new Tuple<Type, Color>(variableFound, color));
+            if (variableFound is not ErrorType && variableFound as IDraw != null)
+            {
+                ((IDraw)variableFound).SetName(name);
+                toDraw.Add(new Tuple<Type, Color>(variableFound, color));
+            }
 
             else if (variableFound is ErrorType) Errors.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
 

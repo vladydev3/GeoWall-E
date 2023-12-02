@@ -3,6 +3,6 @@ namespace GeoWall_E
 {
     public interface IDraw
     {
-
+        public void SetName(string name);
     }
 }

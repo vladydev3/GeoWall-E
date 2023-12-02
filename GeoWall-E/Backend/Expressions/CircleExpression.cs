@@ -44,7 +44,7 @@ namespace GeoWall_E
             }
         }
 
-        public void HandleCircleExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color)
+        public void HandleCircleExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
         {
             if (Center as IEvaluable != null && Radius as IEvaluable != null)
             {
@@ -52,7 +52,7 @@ namespace GeoWall_E
                 var radius = ((IEvaluable)Radius).Evaluate(symbolTable, errors);
                 if (center is not ErrorType && radius is not ErrorType)
                 {
-                    if (center.ObjectType == ObjectTypes.Point && radius.ObjectType == ObjectTypes.Measure) toDraw.Add(new Tuple<Type, Color>(new Circle((Point)center, (Measure)radius), color));
+                    if (center.ObjectType == ObjectTypes.Point && radius.ObjectType == ObjectTypes.Measure) toDraw.Add(new Tuple<Type, Color>(new Circle((Point)center, (Measure)radius, name), color));
 
                     else if (center.ObjectType != ObjectTypes.Point) errors.AddError($"Expected Point type but got {center.ObjectType} Line: {Positions["center"].Item1}, Column: {Positions["center"].Item2}");
 

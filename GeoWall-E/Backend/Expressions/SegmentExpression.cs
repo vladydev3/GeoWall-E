@@ -44,7 +44,7 @@ namespace GeoWall_E
             }
         }
 
-        public void HandleSegmentExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color)
+        public void HandleSegmentExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
         {
             if (Start as IEvaluable != null && End as IEvaluable != null)
             {
@@ -52,7 +52,7 @@ namespace GeoWall_E
                 var end = ((IEvaluable)End).Evaluate(symbolTable, errors);
                 if (start is not ErrorType && end is not ErrorType)
                 {
-                    if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point) toDraw.Add(new Tuple<Type, Color>(new Segment((Point)start, (Point)end), color));
+                    if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point) toDraw.Add(new Tuple<Type, Color>(new Segment((Point)start, (Point)end, name), color));
 
                     else if (start.ObjectType != ObjectTypes.Point) errors.AddError($"Expected Point type but got {start.ObjectType} Line: {Positions["start"].Item1}, Column: {Positions["start"].Item2}");
 
