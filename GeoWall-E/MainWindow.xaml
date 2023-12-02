@@ -39,10 +39,8 @@
             <TextBlock x:Name="Bienvenida" Margin="801,4,307,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FF08B1B5" FontWeight="Bold" Height="70">
                 <TextBlock.Effect>
                     <DropShadowEffect/>
-                </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text="                                                  "/></TextBlock>
-            <TextBox x:Name="Entrada" AcceptsReturn="True"  BorderThickness="2,2,0,2" Margin="9,109,1171,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="671" ScrollViewer.VerticalScrollBarVisibility="Auto"   TextChanged="TextBox_TextChanged" BorderBrush="#FF08B1B5" Background="White" Foreground="Black" FontFamily="Arial Black" FontSize="16">
-
-            </TextBox>
+                </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text=""/></TextBlock>
+            <TextBox x:Name="Entrada" AcceptsReturn="True" BorderThickness="2,2,0,2" Margin="9,109,1171,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="671" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" TextChanged="TextBox_TextChanged" BorderBrush="#FF08B1B5" Background="White" Foreground="Black" FontFamily="Arial Black" FontSize="16"/>
             <Button Content="Compile" Cursor="Hand"  HorizontalAlignment="Left" Margin="417,110,0,0" VerticalAlignment="Top" Click="Compile" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
             <Button Content="Run" Cursor="Hand" x:Name="Run" IsEnabled="False"  HorizontalAlignment="Left" Margin="573,110,0,0" VerticalAlignment="Top"  RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2" Click="RunClick"/>
             <Button Content="Restart" Cursor="Hand"  HorizontalAlignment="Left" Margin="728,110,0,0" VerticalAlignment="Top" Click="Restart" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
