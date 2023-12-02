@@ -77,7 +77,7 @@ namespace GeoWall_E
         private void About(object sender, RoutedEventArgs e)
         {
             // Especificar la ruta del archivo que deseas abrir
-            string filePath = @"D:\Escuela\Proyecto 3\GeoWall-E\lolete.docx";
+            string filePath = @"D:\Escuela\Proyecto 3\GeoWall-E\cositas.docx";
 
             // Abrir el archivo
             System.Diagnostics.Process.Start(filePath);
