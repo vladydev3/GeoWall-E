@@ -23,6 +23,5 @@ namespace GeoWall_E
     public abstract class Type
     {
         public abstract ObjectTypes ObjectType { get; }
-
     }
 }

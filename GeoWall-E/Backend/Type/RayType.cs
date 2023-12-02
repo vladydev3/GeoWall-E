@@ -18,5 +18,10 @@ namespace GeoWall_E
         public Point End => End_;
 
         public string Name => Name_;
+
+        public void SetName(string name)
+        {
+            Name_ = name;
+        }
     }
 }

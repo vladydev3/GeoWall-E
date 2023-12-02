@@ -18,6 +18,11 @@ namespace GeoWall_E
 
         public Measure Radius => Radius_;
 
-        public string Name => Name_;       
+        public string Name => Name_;
+
+        public void SetName(string name)
+        {
+            Name_ = name;
+        }
     }
 }
