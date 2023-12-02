@@ -9,6 +9,8 @@ namespace GeoWall_E
         private int line = 1;   // linea actual
         private int column = 1; // columna actual
         private readonly Error errors;   // para almacenar los posibles errores
+        private char Peek(int offset) => currentIndex + offset >= input.Length ? input[^1] : input[currentIndex + offset]; // Accede al char
+        private char Current => Peek(0);
 
         public Lexer(string input)
         {
@@ -46,27 +48,25 @@ namespace GeoWall_E
 
             while (currentIndex < input.Length) // iteramos por el codigo
             {
-                char currentChar = input[currentIndex];
-
-                if (char.IsLetter(currentChar))
+                if (char.IsLetter(Current))
                 {
                     tokens.Add(ReadIdentificator());
                     continue;
                 }
 
-                if (currentChar == '"')
+                if (Current == '"')
                 {
                     tokens.Add(ReadString());
                     continue;
                 }
 
-                if (char.IsDigit(currentChar))
+                if (char.IsDigit(Current))
                 {
                     tokens.Add(ReadNumber());
                     continue;
                 }
 
-                if (currentChar == '\n') // salto de linea
+                if (Current == '\n') // salto de linea
                 {
                     column = 0;
                     line++;
@@ -74,25 +74,25 @@ namespace GeoWall_E
                     continue;
                 }
 
-                if (char.IsWhiteSpace(currentChar))
+                if (char.IsWhiteSpace(Current))
                 {
                     currentIndex++;
                     column++;
                     continue;
                 }
 
-                if (singleCharTokens.TryGetValue(currentChar, out TokenType tokenType))
+                if (singleCharTokens.TryGetValue(Current, out TokenType tokenType))
                 {
-                    tokens.Add(new Token(tokenType, currentChar.ToString(), line, column - 1));
+                    tokens.Add(new Token(tokenType, Current.ToString(), line, column - 1));
                     currentIndex++;
                     column++;
                     continue;
                 }
 
-                if (currentChar == '<')
+                if (Current == '<')
                 {
                     currentIndex++;
-                    if (input[currentIndex] == '=')
+                    if (Current == '=')
                     {
                         tokens.Add(new Token(TokenType.LessOrEqual, "<=", line, column - 1));
                         currentIndex++;
@@ -103,10 +103,10 @@ namespace GeoWall_E
                     continue;
                 }
 
-                if (currentChar == '>')
+                if (Current == '>')
                 {
                     currentIndex++;
-                    if (input[currentIndex] == '=')
+                    if (Current == '=')
                     {
                         tokens.Add(new Token(TokenType.GreaterOrEqual, ">=", line, column - 1));
                         currentIndex++;
@@ -117,21 +117,21 @@ namespace GeoWall_E
                     continue;
                 }
 
-                if (currentChar == '/')
+                if (Current == '/')
                 {
                     currentIndex++;
-                    if (input[currentIndex] == '/')
+                    if (Current == '/')
                     {
-                        while (currentIndex < input.Length && input[currentIndex] != '\n')
+                        while (currentIndex < input.Length && Current != '\n')
                         {
                             currentIndex++;
                         }
                         continue;
                     }
-                    else if (input[currentIndex] == '*')
+                    else if (Current == '*')
                     {
                         currentIndex++;
-                        while (currentIndex < input.Length && !(input[currentIndex] == '*' && input[currentIndex + 1] == '/'))
+                        while (currentIndex < input.Length && !(Current == '*' && input[currentIndex + 1] == '/'))
                         {
                             currentIndex++;
                         }
@@ -144,17 +144,25 @@ namespace GeoWall_E
                     continue;
                 }
 
-                if (currentChar == '=')
+                if (Current == '=')
                 {
                     currentIndex++;
-                    if (input[currentIndex] == '=') tokens.Add(new Token(TokenType.Equal, "==", line, column - 1));
+                    if (Current == '=') tokens.Add(new Token(TokenType.Equal, "==", line, column - 1));
                     else tokens.Add(new Token(TokenType.Asignation, "=", line, column - 1));
                     column++;
                     continue;
                 }
 
-                errors.AddError($"Unexpected character '{currentChar}'");
-                tokens.Add(new Token(TokenType.Error, currentChar.ToString(), line, column));
+                if (Current == '.' && Peek(1) == '.' && Peek(2) == '.')
+                {
+                    tokens.Add(new Token(TokenType.InfiniteSequence, "...", line, column - 1));
+                    currentIndex += 3;
+                    column += 3;
+                    continue;
+                }
+
+                errors.AddError($"Unexpected character '{Current}'");
+                tokens.Add(new Token(TokenType.Error, Current.ToString(), line, column));
             }
             tokens.Add(new Token(TokenType.EOF, "", line, column));
             return tokens;
@@ -163,27 +171,27 @@ namespace GeoWall_E
         {
             string number = string.Empty;
 
-            while (currentIndex < input.Length && char.IsLetterOrDigit(input[currentIndex]))
+            while (currentIndex < input.Length && char.IsLetterOrDigit(Current))
             {
-                number += input[currentIndex];
+                number += Current;
                 currentIndex++;
                 column++;
             }
 
-            if (currentIndex < input.Length && input[currentIndex] == '.')
+            if (currentIndex < input.Length && Current == '.')
             {
-                number += input[currentIndex];
+                number += Current;
                 currentIndex++;
                 column++;
             }
-            while (currentIndex < input.Length && char.IsLetterOrDigit(input[currentIndex]))
+            while (currentIndex < input.Length && char.IsLetterOrDigit(Current))
             {
-                number += input[currentIndex];
+                number += Current;
                 currentIndex++;
                 column++;
             }
 
-            if (!double.TryParse(number, out double result))
+            if (!double.TryParse(number, out _))
             {
                 errors.AddError($"Invalid number '{number}'");
                 return new Token(TokenType.Error, number, line, column - number.Length);
@@ -197,9 +205,9 @@ namespace GeoWall_E
             currentIndex++;
             column++;
 
-            while (currentIndex < input.Length && input[currentIndex] != '"')
+            while (currentIndex < input.Length && Current != '"')
             {
-                str += input[currentIndex];
+                str += Current;
                 currentIndex++;
                 column++;
             }
@@ -247,9 +255,9 @@ namespace GeoWall_E
         {
             string identificator = string.Empty;
 
-            while (currentIndex < input.Length && char.IsLetterOrDigit(input[currentIndex]))
+            while (currentIndex < input.Length && char.IsLetterOrDigit(Current))
             {
-                identificator += input[currentIndex];
+                identificator += Current;
                 currentIndex++;
                 column++;
             }
