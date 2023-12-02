@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,7 +80,7 @@ namespace GeoWall_E
         {
             var psi = new ProcessStartInfo
             {
-                FileName = @"D:\Escuela\Proyecto 3\GeoWall-E\cositas.docx",
+                FileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "cositas.docx"),
                 UseShellExecute = true
             };
             Process.Start(psi);
