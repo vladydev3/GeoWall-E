@@ -4,11 +4,11 @@ namespace GeoWall_E
 {
     public class Parser
     {
-        private readonly List<Token> tokens;
-        private readonly Error errors;
-        private int position;
-        private Color PreviousColor = new(Colors.Black);
-        private Color color = new(Colors.Black);
+        readonly List<Token> tokens;
+        readonly Error errors;
+        int position;
+        Color PreviousColor = new(Colors.Black);
+        Color color = new(Colors.Black);
 
         public Parser(List<Token> tokens, Error errors)
         {
@@ -18,13 +18,13 @@ namespace GeoWall_E
 
         public Error Errors => errors;
 
-        private Token Peek(int offset) => position + offset >= tokens.Count ? tokens[^1] : tokens[position + offset]; // Accede al token sin consumirlo
+        Token Peek(int offset) => position + offset >= tokens.Count ? tokens[^1] : tokens[position + offset]; // Accede al token sin consumirlo
 
-        private Token NextToken() => tokens[position++];
+        Token NextToken() => tokens[position++];
 
-        private Token Current => Peek(0);
+        Token Current => Peek(0);
 
-        private Token Match(TokenType Type) // comprueba si el token actual es el correcto
+        Token Match(TokenType Type) // comprueba si el token actual es el correcto
         {
             if (Current.Type == Type) return NextToken();
             errors.AddError($"Expected {Type} but got {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
@@ -38,7 +38,7 @@ namespace GeoWall_E
             return new AST(nodes, errors);
         }
 
-        private List<Node> ParseMembers()
+        List<Node> ParseMembers()
         {
             List<Node> members = new();
 
@@ -53,7 +53,7 @@ namespace GeoWall_E
             return members;
         }
 
-        private Node ParseMember()
+        Node ParseMember()
         {
             if (Current.Type == TokenType.Identifier && Peek(1).Type == TokenType.LParen)
             {
@@ -63,7 +63,7 @@ namespace GeoWall_E
             return ParseStatement();
         }
 
-        private Node ParseFunctionDeclaration()
+        Node ParseFunctionDeclaration()
         {
             var name = NextToken();
             Match(TokenType.LParen);
@@ -92,7 +92,7 @@ namespace GeoWall_E
             return new FunctionDeclaration(name, arguments, value);
         }
 
-        private Node ParseStatement() => Current.Type switch
+        Node ParseStatement() => Current.Type switch
         {
             TokenType.Point => ParsePoint(),
             TokenType.Line => ParseLine(),
@@ -113,7 +113,7 @@ namespace GeoWall_E
             _ => ParseExpression(),
         };
 
-        private Node ParseRestore()
+        Node ParseRestore()
         {
             color = PreviousColor;
             NextToken();
@@ -121,7 +121,7 @@ namespace GeoWall_E
             return new EmptyNode();
         }
 
-        private Node ParseColor()
+        Node ParseColor()
         {
             NextToken();
             switch (Current.Text)
@@ -171,14 +171,14 @@ namespace GeoWall_E
             return new EmptyNode();
         }
 
-        private Node ParseIdentifier()
+        Node ParseIdentifier()
         {
             var name = NextToken();
             if (Current.Type == TokenType.Asignation || Current.Type == TokenType.Comma) return ParseAsignation(name);
             return new VariableExpression(name);
         }
 
-        private Expression ParseExpression(int parentPrecedence = 0)
+        Expression ParseExpression(int parentPrecedence = 0)
         {
             Expression left;
             var unaryOperatorPrecedence = Current.Type.GetUnaryOperatorPrecedence();
@@ -201,7 +201,7 @@ namespace GeoWall_E
             return left;
         }
 
-        private Expression ParsePrimaryExpression()
+        Expression ParsePrimaryExpression()
         {
             switch (Current.Type)
             {
@@ -254,15 +254,21 @@ namespace GeoWall_E
             }
         }
 
-        private Expression ParseSequence()
+        Expression ParseSequence()
         {
             NextToken();
             if (Peek(1).Type == TokenType.InfiniteSequence)
             {
-                var number = Match(TokenType.Number);
+                var lowerBound = Match(TokenType.Number);
                 NextToken();
+                if (Current.Type == TokenType.Number)
+                {
+                    var upperBound = Match(TokenType.Number);
+                    Match(TokenType.RBracket);
+                    return new SequenceExpression(lowerBound, upperBound);
+                }
                 Match(TokenType.RBracket);
-                return new SequenceExpression(number);
+                return new SequenceExpression(lowerBound);
             }
             List<Expression> sequenceElements = new();
             var element = ParseExpression();
@@ -276,7 +282,7 @@ namespace GeoWall_E
             return new SequenceExpression(sequenceElements);
         }
 
-        private Expression ParseFunctionCall()
+        Expression ParseFunctionCall()
         {
             var name = NextToken();
             Match(TokenType.LParen);
@@ -294,7 +300,7 @@ namespace GeoWall_E
             return new FunctionCallExpression(name, arguments);
         }
 
-        private Node ParseAsignation(Token name)
+        Node ParseAsignation(Token name)
         {
             if (Current.Type == TokenType.Comma) NextToken();
             else
@@ -306,7 +312,7 @@ namespace GeoWall_E
             return new AsignationStatement(name, value, color);
         }
 
-        private Expression ParseLet()
+        Expression ParseLet()
         {
             NextToken();
             List<Statement> instructions = new();
@@ -319,7 +325,7 @@ namespace GeoWall_E
             return new LetInExpression(instructions, inExpression);
         }
 
-        private Expression ParseIf()
+        Expression ParseIf()
         {
             NextToken();
             var condition = ParseExpression();
@@ -330,7 +336,7 @@ namespace GeoWall_E
             return new IfExpression(condition, then, @else);
         }
 
-        private Node ParseRandom()
+        Node ParseRandom()
         {
             NextToken();
             Match(TokenType.LParen);
@@ -338,7 +344,7 @@ namespace GeoWall_E
             return new Randoms();
         }
 
-        private Node ParseSamples()
+        Node ParseSamples()
         {
             NextToken();
             Match(TokenType.LParen);
@@ -346,7 +352,7 @@ namespace GeoWall_E
             return new Samples();
         }
 
-        private Node ParseDraw()
+        Node ParseDraw()
         {
             NextToken();
             if (Current.Type == TokenType.LBracket) return ParseDrawSequence();
@@ -356,13 +362,13 @@ namespace GeoWall_E
                 var name = Current.Text;
                 NextToken();
                 Match(TokenType.EOL);
-                return new Draw(exp, color,name);
+                return new Draw(exp, color, name);
             }
             Match(TokenType.EOL);
             return new Draw(exp, color);
         }
 
-        private Node ParseDrawSequence()
+        Node ParseDrawSequence()
         {
             NextToken();
             List<VariableExpression> ids = new()
@@ -386,7 +392,7 @@ namespace GeoWall_E
             return new Draw(ids, color);
         }
 
-        private RandomPointsInFigure ParsePoints()
+        RandomPointsInFigure ParsePoints()
         {
             NextToken();
             Match(TokenType.LParen);
@@ -395,7 +401,7 @@ namespace GeoWall_E
             return new RandomPointsInFigure(fig);
         }
 
-        private Count ParseCount()
+        Count ParseCount()
         {
             NextToken();
             Match(TokenType.LParen);
@@ -405,19 +411,19 @@ namespace GeoWall_E
             return new Count(sequence);
         }
 
-        private IntersectExpression ParseIntersect()
+        IntersectExpression ParseIntersect()
         {
             NextToken();
             Match(TokenType.LParen);
-            var f1 = Match(TokenType.Identifier);
+            var f1 = ParseExpression();
             Match(TokenType.Comma);
-            var f2 = Match(TokenType.Identifier);
+            var f2 = ParseExpression();
             Match(TokenType.RParen);
 
-            return new IntersectExpression(f1, f2, color);
+            return new IntersectExpression(f1, f2);
         }
 
-        private MeasureExpression ParseMeasure()
+        MeasureExpression ParseMeasure()
         {
             NextToken();
             Match(TokenType.LParen);
@@ -429,7 +435,7 @@ namespace GeoWall_E
             return new MeasureExpression(p1, p2);
         }
 
-        private ArcExpression ParseArc()
+        ArcExpression ParseArc()
         {
             NextToken();
             Match(TokenType.LParen);
@@ -445,7 +451,7 @@ namespace GeoWall_E
             return new ArcExpression(c, p1, p2, m);
         }
 
-        private Node ParseCircle()
+        Node ParseCircle()
         {
             NextToken();
             if (Current.Type == TokenType.LParen) return ParseCircleExpression();
@@ -461,7 +467,7 @@ namespace GeoWall_E
             return new CircleStatement(id, color);
         }
 
-        private CircleExpression ParseCircleExpression()
+        CircleExpression ParseCircleExpression()
         {
             Match(TokenType.Circle);
             Match(TokenType.LParen);
@@ -472,7 +478,7 @@ namespace GeoWall_E
             return new CircleExpression(c, m);
         }
 
-        private Node ParseRay()
+        Node ParseRay()
         {
             NextToken();
             if (Current.Type == TokenType.LParen) return ParseRayExpression();
@@ -488,7 +494,7 @@ namespace GeoWall_E
             return new RayStatement(id, color);
         }
 
-        private RayExpression ParseRayExpression()
+        RayExpression ParseRayExpression()
         {
             Match(TokenType.Ray);
             Match(TokenType.LParen);
@@ -499,7 +505,7 @@ namespace GeoWall_E
             return new RayExpression(p1, p2);
         }
 
-        private Node ParseSegment()
+        Node ParseSegment()
         {
             NextToken();
             if (Current.Type == TokenType.LParen) return ParseSegmentExpression();
@@ -517,7 +523,7 @@ namespace GeoWall_E
             return new SegmentStatement(id, color);
         }
 
-        private SegmentExpression ParseSegmentExpression()
+        SegmentExpression ParseSegmentExpression()
         {
             Match(TokenType.Segment);
             Match(TokenType.LParen);
@@ -528,7 +534,7 @@ namespace GeoWall_E
             return new SegmentExpression(p1, p2);
         }
 
-        private Node ParseLine()
+        Node ParseLine()
         {
             Match(TokenType.Line);
             if (Current.Type == TokenType.LParen) return ParseLineExpression();
@@ -545,7 +551,7 @@ namespace GeoWall_E
             return new LineStatement(id, color);
         }
 
-        private LineExpression ParseLineExpression()
+        LineExpression ParseLineExpression()
         {
             Match(TokenType.Line);
             Match(TokenType.LParen);
@@ -556,7 +562,7 @@ namespace GeoWall_E
             return new LineExpression(p1, p2);
         }
 
-        private PointStatement ParsePoint()
+        PointStatement ParsePoint()
         {
             Match(TokenType.Point);
             if (Current.Type == TokenType.Sequence)
@@ -564,11 +570,11 @@ namespace GeoWall_E
                 NextToken();
                 var id_ = Match(TokenType.Identifier);
                 Match(TokenType.EOL);
-                return new PointStatement(id_, color, true);
+                return new PointStatement(id_, true);
             }
             var id = Match(TokenType.Identifier);
             Match(TokenType.EOL);
-            return new PointStatement(id, color);
+            return new PointStatement(id);
         }
     }
 }

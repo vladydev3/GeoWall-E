@@ -29,12 +29,13 @@ namespace GeoWall_E
                 error.AddError($"SEMANTIC ERROR: Point {P2.Text} not defined");
                 return p2;
             }
-            var p1Defined = (Point)p1;
-            var p2Defined = (Point)p2;
-            return new Line(p1Defined, p2Defined);
+            return new Line((Point)p1, (Point)p2);
         }
-        public void HandleLineExpression(List<Tuple<Type,Color>> toDraw, Error error, SymbolTable symbolTable, Color color)
+
+        public void HandleLineExpression(List<Tuple<Type, Color>> toDraw, Error error, SymbolTable symbolTable, Color color)
         {
+            // draw a line
+
             var p1 = symbolTable.Resolve(P1.Text);
             var p2 = symbolTable.Resolve(P2.Text);
             if (p1 is not ErrorType && p2 is not ErrorType)
@@ -45,12 +46,12 @@ namespace GeoWall_E
                 }
                 else
                 {
-                    error.AddError($"Invalid type for {P1.Text} or {P2.Text}, Line: {P1.Line}, Column: {P1.Column}");
+                    error.AddError($"SEMANTIC ERROR: Invalid type for {P1.Text} or {P2.Text}, Line: {P1.Line}, Column: {P1.Column}");
                 }
             }
             else
             {
-                error.AddError($"Variable {P1.Text} or {P2.Text} not declared, Line: {P1.Line}, Column: {P1.Column}");
+                error.AddError($"SEMANTIC ERROR: Variable {P1.Text} or {P2.Text} not declared, Line: {P1.Line}, Column: {P1.Column}");
             }
         }
     }
