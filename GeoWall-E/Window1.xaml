@@ -8,15 +8,17 @@
         Title="Window1" Height="450" Width="800">
     <Viewbox Stretch="UniformToFill" >
         <Grid>
-            <Button Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Start" Width="66" Height="23" BorderBrush="Black" Background="#FFC3BFBF" FontFamily="Consolas" FontSize="16"/>
-            <Button Content="About" HorizontalAlignment="Left" VerticalAlignment="Top" Click="About" Width="48" Height="20" BorderBrush="Black" Background="#FFC3BFBF" FontFamily="Consolas" FontSize="14" Margin="63,10,0,0"/>
-            <Button Content="Import" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Import" Width="48" Height="20" BorderBrush="Black" Background="#FFC3BFBF" FontFamily="Consolas" FontSize="14" Margin="10,10,0,0"/>
-            <TextBlock HorizontalAlignment="Left" Margin="599,398,0,0" TextWrapping="Wrap" Text="Powered by Pixel-Odyssey" VerticalAlignment="Top" Foreground="White" Height="26" Width="191"/>
+            <Button Content="Start" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Start" Width="66" Height="23" BorderBrush="#FF979797" Background="White" FontFamily="Bahnschrift" FontSize="16"/>
+            <Button Content="Commands" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Commands" Width="76" Height="20" BorderBrush="#FF979797" Background="White" FontFamily="Bahnschrift" FontSize="14" Margin="87,10,0,0"/>
+            <Button Content="Import" HorizontalAlignment="Left" VerticalAlignment="Top" Click="Import" Width="76" Height="20" BorderBrush="#FF979797" Background="White" FontFamily="Bahnschrift" FontSize="14" Margin="10,10,0,0"/>
+            <Button Content="About" HorizontalAlignment="Left" VerticalAlignment="Top" Click="About" Width="76" Height="20" BorderBrush="#FF979797" Background="White" FontFamily="Bahnschrift" FontSize="14" Margin="166,10,0,0"/>
+            <TextBlock HorizontalAlignment="Left" Margin="599,398,0,0" TextWrapping="Wrap" Text="Powered by Pixel-Odyssey" VerticalAlignment="Top" Foreground="Black" Height="26" Width="191"/>
             <Button Margin="738,0,42,405"  Background="Transparent" BorderBrush="Transparent" Click="Button_Click" >
                 <Image Height="19" Width="19" Source="/lool.jpg"/>
             </Button>
+            <TextBlock HorizontalAlignment="Center" Margin="0,12,0,0" TextWrapping="Wrap" Text="    Welcome to GeoWall-E" VerticalAlignment="Top" Height="26" Width="245" FontSize="20" FontFamily="Bahnschrift"/>
             <Grid.Background>
-                <ImageBrush ImageSource="/OIG (1).jpg"/>
+                <ImageBrush ImageSource="/blue-and-white-abstract-background-vector.jpg"/>
             </Grid.Background>
 
         </Grid>

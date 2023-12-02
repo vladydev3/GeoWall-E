@@ -46,7 +46,7 @@ public class IfExpression : Expression, IEvaluable
         if (evaluatedIfResult.ObjectType == ObjectTypes.Sequence)
         {
             var sequence = (Sequence)evaluatedIfResult;
-            if (!sequence.Elements.Any())
+            if (sequence.Elements.Count() == 0)
             {
                 return evaluatedElse.Evaluate(symbolTable, error);
             }
