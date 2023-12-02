@@ -10,5 +10,10 @@ namespace GeoWall_E
         {
             Elements = elements;
         }
+
+        public int Count()
+        {
+            return Elements.Count();    // Devolver undefined si la secuencia es infinita
+        }
     }
 }

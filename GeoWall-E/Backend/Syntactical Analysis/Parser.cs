@@ -396,7 +396,7 @@ namespace GeoWall_E
         {
             NextToken();
             Match(TokenType.LParen);
-            var fig = Match(TokenType.Identifier);
+            var fig = ParseExpression();
             Match(TokenType.RParen);
             return new RandomPointsInFigure(fig);
         }
@@ -405,7 +405,7 @@ namespace GeoWall_E
         {
             NextToken();
             Match(TokenType.LParen);
-            var sequence = Match(TokenType.Identifier);
+            var sequence = ParseExpression();
             Match(TokenType.RParen);
 
             return new Count(sequence);
