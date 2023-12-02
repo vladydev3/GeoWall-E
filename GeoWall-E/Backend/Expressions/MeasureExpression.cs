@@ -3,48 +3,69 @@ namespace GeoWall_E
     public class MeasureExpression : Expression, IEvaluable
     {
         public override TokenType Type => TokenType.Measure;
-        private Token P1_ { get; set; }
-        private Token P2_ { get; set; }
+        Expression P1_ { get; set; }
+        Expression P2_ { get; set; }
+        readonly Dictionary<string, Tuple<int, int>> Positions_;
 
-        public MeasureExpression(Token p1, Token p2)
+        public MeasureExpression(Expression p1, Expression p2, Dictionary<string, Tuple<int, int>> positions)
         {
             P1_ = p1;
             P2_ = p2;
+            Positions_ = positions;
         }
 
-        public Token P1 => P1_;
-        public Token P2 => P2_;
+        public Expression P1 => P1_;
+        public Expression P2 => P2_;
+        public Dictionary<string, Tuple<int, int>> Positions => Positions_;
 
         public Type Evaluate(SymbolTable symbolTable, Error error)
         {
-            var p1 = symbolTable.Resolve(P1.Text);
-            var p2 = symbolTable.Resolve(P2.Text);
-
-            if (p1 is ErrorType)
+            if (P1 as IEvaluable != null && P2 as IEvaluable != null)
             {
-                error.AddError($"Undefined variable {P1.Text}, Line: {P1.Line}, Column: {P1.Column}");
-                return p1;
+                var p1 = ((IEvaluable)P1).Evaluate(symbolTable, error);
+                var p2 = ((IEvaluable)P2).Evaluate(symbolTable, error);
+                if (p1 is not ErrorType && p2 is not ErrorType)
+                {
+                    if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point) return new Measure((Point)p1, (Point)p2);
+                    if (p1.ObjectType != ObjectTypes.Point)
+                    {
+                        error.AddError($"Expected Point type but got {p1.ObjectType} Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
+                        return new ErrorType();
+                    }
+                    error.AddError($"Expected Point type but got {p2.ObjectType} Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
+                    return new ErrorType();
+                }
+                else return new ErrorType();
             }
-
-            if (p2 is ErrorType)
+            else
             {
-                error.AddError($"Undefined variable {P2.Text}, Line: {P2.Line}, Column: {P2.Column}");
-                return p2;
-            }
-
-            if (p1 is not Point)
-            {
-                error.AddError($"Expected point, got {p1.ObjectType}, Line: {P1.Line}, Column: {P1.Column}");
+                error.AddError($"Invalid expression in measure(), Line: {Positions["measure"].Item1}, Column: {Positions["measure"].Item2}");
                 return new ErrorType();
             }
+        }
 
-            if (p2 is not Point)
+        public void HandleMeasureExpression(SymbolTable symbolTable, Error errors, string asignationName)
+        {
+            if (P1 as IEvaluable != null && P2 as IEvaluable != null)
             {
-                error.AddError($"Expected point, got {p2.ObjectType}, Line: {P2.Line}, Column: {P2.Column}");
-                return new ErrorType();
+                var p1 = ((IEvaluable)P1).Evaluate(symbolTable, errors);
+                var p2 = ((IEvaluable)P2).Evaluate(symbolTable, errors);
+                if (p1 is not ErrorType && p2 is not ErrorType)
+                {
+                    if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point)
+                    {
+                        var measure = new Measure((Point)p1, (Point)p2);
+                        if (symbolTable.Resolve(asignationName) is not ErrorType)
+                        {
+                            errors.AddError($"SEMANTIC ERROR: {asignationName} already defined, Line: {Positions["measure"].Item1}, Column: {Positions["measure"].Item2}");
+                        }
+                        symbolTable.Define(asignationName, measure);
+                    }
+                    else if (p1.ObjectType != ObjectTypes.Point) errors.AddError($"Expected Point type but got {p1.ObjectType} Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
+                    else errors.AddError($"Expected Point type but got {p2.ObjectType} Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
+                }
             }
-
-            return new Measure((Point)p1, (Point)p2);
+            else errors.AddError($"Invalid expression in measure(), Line: {Positions["measure"].Item1}, Column: {Positions["measure"].Item2}");
         }
     }
 }

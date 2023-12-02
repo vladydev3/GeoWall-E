@@ -3,56 +3,83 @@ namespace GeoWall_E
     public class LineExpression : Expression, IEvaluable
     {
         public override TokenType Type => TokenType.Line;
-        private Token P1_ { get; set; }
-        private Token P2_ { get; set; }
+        Expression P1_ { get; set; }
+        Expression P2_ { get; set; }
+        readonly Dictionary<string, Tuple<int, int>> Positions_;
 
-        public LineExpression(Token p1, Token p2)
+        public LineExpression(Expression p1, Expression p2, Dictionary<string, Tuple<int, int>> positions)
         {
             P1_ = p1;
             P2_ = p2;
+            Positions_ = positions;
         }
 
-        public Token P1 => P1_;
-        public Token P2 => P2_;
+        public Expression P1 => P1_;
+        public Expression P2 => P2_;
+        public Dictionary<string, Tuple<int, int>> Positions => Positions_;
 
         public Type Evaluate(SymbolTable symbolTable, Error error)
         {
-            var p1 = symbolTable.Resolve(P1.Text);
-            var p2 = symbolTable.Resolve(P2.Text);
-            if (p1.ObjectType != ObjectTypes.Point || p1.ObjectType == ObjectTypes.Error)
+            if (P1 as IEvaluable != null && P2 as IEvaluable != null)
             {
-                error.AddError($"SEMANTIC ERROR: Point {P1.Text} not defined");
-                return p1;
+                var p1 = ((IEvaluable)P1).Evaluate(symbolTable, error);
+                var p2 = ((IEvaluable)P2).Evaluate(symbolTable, error);
+                if (p1 is not ErrorType && p2 is not ErrorType)
+                {
+                    if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point) return new Line((Point)p1, (Point)p2);
+                    if (p1.ObjectType != ObjectTypes.Point)
+                    {
+                        error.AddError($"Expected Point type but got {p1.ObjectType}, Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
+                        return new ErrorType();
+                    }
+                    error.AddError($"Expected Point type but got {p2.ObjectType}, Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
+                    return new ErrorType();
+                }
+                else return new ErrorType();
             }
-            if (p2.ObjectType != ObjectTypes.Point || p2.ObjectType == ObjectTypes.Error)
+            else
             {
-                error.AddError($"SEMANTIC ERROR: Point {P2.Text} not defined");
-                return p2;
+                error.AddError($"Invalid expression in line(), Line: {Positions["line"].Item1}, Column: {Positions["line"].Item2}");
+                return new ErrorType();
             }
-            return new Line((Point)p1, (Point)p2);
         }
 
         public void HandleLineExpression(List<Tuple<Type, Color>> toDraw, Error error, SymbolTable symbolTable, Color color)
         {
             // draw a line
 
-            var p1 = symbolTable.Resolve(P1.Text);
-            var p2 = symbolTable.Resolve(P2.Text);
-            if (p1 is not ErrorType && p2 is not ErrorType)
+            if (P1 as IEvaluable != null && P2 as IEvaluable != null)
             {
-                if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point)
+                var p1 = ((IEvaluable)P1).Evaluate(symbolTable, error);
+                var p2 = ((IEvaluable)P2).Evaluate(symbolTable, error);
+                if (p1 is not ErrorType && p2 is not ErrorType)
                 {
-                    toDraw.Add(new Tuple<Type, Color>(new Line((Point)p1, (Point)p2), color));
-                }
-                else
-                {
-                    error.AddError($"SEMANTIC ERROR: Invalid type for {P1.Text} or {P2.Text}, Line: {P1.Line}, Column: {P1.Column}");
+                    if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point) toDraw.Add(new Tuple<Type, Color>(new Line((Point)p1, (Point)p2), color));
+
+                    else if (p1.ObjectType != ObjectTypes.Point) error.AddError($"Expected Point type but got {p1.ObjectType}, Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
+
+                    else error.AddError($"Expected Point type but got {p2.ObjectType}, Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
                 }
             }
-            else
+            else error.AddError($"Invalid expression in line(), Line: {Positions["line"].Item1}, Column: {Positions["line"].Item2}");
+        }
+
+        public void HandleLineAsignationExpression(SymbolTable symbolTable, Error errors, AsignationStatement asignation)
+        {
+            if (P1 as IEvaluable != null && P2 as IEvaluable != null)
             {
-                error.AddError($"SEMANTIC ERROR: Variable {P1.Text} or {P2.Text} not declared, Line: {P1.Line}, Column: {P1.Column}");
+                var p1 = ((IEvaluable)P1).Evaluate(symbolTable, errors);
+                var p2 = ((IEvaluable)P2).Evaluate(symbolTable, errors);
+                if (p1 is not ErrorType && p2 is not ErrorType)
+                {
+                    if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point) symbolTable.Define(asignation.Name.Text, new Line((Point)p1, (Point)p2));
+
+                    else if (p1.ObjectType != ObjectTypes.Point) errors.AddError($"Expected Point type but got {p1.ObjectType}, Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
+
+                    else errors.AddError($"Expected Point type but got {p2.ObjectType}, Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
+                }
             }
+            else errors.AddError($"Invalid expression in line(), Line: {Positions["line"].Item1}, Column: {Positions["line"].Item2}");
         }
     }
 
