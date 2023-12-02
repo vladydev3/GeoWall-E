@@ -2,7 +2,7 @@ namespace GeoWall_E;
 
 public class SymbolTable
 {
-    private Stack<Dictionary<string, Type>> scopes = new();
+    private readonly Stack<Dictionary<string, Type>> scopes = new();
 
     public SymbolTable()
     {

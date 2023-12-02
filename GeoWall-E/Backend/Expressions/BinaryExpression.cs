@@ -124,7 +124,6 @@ public class BinaryExpression : Expression, IEvaluable
                     return new ErrorType();
             }
         }
-        
         else
         {
             throw new NotImplementedException();
