@@ -173,9 +173,12 @@ namespace GeoWall_E
 
         Node ParseIdentifier()
         {
-            var name = NextToken();
-            if (Current.Type == TokenType.Asignation || Current.Type == TokenType.Comma) return ParseAsignation(name);
-            return new VariableExpression(name);
+            if (Peek(1).Type == TokenType.Asignation || Peek(1).Type == TokenType.Comma)
+            {
+                var name = NextToken();
+                return ParseAsignation(name);
+            }
+            return ParseExpression();
         }
 
         Expression ParseExpression(int parentPrecedence = 0)
@@ -355,7 +358,6 @@ namespace GeoWall_E
         Node ParseDraw()
         {
             NextToken();
-            if (Current.Type == TokenType.LBracket) return ParseDrawSequence();
             Expression exp = ParseExpression();
             if (Current.Type == TokenType.String)
             {
@@ -554,7 +556,7 @@ namespace GeoWall_E
             positions.Add("p1", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
             var p1 = ParseExpression();
             var commaToken = Match(TokenType.Comma);
-            positions.Add("p1", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
+            positions.Add("p2", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
             var p2 = ParseExpression();
             Match(TokenType.RParen);
             return new SegmentExpression(p1, p2, positions);

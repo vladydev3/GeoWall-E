@@ -44,7 +44,7 @@ namespace GeoWall_E
             }
         }
 
-        public void HandleLineExpression(List<Tuple<Type, Color>> toDraw, Error error, SymbolTable symbolTable, Color color)
+        public void HandleLineExpression(List<Tuple<Type, Color>> toDraw, Error error, SymbolTable symbolTable, Color color, string name="")
         {
             // draw a line
 
@@ -54,7 +54,7 @@ namespace GeoWall_E
                 var p2 = ((IEvaluable)P2).Evaluate(symbolTable, error);
                 if (p1 is not ErrorType && p2 is not ErrorType)
                 {
-                    if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point) toDraw.Add(new Tuple<Type, Color>(new Line((Point)p1, (Point)p2), color));
+                    if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point) toDraw.Add(new Tuple<Type, Color>(new Line((Point)p1, (Point)p2, name), color));
 
                     else if (p1.ObjectType != ObjectTypes.Point) error.AddError($"Expected Point type but got {p1.ObjectType}, Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
 

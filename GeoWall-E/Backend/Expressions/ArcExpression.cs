@@ -62,7 +62,7 @@ namespace GeoWall_E
             }
         }
 
-        public void HandleArcExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color)
+        public void HandleArcExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
         {
             // draw an arc
 
@@ -74,7 +74,7 @@ namespace GeoWall_E
                 var measure = ((IEvaluable)Measure).Evaluate(symbolTable, errors);
                 if (center is not ErrorType && start is not ErrorType && end is not ErrorType && measure is not ErrorType)
                 {
-                    if (center.ObjectType == ObjectTypes.Point && start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point && measure.ObjectType == ObjectTypes.Measure) toDraw.Add(new Tuple<Type, Color>(new Arc((Point)center, (Point)start, (Point)end, (Measure)measure), color));
+                    if (center.ObjectType == ObjectTypes.Point && start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point && measure.ObjectType == ObjectTypes.Measure) toDraw.Add(new Tuple<Type, Color>(new Arc((Point)center, (Point)start, (Point)end, (Measure)measure, name), color));
 
                     else if (center.ObjectType != ObjectTypes.Point) errors.AddError($"Expected Point type but got {center.ObjectType} Line: {Positions["center"].Item1}, Column: {Positions["center"].Item2}");
 

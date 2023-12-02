@@ -14,6 +14,10 @@ namespace GeoWall_E
             Y_ = SetY();
         }
         public string Name => Name_;
+        public void SetName(string name)
+        {
+            Name_ = name;
+        }
 
         public double X => X_;
 
