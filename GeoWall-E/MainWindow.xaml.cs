@@ -303,6 +303,13 @@ namespace GeoWall_E
         {
             this.Close();
         }
+
+        private void ReturnMenu(object sender, RoutedEventArgs e)
+        {
+            var Menu = new Window1();
+            Menu.Show();
+            this.Close();
+        }
     }
 }
 

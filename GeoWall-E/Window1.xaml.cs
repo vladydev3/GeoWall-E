@@ -41,7 +41,7 @@ namespace GeoWall_E
             this.Close();
         }
 
-        private void About(object sender, RoutedEventArgs e)
+        private void Commands(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("| Comando | Descripción |\r\n|---------|-------------|\r\n| point <id> | Declara que se recibe un argumento de tipo punto con nombre <id> |\r\n| line <id> | Declara que se recibe un argumento de tipo recta con nombre <id> |\r\n| segment <id> | Declara que se recibe un argumento de tipo segmento con nombre <id> |\r\n| ray <id> | Declara que se recibe un argumento de tipo semirecta con nombre <id> |\r\n| circle <id> | Declara que se recibe un argumento de tipo circunferencia con nombre <id> |\r\n| point sequence <id> | Declara que se recibe un argumento de tipo secuencia de puntos con nombre <id> |\r\n| line sequence <id> | … |\r\n| color | Establece el color a ser utilizado |\r\n| restore | Restablece el color anterior |\r\n| import <string> | Incluye en el programa actual las definiciones del fichero indicado. |\r\n| draw <exp> <string> | Dibuja el o los objetos definidos en <exp> |\r\n| line(p1,p2) | Devuelve una recta que pasa por los puntos p1 y p2. |\r\n| segment(p1,p2) | Devuelve un segmento con extremos en los puntos p1 y p2. |\r\n| ray(p1,p2) | Devuelve una semirecta que comienza en p1 y pasa por p2. |\r\n| arc(p1,p2,p3,m) | Devuelve un arco que tiene centro en p1, se extiende desde una semirecta que pasa por p2 hasta una semirecta que pasa por p3 y tiene medida m. |\r\n| circle(p,m) | Devuelve una circunferencia con centro en p y medida m. |\r\n| measure(p1,p2) | Devuelve una medida entre los puntos p1 y p2. |\r\n| intersect(f1,f2) | Intersecta dos figuras (puntos, rectas, etc.) y devuelve la secuencia de puntos de intersección. Si la intersección coincide en infinitos puntos devuelve undefined. |\r\n| count(s) | Devuelve la cantidad de elementos de una secuencia. Si la secuencia es infinita devuelve undefined. |\r\n| randoms() | Devuelve una secuencia de valores aleatorios numéricos entre 0 y 1. |\r\n| points(f) | Devuelve una secuencia de puntos aleatorios en una figura. |\r\n| samples() | Devuelve una secuencia de puntos aleatorios en el lienzo. |\r\n");
 
@@ -72,6 +72,15 @@ namespace GeoWall_E
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void About(object sender, RoutedEventArgs e)
+        {
+            // Especificar la ruta del archivo que deseas abrir
+            string filePath = @"D:\Escuela\Proyecto 3\GeoWall-E\lolete.docx";
+
+            // Abrir el archivo
+            System.Diagnostics.Process.Start(filePath);
         }
     }
 }
