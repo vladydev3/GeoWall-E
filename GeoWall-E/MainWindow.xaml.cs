@@ -16,6 +16,7 @@ global using System.Windows.Threading;
 using System.Collections;
 using System.Drawing.Drawing2D;
 using System.Windows.Media.Media3D;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace GeoWall_E
 {
@@ -28,6 +29,8 @@ namespace GeoWall_E
         public static Canvas DrawingCanvas { get; set; }
         private System.Windows.Point zoomCenter;
         private double previousZoomFactor = 1.0;
+        public Handler handler { get; set; }
+        public bool runner;
         public MainWindow()
         {
             InitializeComponent();
@@ -38,22 +41,18 @@ namespace GeoWall_E
             this.WindowState = WindowState.Maximized;
             // Asignar el Canvas del XAML a la propiedad estática
             MainWindow.DrawingCanvas = this.drawingCanvas;
-            
+
             zoomCenter = new System.Windows.Point(drawingCanvas.Width / 2, drawingCanvas.Height / 2);
         }
 
-        private void Start(object sender, RoutedEventArgs e)
+        private void Compile(object sender, RoutedEventArgs e)
 
         {
-            // Borra el Canvas
-            drawingCanvas.Children.Clear();
-            Consola.Text = "";
-
+            Consola.Clear();
             // Asi se procesaria el codigo del usuario
-            
             string code = Entrada.Text;
             // esto es lo q te hace todo el proceso y te devuelve la lista de Type que es lo q tienes q dibujar
-            var handler = new Handler(code);
+            handler = new Handler(code);
             if (handler.CheckErrors())
             {
                 // Obtiene todos los errores 
@@ -70,12 +69,24 @@ namespace GeoWall_E
             }
             else
             {
+                // Habilita el botón Run si no hay errores
+                Run.IsEnabled = true;
+            }
+
+        }
+        private void RunClick(object sender, RoutedEventArgs e)
+        {
+            // Borra el Canvas
+            drawingCanvas.Children.Clear();
+            Consola.Text = "";
+            if (runner == true)
+            {
                 foreach (var item in handler.ToDraw)
                 {
 
                     if (item is Point point)
                     {
-                        Picasso drawer= new Picasso( drawingCanvas,point);
+                        Picasso drawer = new Picasso(drawingCanvas, point);
                         drawer.Draw();
                         scaleTransform.ScaleX = 1;
                         scaleTransform.ScaleY = 1;
@@ -96,7 +107,7 @@ namespace GeoWall_E
                         scrollViewer.ScrollToHorizontalOffset(line.P1.X - 400);
                         scrollViewer.ScrollToVerticalOffset(line.P1.Y - 250);
                     }
-                    
+
                     if (item is Segment segment)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, segment);
@@ -108,7 +119,7 @@ namespace GeoWall_E
                         scrollViewer.ScrollToHorizontalOffset(segment.Start.X - 400);
                         scrollViewer.ScrollToVerticalOffset(segment.Start.Y - 250);
                     }
-                    
+
                     if (item is Ray ray)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, ray);
@@ -120,7 +131,7 @@ namespace GeoWall_E
                         scrollViewer.ScrollToHorizontalOffset(ray.Start.X - 400);
                         scrollViewer.ScrollToVerticalOffset(ray.Start.Y - 250);
                     }
-                   
+
                     if (item is Circle circle)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, circle);
@@ -132,20 +143,23 @@ namespace GeoWall_E
                         scrollViewer.ScrollToHorizontalOffset(circle.Center.X - 400);
                         scrollViewer.ScrollToVerticalOffset(circle.Center.Y - 250);
                     }
-                    
-                   if (item is Arc arc)
-                   {
-                       Picasso drawer = new Picasso(drawingCanvas, arc);
-                       drawer.Draw();
-                       scrollViewer.ScrollToHorizontalOffset(arc.Center.X-400);
-                       scrollViewer.ScrollToVerticalOffset(arc.Center.Y - 250);
-                       
-                   }
-                   
+
+                    if (item is Arc arc)
+                    {
+                        Picasso drawer = new Picasso(drawingCanvas, arc);
+                        drawer.Draw();
+                        scrollViewer.ScrollToHorizontalOffset(arc.Center.X - 400);
+                        scrollViewer.ScrollToVerticalOffset(arc.Center.Y - 250);
+
+                    }
+
+
                 }
             }
-
-
+            else
+            {
+                MessageBox.Show("ERROR IN COMPILATION", "Compilation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Restart(object sender, RoutedEventArgs e)
@@ -165,6 +179,7 @@ namespace GeoWall_E
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            Run.IsEnabled = false;
             // Obtener el número y el contenido de cada línea
             string[] lines = Entrada.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
@@ -240,7 +255,7 @@ namespace GeoWall_E
                 // Actualiza el factor de zoom anterior
                 previousZoomFactor = zoomFactor;
             }
-            }
+        }
 
         private void zoomOutButton_Click(object sender, RoutedEventArgs e)
         {
@@ -263,20 +278,20 @@ namespace GeoWall_E
             System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string contenido=System.IO.File.ReadAllText(openFileDialog.FileName);
-                string entrada=Entrada.Text = contenido;
-                Start( sender, e);
-                    
+                string contenido = System.IO.File.ReadAllText(openFileDialog.FileName);
+                string entrada = Entrada.Text = contenido;
+                RunClick(sender, e);
+
             }
         }
         private void Export(object sender, RoutedEventArgs e)
         {
-            string text= Entrada.Text;
+            string text = Entrada.Text;
             System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             saveFileDialog.Filter = "Archivos de texto(*.txt)|*.txt";
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                string filePath= saveFileDialog.FileName;
+                string filePath = saveFileDialog.FileName;
                 System.IO.File.WriteAllText(filePath, text);
                 MessageBox.Show("Texto guardado correctamente");
             }
@@ -286,11 +301,12 @@ namespace GeoWall_E
                 MessageBox.Show("Ocurrio un error");
             }
         }
-        private void Exit(object sender, RoutedEventArgs e) 
-        { 
+        private void Exit(object sender, RoutedEventArgs e)
+        {
             this.Close();
         }
     }
+}
 
-    }
+    
 
