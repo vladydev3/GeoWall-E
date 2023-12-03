@@ -173,10 +173,25 @@ namespace GeoWall_E
 
         Node ParseIdentifier()
         {
-            if (Peek(1).Type == TokenType.Asignation || Peek(1).Type == TokenType.Comma)
+            if (Peek(1).Type == TokenType.Asignation)
             {
                 var name = NextToken();
                 return ParseAsignation(name);
+            }
+            if (Peek(1).Type == TokenType.Comma)
+            {
+                List<Token> ids = new() { NextToken() };
+                while (Current.Type == TokenType.Comma)
+                {
+                    NextToken();
+                    var id = Match(TokenType.Identifier);
+                    if (id.Type == TokenType.Error) return new EmptyNode();
+                    ids.Add(id);
+                }
+                Match(TokenType.Asignation);
+                var value = ParseExpression();
+                Match(TokenType.EOL);
+                return new MultipleAsignationStatement(ids, value);
             }
             return ParseExpression();
         }
@@ -306,13 +321,10 @@ namespace GeoWall_E
         Node ParseAsignation(Token name)
         {
             if (Current.Type == TokenType.Comma) NextToken();
-            else
-            {
-                NextToken();
-            }
+            else NextToken();
             var value = ParseExpression();
             Match(TokenType.EOL);
-            return new AsignationStatement(name, value, color);
+            return new AsignationStatement(name, value);
         }
 
         Expression ParseLet()
@@ -368,30 +380,6 @@ namespace GeoWall_E
             }
             Match(TokenType.EOL);
             return new Draw(exp, color);
-        }
-
-        Node ParseDrawSequence()
-        {
-            NextToken();
-            List<VariableExpression> ids = new()
-            {
-                new VariableExpression(Match(TokenType.Identifier))
-            };
-            while (Current.Type != TokenType.RBracket)
-            {
-                Match(TokenType.Comma);
-                ids.Add(new VariableExpression(Match(TokenType.Identifier)));
-            }
-            Match(TokenType.RBracket);
-            if (Current.Type == TokenType.String)
-            {
-                string name = Current.Text;
-                NextToken();
-                Match(TokenType.EOL);
-                return new Draw(ids, color, name);
-            }
-            Match(TokenType.EOL);
-            return new Draw(ids, color);
         }
 
         RandomPointsInFigure ParsePoints()

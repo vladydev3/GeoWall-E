@@ -95,6 +95,9 @@ namespace GeoWall_E
                     case AsignationStatement asignation:
                         HandleAsignationNode(asignation);
                         break;
+                    case MultipleAsignationStatement asignation:
+                        HandleMultipleAsignationNode(asignation);
+                        break;
                     case PointStatement point:
                         SymbolTable.Define(point.Name.Text, new Point(point.Name.Text));
                         break;
@@ -123,6 +126,37 @@ namespace GeoWall_E
                 }
             }
             return toDraw;
+        }
+
+        void HandleMultipleAsignationNode(MultipleAsignationStatement asignation)
+        {
+            switch (asignation.Value)
+            {
+                case SequenceExpression sequenceExpression:
+                    var sequence = sequenceExpression.Evaluate(SymbolTable, Errors);
+                    if (sequence is ErrorType) return;
+
+                    for (int i = 0; i < asignation.IDs.Count; i++)
+                    {
+                        if (i == asignation.IDs.Count - 1)
+                        {
+                            SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)sequence).RestOfElements(i)));
+                        }
+
+                        SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)sequence).GetElements(i));
+                    }
+                    break;
+                case IntersectExpression intersectExpression:
+                    // TODO: Implementar esto 
+                    break;
+                default:
+                    HandleAsignationNode(new AsignationStatement(asignation.IDs[0], asignation.Value));
+                    for (int i = 1; i < asignation.IDs.Count; i++)
+                    {
+                        SymbolTable.Define(asignation.IDs[i].Text, new Undefined());
+                    }
+                    break;
+            }
         }
 
         void HandleAsignationNode(AsignationStatement asignation)
@@ -207,25 +241,25 @@ namespace GeoWall_E
                     arcexp.HandleArcExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case FunctionCallExpression function:
-                    HandleFunctionCallExpression(function, toDraw, draw.Color);
+                    HandleFunctionCallExpression(function, toDraw, draw.Color, draw.Name);
                     break;
                 case LetInExpression letin:
                     HandleLetInExpression(letin, toDraw, draw.Color);
                     break;
             }
-            if (draw.Sequence is not null)
-            {
-                foreach (var id in draw.Sequence)
-                {
-                    AddTypeToDraw(id, toDraw, draw.Color,draw.Name);
-                }
-            }
         }
 
         void HandleLetInExpression(LetInExpression letin, List<Tuple<Type, Color>> toDraw, Color color) => toDraw.Add(new Tuple<Type, Color>(letin.Evaluate(SymbolTable, Errors), color));
 
-        void HandleFunctionCallExpression(FunctionCallExpression function, List<Tuple<Type, Color>> toDraw, Color color) => toDraw.Add(new Tuple<Type, Color>(function.Evaluate(SymbolTable, Errors), color));
-
+        void HandleFunctionCallExpression(FunctionCallExpression function, List<Tuple<Type, Color>> toDraw, Color color, string name)
+        {
+            var result = function.Evaluate(SymbolTable, Errors);
+            if (result is not ErrorType && result as IDraw != null)
+            {
+                ((IDraw)result).SetName(name);
+                toDraw.Add(new Tuple<Type, Color>(result, color));
+            }
+        }
         void AddTypeToDraw(VariableExpression variable, List<Tuple<Type, Color>> toDraw, Color color, string name)
         {
             var variableFound = SymbolTable.Resolve(variable.Name.Text);
