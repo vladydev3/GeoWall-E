@@ -303,6 +303,27 @@ namespace GeoWall_E
             Menu.Show();
             this.Close();
         }
+
+        private void Entrada_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Obtener el RichTextBox
+            var richTextBox = sender as RichTextBox;
+
+            // Crear una variable para almacenar los números de línea
+            string lineNumbers = "";
+
+            // Obtener el número de líneas visibles en el RichTextBox
+            int visibleLineCount = (int)(richTextBox.ExtentHeight / richTextBox.FontSize);
+
+            // Recorrer cada línea y agregar el número correspondiente
+            for (int i = 0; i < visibleLineCount; i++)
+            {
+                lineNumbers += (i + 1) + "\n";
+            }
+
+            // Asignar los números de línea al TextBox de la numeración
+            Enumerador.Text = lineNumbers;
+        }
     }
 }
 

@@ -12,15 +12,15 @@
                 <ColumnDefinition Width="759*"/>
                 <ColumnDefinition Width="241*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="zoomInButton" Content="+" Click="zoomInButton_Click" 
+            <Button x:Name="zoomInButton" Cursor="Hand" Content="+" Click="zoomInButton_Click" 
      HorizontalAlignment="Right" VerticalAlignment="Top" 
-     Width="20" Height="18" Margin="0,125,351,0" FontSize="9" />
+     Width="30" Height="30" Margin="0,118,351,0" FontSize="14" />
 
-            <Button x:Name="zoomOutButton" Content="-" Click="zoomOutButton_Click" 
+            <Button x:Name="zoomOutButton" Cursor="Hand" Content="-" Click="zoomOutButton_Click" 
      HorizontalAlignment="Right" VerticalAlignment="Top" 
-     Width="20" Height="18" Margin="0,125,588,0" />
+     Width="30" Height="30" Margin="0,118,587,0" />
 
-            <Slider x:Name="zoomSlider" Minimum="0.5" Maximum="4" Value="1"
+            <Slider x:Name="zoomSlider" Cursor="Hand" Minimum="0.5" Maximum="4" Value="1"
 				HorizontalAlignment="Right" VerticalAlignment="Top"
 				Width="200" Margin="0,125,382,0" ValueChanged="Slider_ValueChanged" />
             <ScrollViewer x:Name="scrollViewer"  HorizontalScrollBarVisibility="Hidden"
@@ -39,13 +39,11 @@
             <TextBlock x:Name="Bienvenida" Margin="801,4,307,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.506,0.52" FontFamily="Rockwell" FontSize="48" Foreground="#FF08B1B5" FontWeight="Bold" Height="70">
                 <TextBlock.Effect>
                     <DropShadowEffect/>
-                </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text="                                                  "/></TextBlock>
-            <TextBox x:Name="Entrada" AcceptsReturn="True"  BorderThickness="2,2,0,2" Margin="9,109,1171,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="671" ScrollViewer.VerticalScrollBarVisibility="Auto"   TextChanged="TextBox_TextChanged" BorderBrush="#FF08B1B5" Background="White" Foreground="Black" FontFamily="Arial Black" FontSize="16">
-
-            </TextBox>
+                </TextBlock.Effect><Run Text="     GeoWall-E"/><LineBreak/><Run/><LineBreak/><Run Text=""/></TextBlock>
+            <TextBox x:Name="Entrada" AcceptsReturn="True" BorderThickness="2,2,0,2" Margin="9,109,1171,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="671" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" TextChanged="TextBox_TextChanged" BorderBrush="#FF08B1B5" Background="White" Foreground="Black" FontFamily="Arial Black" FontSize="16"/>
             <Button Content="Compile" Cursor="Hand"  HorizontalAlignment="Left" Margin="417,110,0,0" VerticalAlignment="Top" Click="Compile" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
-            <Button Content="Run" Cursor="Hand" x:Name="Run" IsEnabled="False"  HorizontalAlignment="Left" Margin="575,110,0,0" VerticalAlignment="Top"  RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2" Click="RunClick"/>
-            <Button Content="Restart" Cursor="Hand"  HorizontalAlignment="Left" Margin="734,110,0,0" VerticalAlignment="Top" Click="Restart" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
+            <Button Content="Run" Cursor="Hand" x:Name="Run" IsEnabled="False"  HorizontalAlignment="Left" Margin="573,110,0,0" VerticalAlignment="Top"  RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2" Click="RunClick"/>
+            <Button Content="Restart" Cursor="Hand"  HorizontalAlignment="Left" Margin="728,110,0,0" VerticalAlignment="Top" Click="Restart" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
             <Image HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100" Source="/photo_2023-11-18_22-25-16.jpg"/>
             <Button HorizontalAlignment="Left" Cursor="Hand" FocusVisualStyle="{x:Null}" BorderThickness="0" Margin="1075,173,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
                 <Button.Template>
@@ -119,8 +117,8 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Content="Save" Cursor="Hand" HorizontalAlignment="Left" Margin="1191,110,0,0" VerticalAlignment="Top" Click="Export" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
-            <Button Content="Menu" Cursor="Hand" HorizontalAlignment="Left" Margin="1352,110,0,0" VerticalAlignment="Top" Click="ReturnMenu" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
+            <Button Content="Save" Cursor="Hand" HorizontalAlignment="Left" Margin="1201,110,0,0" VerticalAlignment="Top" Click="Export" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
+            <Button Content="Menu" Cursor="Hand" HorizontalAlignment="Left" Margin="1354,110,0,0" VerticalAlignment="Top" Click="ReturnMenu" RenderTransformOrigin="0.669,-25.522" Height="48" Width="140" FontSize="18" Background="White" Foreground="#FF08B1B5" FontFamily="Arial Black" FontStyle="Italic" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2"/>
             <TextBox x:Name="Enumerador" HorizontalAlignment="Left" IsReadOnly="True"  Margin="347,109,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Height="671" BorderThickness="0,2,2,2" FontSize="16" FontFamily="Arial Black" ScrollViewer.VerticalScrollBarVisibility="Hidden" BorderBrush="#FF08B1B5"  />
             <Button HorizontalAlignment="Left" Cursor="Hand" Background="Transparent" BorderBrush="Transparent" Click="Exit" FocusVisualStyle="{x:Null}" Margin="292,4,0,0" VerticalAlignment="Top" Grid.Column="1">
                 <Button.Template>
