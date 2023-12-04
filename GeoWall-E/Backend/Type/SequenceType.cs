@@ -27,5 +27,32 @@ namespace GeoWall_E
         {
             Name_ = name;
         }
+
+        public Type GetElement(int index)
+        {
+            int i = 0;
+
+            foreach (var element in Elements)
+            {
+                if (i == index) return element;
+                i++;
+            }
+
+            return new Undefined();
+        }
+
+        public IEnumerable<Type> RestOfElements(int start)
+        {
+            int i = 0;
+
+            foreach (var element in Elements)
+            {
+                if (i == start)
+                {
+                    yield return element;
+                }
+                else i++;
+            }
+        }
     }
 }
