@@ -242,7 +242,7 @@ namespace GeoWall_E
             // Recorrer cada línea y agregar el número correspondiente
             for (int i = 0; i < lines.Length; i++)
             {
-                lineNumbers += (i + 1) + "\n";
+                lineNumbers += "<" + (i + 1) + ">" + "\n"; 
             }
 
             // Asignar los números de línea al TextBox de la numeración
@@ -385,6 +385,12 @@ namespace GeoWall_E
 
             // Asignar los números de línea al TextBox de la numeración
             Enumerador.Text = lineNumbers;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            scrollViewer.ScrollToVerticalOffset((scrollViewer.ScrollableHeight / 2) -350);
+            scrollViewer.ScrollToHorizontalOffset((scrollViewer.ScrollableWidth / 2)-250);
         }
     }
 }

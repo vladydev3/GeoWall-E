@@ -13,8 +13,8 @@ global using System.Windows.Media.Imaging;
 global using System.Windows.Navigation;
 global using System.Windows.Shapes;
 global using System.Windows.Threading;
-using System.Drawing.Drawing2D;
-using System.Windows.Media.Media3D;
+
+
 
 namespace GeoWall_E
 {
@@ -78,6 +78,21 @@ namespace GeoWall_E
             DrawPoint(pointOnRay1, drawingCanvas,color);
             Point pointOnRay2 = GetPointOnRay(arc.Center, arc.End, measure);
             DrawPoint(pointOnRay2, drawingCanvas,color);
+            Label label = new()
+            {
+                Content = arc.Name,
+                Foreground = Brushes.Black,
+                FontSize = 20
+            };
+            // Agregar la etiqueta al canvas
+            drawingCanvas.Children.Add(label);
+
+            double labelX = (arc.Start.X + arc.End.X) / 2;
+            double labelY = (arc.Start.Y + arc.End.Y) / 2;
+            // Posicionar la etiqueta
+            Canvas.SetLeft(label, labelX);
+            Canvas.SetTop(label, labelY+label.ActualWidth);
+
 
             // Crear un nuevo objeto Path
             Path arcPath = new()
@@ -115,7 +130,7 @@ namespace GeoWall_E
 
             // Añadir Path al Canvas
             drawingCanvas.Children.Add(arcPath);
-            Circle circle = new Circle(arc.Center, arc.Measure, colorString);
+            Circle circle = new Circle(arc.Center, arc.Measure);
             DrawCircle(circle, drawingCanvas,color);
         }
         public static SweepDirection GetSweepDirection(Point p1, Point p2, Point p3)
@@ -174,6 +189,24 @@ namespace GeoWall_E
                 X2 = End.X,
                 Y2 = End.Y
             };
+            Label label = new()
+            {
+                Content = segment.Name,
+                Foreground = Brushes.Black,
+                FontSize = 20 
+            };
+            // Agregar la etiqueta al canvas
+            drawingCanvas.Children.Add(label);
+            // Calcular el punto medio del segmento
+            double midX = (segment.Start.X + segment.End.X) / 2;
+            double midY = (segment.Start.Y + segment.End.Y) / 2;
+
+            // Ajustar la posición Y para mover la etiqueta un poco hacia arriba
+            midY -= label.ActualHeight / 2;
+
+            // Posicionar la etiqueta
+            Canvas.SetLeft(label, midX);
+            Canvas.SetTop(label, midY);
             DrawPoint(Start, drawingCanvas,color);
             DrawPoint(End, drawingCanvas,color);
             // Agregar la línea al canvas
@@ -199,6 +232,20 @@ namespace GeoWall_E
             // Establecer el color del círculo
             miCirculo.Stroke = new SolidColorBrush(mediaColor);
             miCirculo.StrokeThickness = 2;
+            Label label = new()
+            {
+                Content = circle.Name,
+                Foreground = Brushes.Black,
+                FontSize = 20
+            };
+            // Agregar la etiqueta al canvas
+            drawingCanvas.Children.Add(label);
+           
+            double labelX = circle.Center.X + circle.Radius.Value + label.ActualWidth / 2;
+            double labelY = circle.Center.Y;
+            // Posicionar la etiqueta
+            Canvas.SetLeft(label, labelX);
+            Canvas.SetTop(label, labelY);
 
             // Establecer el punto central
             double centroX = Center.X; // Establecer la coordenada X del centro
@@ -226,6 +273,23 @@ namespace GeoWall_E
                 // Establecer propiedades de la línea
                 Stroke = new SolidColorBrush(mediaColor)
             };
+            Label label = new()
+            {
+                Content = ray.Name,
+                Foreground = Brushes.Black,
+                FontSize = 20
+            };
+            // Agregar la etiqueta al canvas
+            drawingCanvas.Children.Add(label);
+            // Calcular el punto medio del segmento
+            double midX = (ray.Start.X + ray.End.X) / 2;
+            double midY = (ray.Start.Y + ray.End.Y) / 2;
+
+            // Ajustar la posición Y para mover la etiqueta un poco hacia arriba
+            midY -= label.ActualHeight / 2;
+            // Posicionar la etiqueta
+            Canvas.SetLeft(label, midX);
+            Canvas.SetTop(label, midY);
             // Calcular la pendiente de la línea
             double m = (End.Y - Start.Y) / (End.X - Start.X);
 
@@ -282,7 +346,7 @@ namespace GeoWall_E
             Canvas.SetTop(label, labelCenterY - label.ActualHeight / 2);
         }
 
-        public static  void DrawLines(Line line,Canvas drawingCanvas,Color color)
+        public static void DrawLines(Line line, Canvas drawingCanvas, Color color)
         {
             Point P1 = line.P1;
             Point P2 = line.P2;
@@ -294,6 +358,25 @@ namespace GeoWall_E
                 // Establecer propiedades de la línea
                 Stroke = new SolidColorBrush(mediaColor)
             };
+            // Crear una etiqueta con el nombre del punto
+            Label label = new()
+            {
+                Content = line.Name,
+                Foreground = Brushes.Black,
+                FontSize = 20 
+            };
+            // Agregar la etiqueta al canvas
+            drawingCanvas.Children.Add(label);
+            // Calcular el punto medio de la línea
+            double midX = (line.P1.X + line.P2.X) / 2;
+            double midY = (line.P1.Y + line.P2.Y) / 2;
+
+            // Ajustar la posición Y para mover la etiqueta un poco hacia arriba
+            midY -= label.ActualHeight / 2;
+
+            // Posicionar la etiqueta
+            Canvas.SetLeft(label, midX);
+            Canvas.SetTop(label, midY);
 
             // Calcular la pendiente de la línea
             double m = (P2.Y - P1.Y) / (P2.X - P1.X);
@@ -310,14 +393,12 @@ namespace GeoWall_E
             line1.Y2 = m * line1.X2 + b;
 
             // Crear los puntos y las etiquetas
-            DrawPoint(P1, drawingCanvas,color);
-            DrawPoint(P2, drawingCanvas,color);
+            DrawPoint(P1, drawingCanvas, color);
+            DrawPoint(P2, drawingCanvas, color);
 
             // Agregar la línea al canvas
             drawingCanvas.Children.Add(line1);
-
         }
-
 
     }
 }
