@@ -28,7 +28,7 @@ namespace GeoWall_E
             Name_ = name;
         }
 
-        public Type GetElements(int index)
+        public Type GetElement(int index)
         {
             int i = 0;
 
@@ -38,7 +38,7 @@ namespace GeoWall_E
                 i++;
             }
 
-            return new ErrorType();
+            return new Undefined();
         }
 
         public IEnumerable<Type> RestOfElements(int start)

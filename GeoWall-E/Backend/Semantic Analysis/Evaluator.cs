@@ -138,16 +138,28 @@ namespace GeoWall_E
 
                     for (int i = 0; i < asignation.IDs.Count; i++)
                     {
+                        if (asignation.IDs[i].Type == TokenType.Underline) continue;
+                        if (SymbolTable.Resolve(asignation.IDs[i].Text) is not ErrorType)
+                        {
+                            Errors.AddError($"SEMANTIC ERROR: '{asignation.IDs[i].Text}' already defined.");
+                            return;
+                        }
                         if (i == asignation.IDs.Count - 1)
                         {
                             SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)sequence).RestOfElements(i)));
                         }
 
-                        SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)sequence).GetElements(i));
+                        SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)sequence).GetElement(i));
                     }
                     break;
                 case IntersectExpression intersectExpression:
                     // TODO: Implementar esto 
+                    break;
+                case UndefinedExpression:
+                    for (int i = 0; i < asignation.IDs.Count; i++)
+                    {
+                        SymbolTable.Define(asignation.IDs[i].Text, new Undefined());
+                    }
                     break;
                 default:
                     HandleAsignationNode(new AsignationStatement(asignation.IDs[0], asignation.Value));
@@ -192,6 +204,9 @@ namespace GeoWall_E
                     break;
                 case LetInExpression letin:
                     HandleLetInAsignationExpression(letin, asignation);
+                    break;
+                case IntersectExpression intersect:
+                    intersect.HandleIntersectExpression(SymbolTable, Errors, asignation);
                     break;
             }
         }

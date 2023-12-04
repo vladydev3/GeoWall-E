@@ -9,6 +9,7 @@ namespace GeoWall_E
         int position;
         Color PreviousColor = new(Colors.Black);
         Color color = new(Colors.Black);
+        bool skip = false;
 
         public Parser(List<Token> tokens, Error errors)
         {
@@ -18,16 +19,17 @@ namespace GeoWall_E
 
         public Error Errors => errors;
 
-        Token Peek(int offset) => position + offset >= tokens.Count ? tokens[^1] : tokens[position + offset]; // Accede al token sin consumirlo
+        Token Peek(int offset) => position + offset >= tokens.Count ? tokens[^1] : tokens[position + offset]; 
 
         Token NextToken() => tokens[position++];
 
         Token Current => Peek(0);
 
-        Token Match(TokenType Type) // comprueba si el token actual es el correcto
+        Token Match(TokenType Type) 
         {
             if (Current.Type == Type) return NextToken();
-            errors.AddError($"Expected {Type} but got {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
+            errors.AddError($"SYNTAX ERROR: Expected {Type} but got {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
+            skip = true;
             return new Token(TokenType.Error, "", Current.Line, Current.Column);
         }
 
@@ -45,8 +47,11 @@ namespace GeoWall_E
             while (Current.Type != TokenType.EOF)
             {
                 var startToken = Current;
-
-                members.Add(ParseMember());
+                var member = ParseMember();
+                if (skip) break;
+                if (member is ErrorExpression || member is ErrorStatement) break;
+                members.Add(member);
+                if (member as Expression != null) Match(TokenType.EOL);
 
                 if (Current == startToken) NextToken();
             }
@@ -110,8 +115,17 @@ namespace GeoWall_E
             TokenType.Color => ParseColor(),
             TokenType.Restore => ParseRestore(),
             TokenType.Identifier => ParseIdentifier(),
+            TokenType.Underline => ParseIdentifier(),
+            TokenType.Import => ParseImport(),
             _ => ParseExpression(),
         };
+
+        Node ParseImport()
+        {
+            NextToken();
+            var filename = Match(TokenType.String);
+            return new ImportStatement(filename);
+        }
 
         Node ParseRestore()
         {
@@ -176,7 +190,8 @@ namespace GeoWall_E
             if (Peek(1).Type == TokenType.Asignation)
             {
                 var name = NextToken();
-                return ParseAsignation(name);
+                if (name.Type == TokenType.Underline) position--;
+                else return ParseAsignation(name);
             }
             if (Peek(1).Type == TokenType.Comma)
             {
@@ -184,9 +199,17 @@ namespace GeoWall_E
                 while (Current.Type == TokenType.Comma)
                 {
                     NextToken();
-                    var id = Match(TokenType.Identifier);
-                    if (id.Type == TokenType.Error) return new EmptyNode();
-                    ids.Add(id);
+                    if (Current.Type == TokenType.Underline)
+                    {
+                        var id = NextToken();
+                        ids.Add(id);
+                    }
+                    else
+                    {
+                        var id = Match(TokenType.Identifier);
+                        if (id.Type == TokenType.Error) return new EmptyNode();
+                        ids.Add(id);
+                    }
                 }
                 Match(TokenType.Asignation);
                 var value = ParseExpression();
@@ -198,6 +221,7 @@ namespace GeoWall_E
 
         Expression ParseExpression(int parentPrecedence = 0)
         {
+            if (skip) return new ErrorExpression();
             Expression left;
             var unaryOperatorPrecedence = Current.Type.GetUnaryOperatorPrecedence();
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
@@ -221,6 +245,7 @@ namespace GeoWall_E
 
         Expression ParsePrimaryExpression()
         {
+            if (skip) return new ErrorExpression();
             switch (Current.Type)
             {
                 case TokenType.Line:
@@ -541,10 +566,10 @@ namespace GeoWall_E
             var segmentToken = Match(TokenType.Segment);
             positions.Add(segmentToken.Text, new Tuple<int, int>(segmentToken.Line, segmentToken.Column));
             var lParenToken = Match(TokenType.LParen);
-            positions.Add("p1", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
+            positions.Add("start", new Tuple<int, int>(lParenToken.Line, lParenToken.Column + 1));
             var p1 = ParseExpression();
             var commaToken = Match(TokenType.Comma);
-            positions.Add("p2", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
+            positions.Add("end", new Tuple<int, int>(commaToken.Line, commaToken.Column + 1));
             var p2 = ParseExpression();
             Match(TokenType.RParen);
             return new SegmentExpression(p1, p2, positions);

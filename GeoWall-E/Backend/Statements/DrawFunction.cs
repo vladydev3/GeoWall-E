@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class Draw : Expression
+    public class Draw : Statement
     {
         public override TokenType Type => TokenType.Draw;
 
