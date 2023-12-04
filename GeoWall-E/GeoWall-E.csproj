@@ -18,6 +18,7 @@
     <None Remove="fondo.jpg" />
     <None Remove="fondoblanco.jpg" />
     <None Remove="kkk.jpg" />
+    <None Remove="location-pin-icon-location-pin-sign-blue-location-pin-symbol-map-pointer-icon-free-vector.jpg" />
     <None Remove="logo azul.jpg" />
     <None Remove="Logo.jpg" />
     <None Remove="lool.jpg" />
@@ -42,6 +43,7 @@
     <Resource Include="fondo.jpg" />
     <Resource Include="fondoblanco.jpg" />
     <Resource Include="kkk.jpg" />
+    <Resource Include="location-pin-icon-location-pin-sign-blue-location-pin-symbol-map-pointer-icon-free-vector.jpg" />
     <Resource Include="logo azul.jpg" />
     <Resource Include="Logo.jpg" />
     <Resource Include="lool.jpg" />
