@@ -128,6 +128,13 @@
                 </Button.Template>
             </Button>
             <TextBox x:Name="Consola" Cursor="Arrow" ScrollViewer.VerticalScrollBarVisibility="Auto"  Foreground="Red"  HorizontalAlignment="Left" Margin="9,799,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="378" Height="199" BorderBrush="#FF08B1B5" BorderThickness="2,2,2,2" IsReadOnly="True" FontSize="14"/>
+            <Button Content="" Cursor="Hand" HorizontalAlignment="Left" Margin="1510,101,0,0" VerticalAlignment="Top" Width="49" Height="64" Click="Button_Click" Grid.ColumnSpan="2">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Image Source="/location-pin-icon-location-pin-sign-blue-location-pin-symbol-map-pointer-icon-free-vector.jpg"/>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Grid>
 
 

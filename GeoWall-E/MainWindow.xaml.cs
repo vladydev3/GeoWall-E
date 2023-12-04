@@ -386,6 +386,12 @@ namespace GeoWall_E
             // Asignar los números de línea al TextBox de la numeración
             Enumerador.Text = lineNumbers;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            scrollViewer.ScrollToVerticalOffset((scrollViewer.ScrollableHeight / 2) -350);
+            scrollViewer.ScrollToHorizontalOffset((scrollViewer.ScrollableWidth / 2)-250);
+        }
     }
 }
 
