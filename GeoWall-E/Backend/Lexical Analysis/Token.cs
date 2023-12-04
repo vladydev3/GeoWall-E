@@ -26,7 +26,6 @@ public enum TokenType
     Undefined,
     Variable,
     Underline,
-    Rest,
     Plus,
     Minus,
     Mult,
