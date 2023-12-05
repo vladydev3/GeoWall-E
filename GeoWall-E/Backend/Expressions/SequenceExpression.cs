@@ -66,5 +66,28 @@ namespace GeoWall_E
             error.AddError("Sequence expression is invalid");
             return new ErrorType();
         }
+
+        internal void HandleSequenceExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
+        {
+            var sequenceElementsEvaluated = new List<Type>();
+            if (Elements != null)
+            {
+                // Evaluate all elements of the sequence
+                foreach (var element in Elements)
+                {
+                    var elementEvaluable = (IEvaluable)element;
+                    var evaluatedElement = elementEvaluable.Evaluate(symbolTable, errors);
+                    if (evaluatedElement != null) sequenceElementsEvaluated.Add(evaluatedElement);
+                }
+
+                // Check if all elements are of the same type
+                if (sequenceElementsEvaluated.All(x => x.ObjectType == sequenceElementsEvaluated[0].ObjectType))
+                {
+                    toDraw.Add(new Tuple<Type, Color>(new Sequence(sequenceElementsEvaluated), color));
+                    return;
+                }
+                errors.AddError("Sequence elements must be of the same type");
+            }
+        }
     }
 }

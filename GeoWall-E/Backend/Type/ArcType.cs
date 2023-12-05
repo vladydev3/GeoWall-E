@@ -22,7 +22,7 @@ namespace GeoWall_E
 
         public Point Start => Start_;
 
-        public Point End => End_;   
+        public Point End => End_;
 
         public Measure Measure => Measure_;
 
