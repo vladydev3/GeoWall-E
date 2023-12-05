@@ -3,22 +3,17 @@ namespace GeoWall_E
     public class AsignationStatement : Statement
     {
         public override TokenType Type => TokenType.AsignationStatement;
+        Token Name_ { get; }
+        Expression Value_ { get; }
 
-        private Token Name_ { get; }
-        private Expression Value_ { get; }
-        private Color Color_ { get; }
-
-        public AsignationStatement(Token name, Expression value, Color color)
+        public AsignationStatement(Token name, Expression value)
         {
             Name_ = name;
             Value_ = value;
-            Color_ = color;
         }
 
         public Token Name => Name_;
 
         public Expression Value => Value_;
-
-        public Color Color => Color_;
     }
 }

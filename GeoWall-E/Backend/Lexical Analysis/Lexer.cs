@@ -163,6 +163,8 @@ namespace GeoWall_E
 
                 errors.AddError($"Unexpected character '{Current}'");
                 tokens.Add(new Token(TokenType.Error, Current.ToString(), line, column));
+                currentIndex++;
+                break;
             }
             tokens.Add(new Token(TokenType.EOF, "", line, column));
             return tokens;
@@ -226,7 +228,6 @@ namespace GeoWall_E
         private static readonly Dictionary<string, TokenType> keywords = new()
         {
             { "undefined", TokenType.Undefined },
-            { "rest", TokenType.Rest },
             { "sequence", TokenType.Sequence },
             { "line", TokenType.Line },
             { "segment", TokenType.Segment },
