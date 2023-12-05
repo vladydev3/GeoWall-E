@@ -255,6 +255,9 @@ namespace GeoWall_E
                 case ArcExpression arcexp:
                     arcexp.HandleArcExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
+                case SequenceExpression seqexp:
+                    seqexp.HandleSequenceExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
+                    break;
                 case FunctionCallExpression function:
                     HandleFunctionCallExpression(function, toDraw, draw.Color, draw.Name);
                     break;
@@ -286,7 +289,7 @@ namespace GeoWall_E
 
             else if (variableFound is ErrorType) Errors.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
 
-            else Errors.AddError($"Variable {variable.Name.Text} is not drawable, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
+            else Errors.AddError($"Variable {variable.Name.Text} is {variableFound.ObjectType}, which is not drawable, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
         }
     }
 }
