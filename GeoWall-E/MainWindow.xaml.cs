@@ -31,6 +31,7 @@ namespace GeoWall_E
         private double previousZoomFactor = 1.0;
         public Handler handler { get; set; }
         public bool runner;
+        public bool saver;
         public MainWindow()
         {
             InitializeComponent();
@@ -232,6 +233,7 @@ namespace GeoWall_E
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            saver = false;
             Run.IsEnabled = false;
             // Obtener el número y el contenido de cada línea
             string[] lines = Entrada.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
@@ -339,6 +341,7 @@ namespace GeoWall_E
         }
         private void Export(object sender, RoutedEventArgs e)
         {
+            saver = true;
             string text = Entrada.Text;
             System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             saveFileDialog.Filter = "Archivos de texto(*.txt)|*.txt";
@@ -356,7 +359,21 @@ namespace GeoWall_E
         }
         private void Exit(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            if (saver ==false)
+            {
+                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres salir sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    // El usuario ha hecho clic en 'Sí', puedes cerrar la aplicación aquí
+                    this.Close();
+                }
+               
+            }
+            else 
+            {
+                this.Close();
+            }
+            
         }
 
         private void ReturnMenu(object sender, RoutedEventArgs e)
