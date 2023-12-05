@@ -543,20 +543,16 @@ namespace GeoWall_E
                         var angle1 = Math.Atan2(arc.Start.Y - arc.Center.Y, arc.Start.X - arc.Center.X);
                         var angle2 = Math.Atan2(arc.End.Y - arc.Center.Y, arc.End.X - arc.Center.X);
 
-                        // Calcular la longitud del arco
-                        // var arcLength = Math.Abs(angle1 - angle2) * arc.Measure.Value;
+                        // Calculate the angles formed by the lines from the arc's center to the intersection points
+                        var angleX2Y2 = Math.Atan2(y2 - arc.Center.Y, x2 - arc.Center.X);
+                        var angleX3Y3 = Math.Atan2(y3 - arc.Center.Y, x3 - arc.Center.X);
 
-                        // Calcular la distancia desde start a end
-                        var arcLength = Math.Sqrt(Math.Pow(arc.Start.X - arc.End.X, 2) + Math.Pow(arc.Start.Y - arc.End.Y, 2));
+                        // Check if these angles are within the range of the arc's start and end angles
+                        bool isX2Y2OnArc = (angle1 <= angleX2Y2 && angleX2Y2 <= angle2) || (angle2 <= angleX2Y2 && angleX2Y2 <= angle1);
+                        bool isX3Y3OnArc = (angle1 <= angleX3Y3 && angleX3Y3 <= angle2) || (angle2 <= angleX3Y3 && angleX3Y3 <= angle1);
 
-                        // Calcular la distancia de los puntos de interseccion a los puntos start y end del arco
-                        var distance1 = Math.Sqrt(Math.Pow(x2 - arc.Start.X, 2) + Math.Pow(y2 - arc.Start.Y, 2));
-                        var distance2 = Math.Sqrt(Math.Pow(x2 - arc.End.X, 2) + Math.Pow(y2 - arc.End.Y, 2));
-                        var distance3 = Math.Sqrt(Math.Pow(x3 - arc.Start.X, 2) + Math.Pow(y3 - arc.Start.Y, 2));
-                        var distance4 = Math.Sqrt(Math.Pow(x3 - arc.End.X, 2) + Math.Pow(y3 - arc.End.Y, 2));
-
-                        // Si la distancia de los puntos de interseccion a los puntos start y end del arco es menor que la longitud del arco, hay interseccion
-                        if (distance1 <= arcLength && distance2 <= arcLength && distance3 <= arcLength && distance4 <= arcLength)
+                        // If they are, the intersection points are on the arc
+                        if (isX2Y2OnArc && isX3Y3OnArc)
                         {
                             Point point1 = new();
                             point1.AsignX(x2);
@@ -569,7 +565,7 @@ namespace GeoWall_E
                             symbolTable.Define(asignation.Name.Text, new Sequence(new List<Type>() { point1, point2 }));
                             return;
                         }
-                        else if (distance1 <= arcLength && distance2 <= arcLength)
+                        else if (isX2Y2OnArc)
                         {
                             Point point1 = new();
                             point1.AsignX(x2);
@@ -578,7 +574,7 @@ namespace GeoWall_E
                             symbolTable.Define(asignation.Name.Text, new Sequence(new List<Type>() { point1 }));
                             return;
                         }
-                        else if (distance3 <= arcLength && distance4 <= arcLength)
+                        else if (isX3Y3OnArc)
                         {
                             Point point2 = new();
                             point2.AsignX(x3);
