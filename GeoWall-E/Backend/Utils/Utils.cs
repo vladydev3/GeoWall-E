@@ -106,5 +106,23 @@ namespace GeoWall_E
 
             else return ((Arc)f2, (Ray)f1);
         }
+
+        // Calcular la pendiente de una recta
+        public static double Slope(Point p1, Point p2)
+        {
+            if (p1.X == p2.X) return (p2.Y - p1.Y) / (p2.X - p1.X + 1);
+            return (p2.Y - p1.Y) / (p2.X - p1.X);
+        }
+        // Calcular la pendiente de una recta y la ecuacion de la recta
+        public static (double, double) SlopeAndEquation(Point p1, Point p2)
+        {
+            double m = Slope(p1, p2);
+            double b = p1.Y - m * p1.X;
+            return (m, b);
+        }
+
+
+
+
     }
 }
