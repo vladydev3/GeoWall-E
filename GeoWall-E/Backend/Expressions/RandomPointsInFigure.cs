@@ -21,7 +21,7 @@ namespace GeoWall_E
                 var figure = ((IEvaluable)Figure).Evaluate(symbolTable, error);
                 if (figure is Line line)
                 {
-                    List<Point> points = GenerateRandomPointsOnLine(line);
+                    IEnumerable<Point> points = GenerateRandomPointsOnLine(line);
                     return new Sequence(points);
                 }
                 else
