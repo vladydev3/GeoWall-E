@@ -16,7 +16,7 @@ namespace GeoWall_E
             var variable = table.Resolve(Name.Text);
             if (variable is ErrorType)
             {
-                error.AddError($"Variable {Name.Text} is not defined");
+                error.AddError($"SEMANTIC ERROR: Variable {Name.Text} is not defined");
             }
             return variable;
         }

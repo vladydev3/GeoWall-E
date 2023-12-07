@@ -19,13 +19,13 @@ namespace GeoWall_E
 
         public Error Errors => errors;
 
-        Token Peek(int offset) => position + offset >= tokens.Count ? tokens[^1] : tokens[position + offset]; 
+        Token Peek(int offset) => position + offset >= tokens.Count ? tokens[^1] : tokens[position + offset];
 
         Token NextToken() => tokens[position++];
 
         Token Current => Peek(0);
 
-        Token Match(TokenType Type) 
+        Token Match(TokenType Type)
         {
             if (Current.Type == Type) return NextToken();
             errors.AddError($"SYNTAX ERROR: Expected {Type} but got {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
@@ -80,10 +80,10 @@ namespace GeoWall_E
                 int overflow = 0;
                 while (Current.Type == TokenType.Comma)
                 {
-                    if (overflow > 100) // TODO: hacer que NextToken() si llega al final, para de devolver el ultimo token
+                    if (overflow > 100)
                     {
                         errors.AddError($"Can't parse, Line: {Current.Line}, Column: {Current.Column}");
-                        return new ErrorExpression();
+                        return new ErrorStatement();
                     }
                     NextToken();
                     arguments.Add(Match(TokenType.Identifier));
@@ -189,9 +189,19 @@ namespace GeoWall_E
         {
             if (Peek(1).Type == TokenType.Asignation)
             {
-                var name = NextToken();
-                if (name.Type == TokenType.Underline) position--;
-                else return ParseAsignation(name);
+                if (Current.Type == TokenType.Underline)
+                {
+                    NextToken(); // _
+                    NextToken(); // =
+                    ParseExpression();
+                    Match(TokenType.EOL);
+                    return new EmptyNode();
+                }
+                else
+                {
+                    var name = Match(TokenType.Identifier);
+                    return ParseAsignation(name);
+                }
             }
             if (Peek(1).Type == TokenType.Comma)
             {
@@ -221,7 +231,7 @@ namespace GeoWall_E
 
         Expression ParseExpression(int parentPrecedence = 0)
         {
-            if (skip) return new ErrorExpression();
+            // if (skip) return new ErrorExpression();
             Expression left;
             var unaryOperatorPrecedence = Current.Type.GetUnaryOperatorPrecedence();
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
@@ -259,7 +269,7 @@ namespace GeoWall_E
                 case TokenType.Arc:
                     return ParseArc();
                 case TokenType.Measure:
-                    return ParseMeasure();
+                    return ParseMeasureExpression();
                 case TokenType.Intersect:
                     return ParseIntersect();
                 case TokenType.Points:
@@ -345,8 +355,7 @@ namespace GeoWall_E
 
         Node ParseAsignation(Token name)
         {
-            if (Current.Type == TokenType.Comma) NextToken();
-            else NextToken();
+            NextToken();
             var value = ParseExpression();
             Match(TokenType.EOL);
             return new AsignationStatement(name, value);
@@ -442,7 +451,18 @@ namespace GeoWall_E
             return new IntersectExpression(f1, f2, positions);
         }
 
-        MeasureExpression ParseMeasure()
+        Node ParseMeasure()
+        {
+            if (Peek(1).Type == TokenType.LParen) return ParseMeasureExpression();
+
+            NextToken();
+            var name = Match(TokenType.Identifier);
+            Match(TokenType.EOL);
+
+            return new MeasureStatement(name);
+        }
+
+        MeasureExpression ParseMeasureExpression()
         {
             Dictionary<string, Tuple<int, int>> positions = new();
             var tokenMeasure = NextToken();

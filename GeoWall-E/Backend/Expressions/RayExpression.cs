@@ -46,38 +46,21 @@ namespace GeoWall_E
 
         public void HandleRayExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
         {
-            if (Start as IEvaluable != null && End as IEvaluable != null)
+            var ray = Evaluate(symbolTable, errors);
+            if (ray is not ErrorType)
             {
-                var start = ((IEvaluable)Start).Evaluate(symbolTable, errors);
-                var end = ((IEvaluable)End).Evaluate(symbolTable, errors);
-                if (start is not ErrorType && end is not ErrorType)
-                {
-                    if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point) toDraw.Add(new Tuple<Type, Color>(new Ray((Point)start, (Point)end, name), color));
-
-                    else if (start.ObjectType != ObjectTypes.Point) errors.AddError($"Expected Point type but got {start.ObjectType}, Line {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
-
-                    else errors.AddError($"Expected Point type but got {end.ObjectType}, Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
-                }
+                ((Ray)ray).SetName(name);
+                toDraw.Add(new Tuple<Type, Color>(ray, color));
             }
-            else errors.AddError($"Invalid expression in ray(), Line: {Positions["ray"].Item1}, Column: {Positions["ray"].Item2}");
         }
 
         public void HandleRayAsignationExpression(SymbolTable symbolTable, Error errors, AsignationStatement asignation)
         {
-            if (Start as IEvaluable != null && End as IEvaluable != null)
+            var ray = Evaluate(symbolTable, errors);
+            if (ray is not ErrorType)
             {
-                var start = ((IEvaluable)Start).Evaluate(symbolTable, errors);
-                var end = ((IEvaluable)End).Evaluate(symbolTable, errors);
-                if (start is not ErrorType && end is not ErrorType)
-                {
-                    if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point) symbolTable.Define(asignation.Name.Text, new Ray((Point)start, (Point)end));
-
-                    else if (start.ObjectType != ObjectTypes.Point) errors.AddError($"Expected Point type but got {start.ObjectType}, Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
-
-                    else errors.AddError($"Expected Point type but got {end.ObjectType}, Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
-                }
+                symbolTable.Define(asignation.Name.Text, (Ray)ray);
             }
-            else errors.AddError($"Invalid expression in ray(), Line: {Positions["ray"].Item1}, Column: {Positions["ray"].Item2}");
         }
     }
 }

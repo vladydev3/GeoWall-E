@@ -35,4 +35,22 @@ public class SymbolTable
         }
         return new ErrorType();
     }
+
+    public Type ResolveInCurrentScope(string name)
+    {
+        if (scopes.Peek().TryGetValue(name, out Type value))
+        {
+            return value;
+        }
+        return new ErrorType();
+    }
+
+    public Type ResolveInGlobalScope(string name)
+    {
+        if (scopes.Last().TryGetValue(name, out Type value))
+        {
+            return value;
+        }
+        return new ErrorType();
+    }
 }

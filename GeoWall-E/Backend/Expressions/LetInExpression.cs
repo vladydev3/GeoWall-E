@@ -18,10 +18,10 @@ public class LetInExpression : Expression, IEvaluable
     public Type Evaluate(SymbolTable symbolTable, Error error)
     {
         symbolTable.EnterScope();
-        
+
         var evaluator = new Evaluator(Let, error);
         var toAddtoScope = evaluator.EvaluateLetBlock();
-        
+
         foreach (var (name, type) in toAddtoScope)
         {
             symbolTable.Define(name, type);

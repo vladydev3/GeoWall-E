@@ -138,8 +138,7 @@ namespace GeoWall_E
                         currentIndex += 2;
                         continue;
                     }
-                    tokens.Add(new Token(TokenType.Slash, "/", line, column - 1));
-                    currentIndex++;
+                    tokens.Add(new Token(TokenType.Slash, "/", line, column));
                     column++;
                     continue;
                 }

@@ -44,7 +44,7 @@ public class BinaryExpression : Expression, IEvaluable
                     case "/":
                         if (right_.Value == 0)
                         {
-                            error.AddError("SEMANTIC ERROR: Division by zero");
+                            error.AddError("RUNTIME ERROR: Division by zero");
                             return new ErrorType();
                         }
                         return new NumberLiteral(left_.Value / right_.Value);
@@ -65,7 +65,7 @@ public class BinaryExpression : Expression, IEvaluable
                     case "!=":
                         return new BooleanLiteral(left_.Value != right_.Value);
                     default:
-                        error.AddError($"SEMANTIC ERROR: Operator {Operator.Text} not supported for Number type");
+                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Number type");
                         return new ErrorType();
                 };
             }
@@ -80,7 +80,7 @@ public class BinaryExpression : Expression, IEvaluable
                     case "/":
                         return new NumberLiteral((int)(measure1.Value / measure2.Value));
                     default:
-                        error.AddError($"SEMANTIC ERROR: Operator {Operator.Text} not supported for Measure type");
+                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Measure type");
                         return new ErrorType();
                 }
             }
@@ -91,7 +91,7 @@ public class BinaryExpression : Expression, IEvaluable
                     case "*":
                         return new Measure(measure.Value * (int)number.Value);
                     default:
-                        error.AddError($"SEMANTIC ERROR: Operator {Operator.Text} not supported for Measure and Number type");
+                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Measure and Number type");
                         return new ErrorType();
                 }
             }
@@ -102,7 +102,7 @@ public class BinaryExpression : Expression, IEvaluable
                     case "*":
                         return new Measure(measure3.Value * (int)number1.Value);
                     default:
-                        error.AddError($"SEMANTIC ERROR: Operator {Operator.Text} not supported for Measure and Number type");
+                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Measure and Number type");
                         return new ErrorType();
                 }
             }
@@ -123,17 +123,17 @@ public class BinaryExpression : Expression, IEvaluable
                         else
                             return new BooleanLiteral(false);
                     default:
-                        error.AddError($"SEMANTIC ERROR: Operator {Operator.Text} not supported for Boolean type");
+                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Boolean type");
                         return new ErrorType();
                 }
             }
             else
             {
-                error.AddError($"SEMANTIC ERROR: Invalid operands");
+                error.AddError($"RUNTIME ERROR: Invalid operands");
                 return new ErrorType();
             }
         }
-        error.AddError($"SEMANTIC ERROR: Invalid operands");
+        error.AddError($"RUNTIME ERROR: Invalid operands");
         return new ErrorType();
     }
 }

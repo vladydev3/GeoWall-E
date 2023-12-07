@@ -17,7 +17,8 @@ namespace GeoWall_E
 
         public int Count()
         {
-            return Elements.Count();    // Devolver undefined si la secuencia es infinita
+
+            return Elements.Count();
         }
 
         public IEnumerable<Type> Elements => Elements_;
