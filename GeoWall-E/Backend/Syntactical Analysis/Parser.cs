@@ -230,7 +230,6 @@ namespace GeoWall_E
 
         Expression ParseExpression(int parentPrecedence = 0)
         {
-            // if (skip) return new ErrorExpression();
             Expression left;
             var unaryOperatorPrecedence = Current.Type.GetUnaryOperatorPrecedence();
             if (unaryOperatorPrecedence != 0 && unaryOperatorPrecedence >= parentPrecedence)
@@ -254,7 +253,6 @@ namespace GeoWall_E
 
         Expression ParsePrimaryExpression()
         {
-            if (skip) return new ErrorExpression();
             switch (Current.Type)
             {
                 case TokenType.Line:
@@ -368,7 +366,8 @@ namespace GeoWall_E
             List<Statement> instructions = new();
             while (Current.Type != TokenType.In)
             {
-                instructions.Add((Statement)ParseStatement());
+                var statement = ParseStatement();
+                if (statement as Statement != null) instructions.Add((Statement)statement);
             }
             Match(TokenType.In);
             var inExpression = ParseExpression();
