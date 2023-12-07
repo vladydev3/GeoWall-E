@@ -116,7 +116,22 @@ namespace GeoWall_E
 
                     // Intersect between an arc and a circle
                     else if (f1.ObjectType == ObjectTypes.Arc && f2.ObjectType == ObjectTypes.Circle || f1.ObjectType == ObjectTypes.Circle && f2.ObjectType == ObjectTypes.Arc) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectCircleAndArc(f1, f2));
-
+                    // Intersect between an arc and a line 
+                    else if (f1.ObjectType == ObjectTypes.Arc && f2.ObjectType == ObjectTypes.Line || f1.ObjectType == ObjectTypes.Line && f2.ObjectType == ObjectTypes.Arc) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectLineAndArc(f1, f2));
+                    // Intersect between an arc and a segment 
+                    else if (f1.ObjectType == ObjectTypes.Arc && f2.ObjectType == ObjectTypes.Segment || f1.ObjectType == ObjectTypes.Segment && f2.ObjectType == ObjectTypes.Arc) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectSegmentAndArc(f1, f2));
+                    // Intersect between an arc and a arc
+                    else if (f1.ObjectType == ObjectTypes.Arc && f2.ObjectType == ObjectTypes.Arc || f1.ObjectType == ObjectTypes.Arc && f2.ObjectType == ObjectTypes.Arc) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectArcAndArc(f1, f2));
+                    // Intersect between an ray and a line
+                    else if (f1.ObjectType == ObjectTypes.Ray && f2.ObjectType == ObjectTypes.Line || f1.ObjectType == ObjectTypes.Line && f2.ObjectType == ObjectTypes.Ray) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectRayAndLine(f1, f2));
+                    // Intersect between an ray and a segment
+                    else if (f1.ObjectType == ObjectTypes.Ray && f2.ObjectType == ObjectTypes.Segment || f1.ObjectType == ObjectTypes.Segment && f2.ObjectType == ObjectTypes.Ray) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectRayAndSegment(f1, f2));
+                    // Intersect between an ray and a circle
+                    else if (f1.ObjectType == ObjectTypes.Ray && f2.ObjectType == ObjectTypes.Circle || f1.ObjectType == ObjectTypes.Circle && f2.ObjectType == ObjectTypes.Ray) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectRayAndCircle(f1, f2));
+                    // Intersect between an ray and a arc
+                    else if (f1.ObjectType == ObjectTypes.Ray && f2.ObjectType == ObjectTypes.Arc || f1.ObjectType == ObjectTypes.Arc && f2.ObjectType == ObjectTypes.Ray) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectRayAndArc(f1, f2));
+                    // Intersect between an ray and a ray
+                    else if (f1.ObjectType == ObjectTypes.Ray && f2.ObjectType == ObjectTypes.Ray || f1.ObjectType == ObjectTypes.Ray && f2.ObjectType == ObjectTypes.Ray) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectRayAndRay(f1, f2));
                     // Intersect between a point and a ray
                     else if (f1.ObjectType == ObjectTypes.Point && f2.ObjectType == ObjectTypes.Ray || f1.ObjectType == ObjectTypes.Ray && f2.ObjectType == ObjectTypes.Point) symbolTable.Define(asignation.Name.Text, IntersectFigures.IntersectPointAndRay(f1, f2));
                     else

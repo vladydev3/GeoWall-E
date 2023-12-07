@@ -1,3 +1,8 @@
+using ICSharpCode.AvalonEdit.Document;
+using System.Text.Json.Serialization;
+using System.Windows.Shapes;
+using static System.Windows.Forms.LinkLabel;
+
 namespace GeoWall_E
 {
     public static class IntersectFigures
@@ -196,44 +201,27 @@ namespace GeoWall_E
 
             var x3 = x1 - h * (circle.Center.Y - arc.Center.Y) / distance;
             var y3 = y1 + h * (circle.Center.X - arc.Center.X) / distance;
-
-            var distanceStartToEnd = Math.Sqrt(Math.Pow(arc.Start.X - arc.End.X, 2) + Math.Pow(arc.Start.Y - arc.End.Y, 2));
-            var distanceStartToX2Y2 = Math.Sqrt(Math.Pow(arc.Start.X - x2, 2) + Math.Pow(arc.Start.Y - y2, 2));
-            var distanceEndToX2Y2 = Math.Sqrt(Math.Pow(arc.End.X - x2, 2) + Math.Pow(arc.End.Y - y2, 2));
-            var distanceStartToX3Y3 = Math.Sqrt(Math.Pow(arc.Start.X - x3, 2) + Math.Pow(arc.Start.Y - y3, 2));
-            var distanceEndToX3Y3 = Math.Sqrt(Math.Pow(arc.End.X - x3, 2) + Math.Pow(arc.End.Y - y3, 2));
-            double cosTheta = (arc.Measure.Value * arc.Measure.Value + arc.Measure.Value * arc.Measure.Value - distanceStartToEnd * distanceStartToEnd) / (2 * arc.Measure.Value * arc.Measure.Value);
-            // Usa la función arccos para obtener el ángulo en radianes
-            double theta = Math.Acos(cosTheta);
-            double arcLength = arc.Measure.Value * theta;
-            double tolerance = 15;
-
-            // If they are, the intersection points are on the arc
-            if (Math.Abs(distanceEndToX2Y2 + distanceStartToX2Y2 - arcLength) <= tolerance && Math.Abs(distanceEndToX3Y3 + distanceStartToX3Y3 - arcLength) <= tolerance)
+            Point point1 = new();
+            point1.AsignX(x2);
+            point1.AsignY(y2);
+            bool judge1 = PointOnArc(point1, arc);
+            Point point2 = new();
+            point2.AsignX(x3);
+            point2.AsignY(y3);
+            bool judge2 = PointOnArc(point2, arc);
+           // If they are, the intersection points are on the arc
+            if (judge1==true&&judge2==true)
             {
-                Point point1 = new();
-                point1.AsignX(x2);
-                point1.AsignY(y2);
-
-                Point point2 = new();
-                point2.AsignX(x3);
-                point2.AsignY(y3);
-
                 return new Sequence(new List<Type>() { point1, point2 });
             }
-            else if (Math.Abs(distanceEndToX2Y2 + distanceStartToX2Y2 - arcLength) <= tolerance)
+            else if (judge1==true)
             {
-                Point point1 = new();
-                point1.AsignX(x2);
-                point1.AsignY(y2);
-
+              
                 return new Sequence(new List<Type>() { point1 });
             }
-            else if (Math.Abs(distanceEndToX3Y3 + distanceStartToX3Y3 - arcLength) <= tolerance)
+            else if (judge2==true)
             {
-                Point point2 = new();
-                point2.AsignX(x3);
-                point2.AsignY(y3);
+                
 
                 return new Sequence(new List<Type>() { point2 });
             }
@@ -369,7 +357,7 @@ namespace GeoWall_E
                 return new Sequence(new List<Type>() { point1, point2 });
             }
         }
-    
+
         internal static Sequence IntersectTwoLines(Type f1, Type f2)
         {
             var line1 = (Line)f1;
@@ -381,7 +369,7 @@ namespace GeoWall_E
             var b1 = line1.P1.Y - m1 * line1.P1.X;
             var b2 = line2.P1.Y - m2 * line2.P1.X;
 
-            if (m1 == m2) return new Sequence(new List<Type>() { new Undefined });
+            if (m1 == m2) return new Sequence(new List<Type>() { new Undefined() });
 
             var x = (b2 - b1) / (m1 - m2);
             var y = m1 * x + b1;
@@ -391,5 +379,408 @@ namespace GeoWall_E
             point.AsignY(y);
             return new Sequence(new List<Type>() { point });
         }
+        internal static Sequence IntersectLineAndArc(Type f1, Type f2)
+        {
+            Line line;
+            Arc arc;
+            (line, arc) = Utils.LineAndArcOrdered(f1, f2);
+            Circle circle = new Circle(arc.Center, arc.Measure);
+            IEnumerable<Type> intersection = IntersectLineAndCircle(line, circle).Elements;
+            List<Type> intersectionList = intersection.ToList();
+            if (intersectionList.Count() == 0)
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+            else if (intersectionList.Count() == 1 && intersectionList[0] is not Undefined)
+            {
+                Point point = (Point)intersectionList[0];
+                bool judge = PointOnArc(point, arc);
+                if (judge == true)
+                {
+                    return new Sequence(new List<Type>() { point });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else if (intersectionList.Count() == 2)
+            {
+                Point point1 = (Point)intersectionList[0];
+                Point point2 = (Point)intersectionList[1];
+                bool judge1 = PointOnArc(point1, arc);
+                bool judge2 = PointOnArc(point2, arc);
+                if (judge1 == true && judge2 == true)
+                {
+                    return new Sequence(new List<Type>() { point1, point2 });
+                }
+                else if (judge1 == true)
+                {
+                    return new Sequence(new List<Type>() { point1 });
+                }
+                else if (judge2 == true)
+                {
+                    return new Sequence(new List<Type>() { point2 });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+        }
+        internal static Sequence IntersectSegmentAndArc(Type f1, Type f2) 
+        {
+            Segment segment;
+            Arc arc;
+            (segment, arc) = Utils.SegmentAndArcOrdered(f1, f2);
+            Circle circle = new Circle(arc.Center, arc.Measure);
+            IEnumerable<Type> intersection = IntersectCircleAndSegment(segment, circle).Elements;
+            List<Type> intersectionList = intersection.ToList();
+            if (intersectionList.Count() == 0)
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+            else if (intersectionList.Count() == 1 && intersectionList[0] is not Undefined)
+            {
+                Point point = (Point)intersectionList[0];
+                bool judge = PointOnArc(point, arc);
+                if (judge == true)
+                {
+                    return new Sequence(new List<Type>() { point });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else if (intersectionList.Count() == 2)
+            {
+                Point point1 = (Point)intersectionList[0];
+                Point point2 = (Point)intersectionList[1];
+                bool judge1 = PointOnArc(point1, arc);
+                bool judge2 = PointOnArc(point2, arc);
+                if (judge1 == true && judge2 == true)
+                {
+                    return new Sequence(new List<Type>() { point1, point2 });
+                }
+                else if (judge1 == true)
+                {
+                    return new Sequence(new List<Type>() { point1 });
+                }
+                else if (judge2 == true)
+                {
+                    return new Sequence(new List<Type>() { point2 });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+        }
+        internal static Sequence IntersectArcAndArc(Type f1, Type f2) 
+        {
+            Arc arc1= (Arc)f1;
+            Arc arc2= (Arc)f2;
+            Circle circle1 = new Circle(arc1.Center, arc1.Measure);
+            Circle circle2 = new Circle(arc2.Center, arc2.Measure);
+            IEnumerable<Type> intersection = IntersectTwoCircles(circle1, circle2).Elements;
+            List<Type> intersectionList = intersection.ToList();
+            if (intersectionList[0] is  Undefined)
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+            else if (intersectionList.Count() == 1)
+            {
+                Point point = (Point)intersectionList[0];
+                bool judge = PointOnArc(point, arc1);
+                bool judge1=PointOnArc(point, arc2);
+                if (judge == true&&judge1==true)
+                {
+                    return new Sequence(new List<Type>() { point });
+                }
+           
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else if (intersectionList.Count() == 2)
+            {
+                Point point1 = (Point)intersectionList[0];
+                Point point2 = (Point)intersectionList[1];
+                bool judge1 = PointOnArc(point1, arc1);
+                bool judge2 = PointOnArc(point2, arc1);
+                bool judge3=PointOnArc(point1, arc2);
+                bool judge4=PointOnArc(point2, arc2);
+                if (judge1 == true&&judge3==true)
+                {
+                    return new Sequence(new List<Type>() { point1 });
+                }
+                else if (judge2 == true&&judge4==true)
+                {
+                    return new Sequence(new List<Type>() { point2 });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+
+        }
+        internal static Sequence IntersectRayAndLine(Type f1, Type f2)
+        {
+            Line line;
+            Ray ray;
+            (line,ray ) = Utils.LineAndRayOrdered(f1, f2);
+            Line line1= new Line(ray.Start,ray.End);
+            IEnumerable<Type> intersection = IntersectTwoLines(line, line1).Elements;
+            List<Type> intersectionList = intersection.ToList();
+            if (intersectionList[0] is Undefined)
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+            else
+            {
+                Point intersection1 = (Point)intersectionList[0];
+                if (ray.Start.X<ray.End.X && intersection1.X>=ray.Start.X)
+                {
+                    return new Sequence(new List<Type>() { intersection1 });
+                }
+                else if (ray.Start.X > ray.End.X && intersection1.X <= ray.Start.X)
+                {
+                    return new Sequence(new List<Type>() { intersection1 });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+               
+            }
+        }
+        internal static Sequence IntersectRayAndSegment(Type f1, Type f2)
+        {
+            Segment segment;
+            Ray ray;
+            (segment, ray) = Utils.SegmentAndRayOrdered(f1, f2);
+            Line line1 = new Line(ray.Start, ray.End);
+            Line line2= new Line(segment.Start, segment.End);
+            IEnumerable<Type> intersection = IntersectTwoLines(line2, line1).Elements;
+            List<Type> intersectionList = intersection.ToList();
+            if (intersectionList[0] is Undefined)
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+            else
+            {
+                Point intersection1 = (Point)intersectionList[0];
+                if (ray.Start.X < ray.End.X && intersection1.X >= ray.Start.X&& IsPointOnSegment(intersection1,segment))
+                {
+                    return new Sequence(new List<Type>() { intersection1 });
+                }
+                else if (ray.Start.X > ray.End.X && intersection1.X <= ray.Start.X&& IsPointOnSegment(intersection1, segment))
+                {
+                    return new Sequence(new List<Type>() { intersection1 });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+
+            }         
+        }
+        internal static Sequence IntersectRayAndCircle(Type f1, Type f2)
+        {
+            Circle circle;
+            Ray ray;
+            (circle, ray) = Utils.CircleAndRayOrdered(f1, f2);
+            Line line=new Line(ray.Start, ray.End);
+            IEnumerable<Type> intersection = IntersectLineAndCircle(line,circle).Elements;
+            List<Type> intersectionList = intersection.ToList();
+            if (intersectionList[0] is Undefined)
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+            else if (intersectionList.Count==1)
+            {
+                Point intersect = (Point)intersectionList[0];
+                if (IsPointOnRay(intersect,ray))
+                {
+                    return new Sequence(new List<Type>() { intersect });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else if (intersectionList.Count == 2)
+            {
+                Point intersect1 = (Point)intersectionList[0];
+                Point intersect2= (Point)intersectionList[1];
+                if (IsPointOnRay(intersect1,ray) && IsPointOnRay(intersect2,ray))
+                {
+                    return new Sequence(new List<Type>() { intersect1,intersect2 });
+                }
+                if (IsPointOnRay(intersect1, ray))
+                {
+                    return new Sequence(new List<Type>() { intersect1 });
+                }
+                if (IsPointOnRay(intersect2, ray))
+                {
+                    return new Sequence(new List<Type>() { intersect2 });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+        }
+        internal static Sequence IntersectRayAndArc(Type f1, Type f2)
+        {
+            Ray ray;
+            Arc arc;
+            (arc, ray) = Utils.ArcAndRayOrdered(f1, f2);
+            Line line = new Line(ray.Start, ray.End);
+            IEnumerable<Type> intersection = IntersectLineAndArc(arc, line).Elements;
+            List<Type> intersectionList = intersection.ToList();
+            if (intersectionList[0] is Undefined)
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+            else if (intersectionList.Count == 1)
+            {
+                Point intersect = (Point)intersectionList[0];
+                if (IsPointOnRay(intersect, ray) && PointOnArc(intersect, arc))
+                {
+                    return new Sequence(new List<Type>() { intersect });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else if (intersectionList.Count == 2)
+            {
+                Point intersect1 = (Point)intersectionList[0];
+                Point intersect2 = (Point)intersectionList[1];
+                if (IsPointOnRay(intersect1, ray) && IsPointOnRay(intersect2, ray)&&PointOnArc(intersect1,arc)&&PointOnArc(intersect2,arc))
+                {
+                    return new Sequence(new List<Type>() { intersect1, intersect2 });
+                }
+                if (IsPointOnRay(intersect1, ray) && PointOnArc(intersect1, arc))
+                {
+                    return new Sequence(new List<Type>() { intersect1 });
+                }
+                if (IsPointOnRay(intersect2, ray) && PointOnArc(intersect2, arc))
+                {
+                    return new Sequence(new List<Type>() { intersect2 });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+            }
+            else
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+
+        }
+        internal static Sequence IntersectRayAndRay(Type f1, Type f2)
+        {
+
+            Ray ray1=(Ray)f1;
+            Ray ray2= (Ray)f2;
+            Line line1 = new Line(ray1.Start, ray1.End);
+            Line line2 = new Line(ray2.Start, ray2.End);
+            IEnumerable<Type> intersection = IntersectTwoLines(line1, line2).Elements;
+            List<Type> intersectionList = intersection.ToList();
+            if (intersectionList[0] is Undefined)
+            {
+                return new Sequence(new List<Type>() { new Undefined() });
+            }
+            else
+            {
+                Point intersection1 = (Point)intersectionList[0];
+                if (IsPointOnRay(intersection1,ray1)&&IsPointOnRay(intersection1,ray2))
+                {
+                    return new Sequence(new List<Type>() { intersection1 });
+                }
+                else
+                {
+                    return new Sequence(new List<Type>() { new Undefined() });
+                }
+
+            }
+        }
+        internal static bool PointOnArc(Point point, Arc arc)
+        {// Convierte los puntos a vectores
+            var vectorStart = new { X = arc.Extremo1.X - arc.Center.X, Y = arc.Extremo1.Y - arc.Center.Y };
+            var vectorEnd = new { X = arc.Extremo2.X - arc.Center.X, Y = arc.Extremo2.Y - arc.Center.Y };
+            var vectorPoint = new { X = point.X - arc.Center.X, Y = point.Y - arc.Center.Y };
+
+            // Calcula los productos cruzados
+            var crossProductStart = vectorStart.X * vectorPoint.Y - vectorPoint.X * vectorStart.Y;
+            var crossProductEnd = vectorEnd.X * vectorPoint.Y - vectorPoint.X * vectorEnd.Y;
+
+            // Comprueba si el arco se define en sentido horario o antihorario
+            bool isClockwise = vectorStart.X * vectorEnd.Y - vectorEnd.X * vectorStart.Y < 0;
+
+            // Comprueba si el punto está en el arco
+            if (isClockwise)
+            {
+                return crossProductStart <= 0 && crossProductEnd >= 0;
+            }
+            else
+            {
+                return crossProductStart >= 0 && crossProductEnd <= 0;
+            }
+        }
+        public static double Distance(this Point point1, Point point2)
+        {
+            return Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
+        }
+        public static  bool IsPointOnSegment(Point point, Segment segment)
+        {
+            double minX = Math.Min(segment.Start.X, segment.End.X);
+            double maxX = Math.Max(segment.Start.X, segment.End.X);
+            double minY = Math.Min(segment.Start.Y, segment.End.Y);
+            double maxY = Math.Max(segment.Start.Y, segment.End.Y);
+
+            if (point.X >= minX && point.X <= maxX && point.Y >= minY && point.Y <= maxY)
+                return true;
+
+            return false;
+        }
+        public static bool IsPointOnRay(Point point, Ray ray) 
+        {
+            if (ray.Start.X < ray.End.X && point.X >= ray.Start.X)
+            {
+                return true;
+            }
+            else if (ray.Start.X > ray.End.X && point.X <= ray.Start.X )
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
-}
+ }
