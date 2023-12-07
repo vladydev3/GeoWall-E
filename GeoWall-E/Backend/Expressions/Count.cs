@@ -16,14 +16,14 @@ namespace GeoWall_E
         {
             if (Sequence is not IEvaluable sequence)
             {
-                error.AddError($"SEMANTIC ERROR: Expression in count() isn't a sequence");
+                error.AddError($"RUNTIME ERROR: Expression in count() isn't a sequence");
                 return new ErrorType();
             }
             var sequenceEvaluated = sequence.Evaluate(symbolTable, error);
 
             if (sequenceEvaluated is not Sequence seq)
             {
-                error.AddError($"SEMANTIC ERROR: Expression in count() isn't a sequence");
+                error.AddError($"RUNTIME ERROR: Expression in count() isn't a sequence");
                 return new ErrorType();
             }
 

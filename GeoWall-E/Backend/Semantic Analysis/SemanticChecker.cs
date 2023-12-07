@@ -180,7 +180,7 @@ namespace GeoWall_E
             SymbolTable.ExitScope();
         }
 
-        static Type InferedTypeToType(TypeInfered argumentType)
+        internal static Type InferedTypeToType(TypeInfered argumentType)
         {
             return argumentType switch
             {
@@ -194,8 +194,7 @@ namespace GeoWall_E
                 TypeInfered.Arc => new Arc(new Point(), new Point(), new Point(), new Measure(new Point(), new Point())),
                 TypeInfered.Segment => new Segment(new Point(), new Point()),
                 TypeInfered.Measure => new Measure(new Point(), new Point()),
-                TypeInfered.ErrorType => new ErrorType(),
-                _ => throw new NotImplementedException(),
+                _ => new ErrorType(),
             };
         }
 
@@ -217,6 +216,9 @@ namespace GeoWall_E
                         if (inference.InferType(element) != firstElementType) Errors.AddError("SEMANTIC ERROR: Sequence elements must be of the same type");
                         CheckExpression(element);
                     }
+                    break;
+                case Count count:
+                    CheckExpression(count.Sequence);
                     break;
                 case BinaryExpression binary:
                     CheckExpression(binary.Left);

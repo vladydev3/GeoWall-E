@@ -163,7 +163,20 @@ namespace GeoWall_E
                     }
                     break;
                 case IntersectExpression intersectExpression:
-                    // TODO: Implementar esto 
+                    var intersect = intersectExpression.Evaluate(SymbolTable, Errors);
+                    if (intersect is ErrorType) return;
+
+                    for (int i = 0; i < asignation.IDs.Count; i++)
+                    {
+                        if (asignation.IDs[i].Type == TokenType.Underline) continue;
+
+                        if (i == asignation.IDs.Count - 1)
+                        {
+                            SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)intersect).RestOfElements(i)));
+                        }
+
+                        else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)intersect).GetElement(i));
+                    }
                     break;
                 case UndefinedExpression:
                     for (int i = 0; i < asignation.IDs.Count; i++)
@@ -190,6 +203,9 @@ namespace GeoWall_E
                     break;
                 case SequenceExpression sequence:
                     SymbolTable.Define(asignation.Name.Text, sequence.Evaluate(SymbolTable, Errors));
+                    break;
+                case Count count:
+                    SymbolTable.Define(asignation.Name.Text, count.Evaluate(SymbolTable, Errors));
                     break;
                 case NumberExpression number:
                     SymbolTable.Define(asignation.Name.Text, number.Evaluate(SymbolTable, Errors));
@@ -222,7 +238,7 @@ namespace GeoWall_E
                     HandleLetInAsignationExpression(letin, asignation);
                     break;
                 case IntersectExpression intersect:
-                    intersect.HandleIntersectExpression(SymbolTable, Errors, asignation);
+                    intersect.HandleIntersectAsignationExpression(SymbolTable, Errors, asignation);
                     break;
             }
         }

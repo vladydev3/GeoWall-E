@@ -106,7 +106,6 @@ namespace GeoWall_E
             TokenType.Arc => ParseArc(),
             TokenType.Measure => ParseMeasure(),
             TokenType.Intersect => ParseIntersect(),
-            TokenType.Count => ParseCount(),
             TokenType.Randoms => ParseRandom(),
             TokenType.Points => ParsePoints(),
             TokenType.Samples => ParseSamples(),
@@ -274,6 +273,8 @@ namespace GeoWall_E
                     return ParseIntersect();
                 case TokenType.Points:
                     return ParsePoints();
+                case TokenType.Count:
+                    return ParseCount();
                 case TokenType.Samples:
                     NextToken();
                     Match(TokenType.LParen);
