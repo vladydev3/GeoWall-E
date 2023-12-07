@@ -291,7 +291,7 @@ namespace GeoWall_E
             {
                 if (variableFound is Sequence sequence)
                 {
-                    if (sequence.GetElement(0) is Undefined) return;
+                    if (sequence.GetElement(0) is Undefined && sequence.Count() > 1) return;
                     if (sequence.GetElement(0) as IDraw == null)
                     {
                         Errors.AddError($"RUNTIME ERROR: Variable {variable.Name.Text} is a sequence of {variableFound.ObjectType}, which is not drawable, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
