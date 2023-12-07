@@ -15,6 +15,7 @@ global using System.Windows.Shapes;
 global using System.Windows.Threading;
 using System.Collections;
 using System.Drawing.Drawing2D;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Media.Media3D;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -32,6 +33,8 @@ namespace GeoWall_E
         public Handler handler { get; set; }
         public bool runner;
         public bool saver;
+        public bool saver1;
+        public bool saver3;
         public MainWindow()
         {
             InitializeComponent();
@@ -49,6 +52,7 @@ namespace GeoWall_E
         private void Compile(object sender, RoutedEventArgs e)
 
         {
+            saver3 = true;
             Consola.Clear();
             // Asi se procesaria el codigo del usuario
             string code = Entrada.Text;
@@ -56,6 +60,7 @@ namespace GeoWall_E
             handler = new Handler(code);
             if (handler.CheckErrors())
             {
+                saver1 = true;
                 // Obtiene todos los errores 
                 List<string> errors = handler.Errors.GetAllErrors.ToList();
 
@@ -68,6 +73,7 @@ namespace GeoWall_E
             }
             else
             {
+                saver1 = false;
                 // Habilita el botón Run si no hay errores
                 Run.IsEnabled = true;
             }
@@ -75,6 +81,7 @@ namespace GeoWall_E
         }
         private void RunClick(object sender, RoutedEventArgs e)
         {
+            
             // Borra el Canvas
             drawingCanvas.Children.Clear();
             Consola.Text = "";
@@ -218,16 +225,41 @@ namespace GeoWall_E
 
         private void Restart(object sender, RoutedEventArgs e)
         {
-            // Borra el TextBox
-            Entrada.Text = "";
-            Consola.Text = "";
-            Enumerador.Text = "";
-            // Borra el Canvas
-            drawingCanvas.Children.Clear();
-            scaleTransform.ScaleX = 1;
-            scaleTransform.ScaleY = 1;
-            // Restablece el valor del Slider al valor predeterminado
-            zoomSlider.Value = 1;
+            if (saver == false)
+            {
+                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres reiniciar sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)           
+                {
+                    saver3 = false;
+                    saver1 = false;
+                    // Borra el TextBox
+                    Entrada.Text = "";
+                    Consola.Text = "";
+                    Enumerador.Text = "";
+                    // Borra el Canvas
+                    drawingCanvas.Children.Clear();
+                    scaleTransform.ScaleX = 1;
+                    scaleTransform.ScaleY = 1;
+                    // Restablece el valor del Slider al valor predeterminado
+                    zoomSlider.Value = 1;
+                }
+            }
+            else
+            {
+                saver3 = false;
+                saver1 = false;
+                // Borra el TextBox
+                Entrada.Text = "";
+                Consola.Text = "";
+                Enumerador.Text = "";
+                // Borra el Canvas
+                drawingCanvas.Children.Clear();
+                scaleTransform.ScaleX = 1;
+                scaleTransform.ScaleY = 1;
+                // Restablece el valor del Slider al valor predeterminado
+                zoomSlider.Value = 1;
+            }
+
 
         }
 
@@ -341,33 +373,45 @@ namespace GeoWall_E
         }
         private void Export(object sender, RoutedEventArgs e)
         {
-            saver = true;
-            string text = Entrada.Text;
-            System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            saveFileDialog.Filter = "Archivos de texto(*.txt)|*.txt";
-            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (Entrada.Text =="")
             {
-                string filePath = saveFileDialog.FileName;
-                System.IO.File.WriteAllText(filePath, text);
-                MessageBox.Show("Texto guardado correctamente");
+                MessageBox.Show("Error!! La entrada esta vacía", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else if (saver1==true)
+            {
+                System.Windows.Forms.MessageBox.Show("Error!! corrija los errores antes de guardar", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            }
+            else if (saver3==false )
+            {
+                MessageBox.Show("Error!!Compile antes de guardar", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
-
             {
-                MessageBox.Show("Ocurrio un error");
+                saver = true;
+                string text = Entrada.Text;
+                System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+                saveFileDialog.Filter = "Archivos GS(*.gs)|*.gs";
+                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string filePath = saveFileDialog.FileName;
+                    System.IO.File.WriteAllText(filePath, text);
+                    MessageBox.Show("Texto guardado correctamente");
+                }
             }
+
         }
         private void Exit(object sender, RoutedEventArgs e)
         {
             if (saver ==false)
             {
-                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres salir sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres volver sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);
                 if (result == MessageBoxResult.Yes)
                 {
                     // El usuario ha hecho clic en 'Sí', puedes cerrar la aplicación aquí
                     this.Close();
                 }
-               
+
+
             }
             else 
             {
@@ -378,9 +422,24 @@ namespace GeoWall_E
 
         private void ReturnMenu(object sender, RoutedEventArgs e)
         {
-            var Menu = new Window1();
-            Menu.Show();
-            this.Close();
+            if (saver == false)
+            {
+                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres salir sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                {
+                    var Menu = new Window1();
+                    Menu.Show();
+                    this.Close();
+                }
+
+            }
+            else
+            {
+                var Menu = new Window1();
+                Menu.Show();
+                this.Close();
+            }
+            
         }
 
         private void Entrada_TextChanged(object sender, TextChangedEventArgs e)
