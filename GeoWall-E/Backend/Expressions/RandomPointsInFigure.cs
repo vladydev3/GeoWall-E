@@ -21,7 +21,7 @@ namespace GeoWall_E
                 var figure = ((IEvaluable)Figure).Evaluate(symbolTable, error);
                 if (figure is Line line)
                 {
-                    List<Point> points = GenerateRandomPointsOnLine(line);
+                    IEnumerable<Point> points = GenerateRandomPointsOnLine(line);
                     return new Sequence(points);
                 }
                 else
@@ -58,7 +58,7 @@ namespace GeoWall_E
                 }
 
                 double x = line.P1.X + t * (line.P2.X - line.P1.X);
-                double y = line.P1.Y + t * (line.P2.Y - line.P1.Y);
+                double y = line.P1.Y + t * (line.P1.Y - line.P1.Y);
                 Point point = new Point();
                 point.AsignX(x);
                 point.AsignY(y);
