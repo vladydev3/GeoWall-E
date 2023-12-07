@@ -48,7 +48,6 @@ namespace GeoWall_E
             {
                 var startToken = Current;
                 var member = ParseMember();
-                if (skip) break;
                 if (member is ErrorExpression || member is ErrorStatement) break;
                 members.Add(member);
                 if (member as Expression != null) Match(TokenType.EOL);
@@ -107,7 +106,6 @@ namespace GeoWall_E
             TokenType.Arc => ParseArc(),
             TokenType.Measure => ParseMeasure(),
             TokenType.Intersect => ParseIntersect(),
-            TokenType.Count => ParseCount(),
             TokenType.Randoms => ParseRandom(),
             TokenType.Points => ParsePoints(),
             TokenType.Samples => ParseSamples(),
@@ -124,6 +122,7 @@ namespace GeoWall_E
         {
             NextToken();
             var filename = Match(TokenType.String);
+            Match(TokenType.EOL);
             return new ImportStatement(filename);
         }
 
@@ -274,6 +273,8 @@ namespace GeoWall_E
                     return ParseIntersect();
                 case TokenType.Points:
                     return ParsePoints();
+                case TokenType.Count:
+                    return ParseCount();
                 case TokenType.Samples:
                     NextToken();
                     Match(TokenType.LParen);

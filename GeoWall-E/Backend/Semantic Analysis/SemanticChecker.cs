@@ -41,30 +41,52 @@ namespace GeoWall_E
                 case EmptyNode:
                 case ErrorExpression:
                 case ErrorStatement:
+                    break;
                 case ImportStatement:
+                    SymbolTable.Merge(((ImportStatement)node).Import(), Errors);
                     break;
                 case PointStatement point:
                     if (SymbolTable.Resolve(point.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Point '{point.Name.Text}' already defined");
-                    else SymbolTable.Define(point.Name.Text, new Point(point.Name.Text));
+                    else
+                    {
+                        if (point.IsSequence) SymbolTable.Define(point.Name.Text, PointStatement.CreateSequence());
+                        else SymbolTable.Define(point.Name.Text, new Point(point.Name.Text));
+                    }
                     break;
                 case Draw draw:
                     CheckExpression(draw.Expression);
                     break;
                 case LineStatement line:
                     if (SymbolTable.Resolve(line.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Line '{line.Name.Text}' already defined");
-                    else SymbolTable.Define(line.Name.Text, new Line(new Point(), new Point(), line.Name.Text));
+                    else
+                    {
+                        if (line.IsSequence) SymbolTable.Define(line.Name.Text, LineStatement.CreateSequence());
+                        else SymbolTable.Define(line.Name.Text, new Line(new Point(), new Point(), line.Name.Text));
+                    }
                     break;
                 case CircleStatement circle:
                     if (SymbolTable.Resolve(circle.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Circle '{circle.Name.Text}' already defined");
-                    else SymbolTable.Define(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point()), circle.Name.Text));
+                    else
+                    {
+                        if (circle.IsSequence) SymbolTable.Define(circle.Name.Text, CircleStatement.CreateSequence());
+                        else SymbolTable.Define(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point()), circle.Name.Text));
+                    }
                     break;
                 case RayStatement ray:
                     if (SymbolTable.Resolve(ray.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Ray '{ray.Name.Text}' already defined");
-                    else SymbolTable.Define(ray.Name.Text, new Ray(new Point(), new Point(), ray.Name.Text));
+                    else
+                    {
+                        if (ray.IsSequence) SymbolTable.Define(ray.Name.Text, RayStatement.CreateSequence());
+                        else SymbolTable.Define(ray.Name.Text, new Ray(new Point(), new Point(), ray.Name.Text));
+                    }
                     break;
                 case SegmentStatement segment:
                     if (SymbolTable.Resolve(segment.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Segment '{segment.Name.Text}' already defined");
-                    else SymbolTable.Define(segment.Name.Text, new Segment(new Point(), new Point(), segment.Name.Text));
+                    else
+                    {
+                        if (segment.IsSequence) SymbolTable.Define(segment.Name.Text, SegmentStatement.CreateSequence());
+                        else SymbolTable.Define(segment.Name.Text, new Segment(new Point(), new Point(), segment.Name.Text));
+                    }
                     break;
                 case MeasureStatement measure:
                     if (SymbolTable.Resolve(measure.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Measure '{measure.Name.Text}' already defined");
@@ -158,7 +180,7 @@ namespace GeoWall_E
             SymbolTable.ExitScope();
         }
 
-        static Type InferedTypeToType(TypeInfered argumentType)
+        internal static Type InferedTypeToType(TypeInfered argumentType)
         {
             return argumentType switch
             {
@@ -172,8 +194,7 @@ namespace GeoWall_E
                 TypeInfered.Arc => new Arc(new Point(), new Point(), new Point(), new Measure(new Point(), new Point())),
                 TypeInfered.Segment => new Segment(new Point(), new Point()),
                 TypeInfered.Measure => new Measure(new Point(), new Point()),
-                TypeInfered.ErrorType => new ErrorType(),
-                _ => throw new NotImplementedException(),
+                _ => new ErrorType(),
             };
         }
 
@@ -195,6 +216,9 @@ namespace GeoWall_E
                         if (inference.InferType(element) != firstElementType) Errors.AddError("SEMANTIC ERROR: Sequence elements must be of the same type");
                         CheckExpression(element);
                     }
+                    break;
+                case Count count:
+                    CheckExpression(count.Sequence);
                     break;
                 case BinaryExpression binary:
                     CheckExpression(binary.Left);
