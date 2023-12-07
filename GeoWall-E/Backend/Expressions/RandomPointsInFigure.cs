@@ -1,3 +1,5 @@
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace GeoWall_E
 {
     public class RandomPointsInFigure : Expression, IEvaluable
@@ -14,7 +16,56 @@ namespace GeoWall_E
 
         public Type Evaluate(SymbolTable symbolTable, Error error)
         {
-            throw new NotImplementedException();
+            if (Figure as IEvaluable != null)
+            {
+                var figure = ((IEvaluable)Figure).Evaluate(symbolTable, error);
+                if (figure is Line line)
+                {
+                    List<Point> points=GenerateRandomPointsOnLine(line);
+                    return new Sequence(points);
+                }
+                else
+                {
+                    error.AddError($"SEMANTIC ERROR: Invalid expression in points()");
+                    return new ErrorType();
+                }
+            }
+            else
+            {
+                error.AddError($"SEMANTIC ERROR: Invalid expression in points()");
+                return new ErrorType();
+            }
+        }
+        public List<Point> GenerateRandomPointsOnLine(Line line)
+        {
+            List<Point> points = new List<Point>();
+            Random random = new Random();
+
+            int numPoints = random.Next(1, 51); // Genera un número aleatorio entre 1 y 50
+
+            for (int i = 0; i < numPoints; i++)
+            {
+                double t;
+                if (i < numPoints / 2)
+                {
+                    // Para la primera mitad de los puntos, genera t entre 0 y 0.1
+                    t = random.NextDouble() * 0.1;
+                }
+                else
+                {
+                    // Para la segunda mitad de los puntos, genera t entre 0.9 y 1
+                    t = 0.9 + random.NextDouble() * 0.1;
+                }
+
+                double x = line.P1.X + t * (line.P2.X - line.P1.X);
+                double y = line.P1.Y + t * (line.P2.Y - line.P1.Y);
+                Point point = new Point();
+                point.AsignX(x);
+                point.AsignY(y);
+                points.Add(point);
+            }
+
+            return points;
         }
     }
 }
