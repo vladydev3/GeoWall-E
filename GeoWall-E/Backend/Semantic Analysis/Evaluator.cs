@@ -41,6 +41,56 @@ namespace GeoWall_E
                     case AsignationStatement asignation:
                         addToScope.Add(asignation.Name.Text, HandleAsignationLet(asignation));
                         break;
+                    case MultipleAsignationStatement asignation:
+                        switch (asignation.Value)
+                        {
+                            case SequenceExpression sequenceExpression:
+                                var sequence = sequenceExpression.Evaluate(SymbolTable, Errors);
+                                if (sequence is ErrorType) break;
+
+                                for (int i = 0; i < asignation.IDs.Count; i++)
+                                {
+                                    if (asignation.IDs[i].Type == TokenType.Underline) continue;
+
+                                    if (i == asignation.IDs.Count - 1)
+                                    {
+                                        addToScope.Add(asignation.IDs[i].Text, new Sequence(((Sequence)sequence).RestOfElements(i)));
+                                    }
+
+                                    else addToScope.Add(asignation.IDs[i].Text, ((Sequence)sequence).GetElement(i));
+                                }
+                                break;
+                            case IntersectExpression intersectExpression:
+                                var intersect = intersectExpression.Evaluate(SymbolTable, Errors);
+                                if (intersect is ErrorType) break;
+
+                                for (int i = 0; i < asignation.IDs.Count; i++)
+                                {
+                                    if (asignation.IDs[i].Type == TokenType.Underline) continue;
+
+                                    if (i == asignation.IDs.Count - 1)
+                                    {
+                                        addToScope.Add(asignation.IDs[i].Text, new Sequence(((Sequence)intersect).RestOfElements(i)));
+                                    }
+
+                                    else addToScope.Add(asignation.IDs[i].Text, ((Sequence)intersect).GetElement(i));
+                                }
+                                break;
+                            case UndefinedExpression:
+                                for (int i = 0; i < asignation.IDs.Count; i++)
+                                {
+                                    addToScope.Add(asignation.IDs[i].Text, new Undefined());
+                                }
+                                break;
+                            default:
+                                HandleAsignationNode(new AsignationStatement(asignation.IDs[0], asignation.Value));
+                                for (int i = 1; i < asignation.IDs.Count; i++)
+                                {
+                                    addToScope.Add(asignation.IDs[i].Text, new Undefined());
+                                }
+                                break;
+                        }
+                        break;
                     case PointStatement point:
                         addToScope.Add(point.Name.Text, new Point(point.Name.Text));
                         break;
@@ -201,6 +251,9 @@ namespace GeoWall_E
                 case BinaryExpression binaryExpression:
                     SymbolTable.Define(asignation.Name.Text, binaryExpression.Evaluate(SymbolTable, Errors));
                     break;
+                case UndefinedExpression:
+                    SymbolTable.Define(asignation.Name.Text, new Undefined());
+                    break;
                 case SequenceExpression sequence:
                     SymbolTable.Define(asignation.Name.Text, sequence.Evaluate(SymbolTable, Errors));
                     break;
@@ -295,12 +348,31 @@ namespace GeoWall_E
                 case LetInExpression letin:
                     HandleLetInExpression(letin, toDraw, draw.Color);
                     break;
+                case IfExpression ifexp:
+                    HandleIfExpression(ifexp, toDraw, draw.Color);
+                    break;
                 case Samples samples:
                     var points = samples.Evaluate(SymbolTable, Errors);
                     ((IDraw)points).SetName(draw.Name);
                     toDraw.Add(new Tuple<Type, Color>(points, draw.Color));
                     break;
+                case IntersectExpression intersect:
+                    intersect.HandleIntersectExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
+                    break;
+                default:
+                    Errors.AddError($"RUNTIME ERROR: Expression in draw is {draw.Expression.Type}, which is not drawable");
+                    break;
             }
+        }
+
+        private void HandleIfExpression(IfExpression ifexp, List<Tuple<Type, Color>> toDraw, Color color)
+        {
+            var result = ifexp.Evaluate(SymbolTable, Errors);
+            if (result is not ErrorType && result as IDraw != null)
+            {
+                toDraw.Add(new Tuple<Type, Color>(result, color));
+            }
+            else Errors.AddError($"RUNTIME ERROR: If expression in draw is {result.ObjectType}, which is not drawable.");
         }
 
         void HandleLetInExpression(LetInExpression letin, List<Tuple<Type, Color>> toDraw, Color color) => toDraw.Add(new Tuple<Type, Color>(letin.Evaluate(SymbolTable, Errors), color));
@@ -313,6 +385,7 @@ namespace GeoWall_E
                 ((IDraw)result).SetName(name);
                 toDraw.Add(new Tuple<Type, Color>(result, color));
             }
+            else Errors.AddError($"RUNTIME ERROR: Function '{function.FunctionName.Text}' in draw is {result.ObjectType}, which is not drawable.");
         }
         void AddTypeToDraw(VariableExpression variable, List<Tuple<Type, Color>> toDraw, Color color, string name)
         {

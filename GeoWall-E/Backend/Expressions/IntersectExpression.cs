@@ -128,7 +128,9 @@ namespace GeoWall_E
             if (intersect is not ErrorType)
             {
                 ((Sequence)intersect).SetName(name);
-                toDraw.Add(new Tuple<Type, Color>(intersect, color));
+                // Check if the intersect is not undefined
+                if (((Sequence)intersect).GetElement(0).ObjectType != ObjectTypes.Undefined) toDraw.Add(new Tuple<Type, Color>(intersect, color));
+                else errors.AddError($"RUNTIME ERROR: Expression in draw is Undefined, which is not drawable, Line: {Positions["intersect"].Item1}, Column: {Positions["intersect"].Item2}");
             }
         }
     }
