@@ -40,11 +40,7 @@ namespace GeoWall_E
                     if (evaluatedElement != null) sequenceElementsEvaluated.Add(evaluatedElement);
                 }
 
-                // Check if all elements are of the same type
-                if (sequenceElementsEvaluated.All(x => x.ObjectType == sequenceElementsEvaluated[0].ObjectType)) return new Sequence(sequenceElementsEvaluated);
-
-                error.AddError("Sequence elements must be of the same type");
-                return new ErrorType();
+                return new Sequence(sequenceElementsEvaluated);
             }
             if (LowerBound != null && UpperBound == null)
             {
@@ -63,7 +59,6 @@ namespace GeoWall_E
 
                 return new Sequence(Enumerable.Range(lowerBound, upperBound - lowerBound).Select(x => new NumberLiteral(x)));
             }
-            error.AddError("Sequence expression is invalid");
             return new ErrorType();
         }
 
@@ -80,13 +75,10 @@ namespace GeoWall_E
                     if (evaluatedElement != null) sequenceElementsEvaluated.Add(evaluatedElement);
                 }
 
-                // Check if all elements are of the same type
-                if (sequenceElementsEvaluated.All(x => x.ObjectType == sequenceElementsEvaluated[0].ObjectType))
-                {
-                    toDraw.Add(new Tuple<Type, Color>(new Sequence(sequenceElementsEvaluated), color));
-                    return;
-                }
-                errors.AddError("Sequence elements must be of the same type");
+                Sequence sequence = new(sequenceElementsEvaluated);
+                sequence.SetName(name);
+                toDraw.Add(new Tuple<Type, Color>(sequence, color));
+                return;
             }
         }
     }

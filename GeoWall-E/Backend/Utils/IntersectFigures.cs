@@ -369,7 +369,7 @@ namespace GeoWall_E
                 return new Sequence(new List<Type>() { point1, point2 });
             }
         }
-    
+
         internal static Sequence IntersectTwoLines(Type f1, Type f2)
         {
             var line1 = (Line)f1;
@@ -381,7 +381,7 @@ namespace GeoWall_E
             var b1 = line1.P1.Y - m1 * line1.P1.X;
             var b2 = line2.P1.Y - m2 * line2.P1.X;
 
-            if (m1 == m2) return new Sequence(new List<Type>() { new Undefined });
+            if (m1 == m2) return new Sequence(new List<Type>() { new Undefined() });
 
             var x = (b2 - b1) / (m1 - m2);
             var y = m1 * x + b1;

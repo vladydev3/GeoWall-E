@@ -17,6 +17,8 @@ namespace GeoWall_E
             Root = root;
             Errors_ = error;
             SymbolTable = new SymbolTable();
+            var checker = new SemanticChecker(Errors);
+            checker.Check(Root);
         }
 
         public Evaluator(List<Statement> letblock, Error error) // If we want to evaluate the let block
@@ -113,6 +115,9 @@ namespace GeoWall_E
                     case CircleStatement circle:
                         SymbolTable.Define(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point(), circle.Name.Text), circle.Name.Text));
                         break;
+                    case MeasureStatement measure:
+                        SymbolTable.Define(measure.Name.Text, new Measure(new Point(), new Point(), measure.Name.Text));
+                        break;
                     case FunctionDeclaration function:
                         SymbolTable.Define(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
                         break;
@@ -139,17 +144,13 @@ namespace GeoWall_E
                     for (int i = 0; i < asignation.IDs.Count; i++)
                     {
                         if (asignation.IDs[i].Type == TokenType.Underline) continue;
-                        if (SymbolTable.Resolve(asignation.IDs[i].Text) is not ErrorType)
-                        {
-                            Errors.AddError($"SEMANTIC ERROR: '{asignation.IDs[i].Text}' already defined.");
-                            return;
-                        }
+
                         if (i == asignation.IDs.Count - 1)
                         {
                             SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)sequence).RestOfElements(i)));
                         }
 
-                        SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)sequence).GetElement(i));
+                        else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)sequence).GetElement(i));
                     }
                     break;
                 case IntersectExpression intersectExpression:
@@ -175,11 +176,17 @@ namespace GeoWall_E
         {
             switch (asignation.Value)
             {
+                case BinaryExpression binaryExpression:
+                    SymbolTable.Define(asignation.Name.Text, binaryExpression.Evaluate(SymbolTable, Errors));
+                    break;
                 case SequenceExpression sequence:
                     SymbolTable.Define(asignation.Name.Text, sequence.Evaluate(SymbolTable, Errors));
                     break;
                 case NumberExpression number:
                     SymbolTable.Define(asignation.Name.Text, number.Evaluate(SymbolTable, Errors));
+                    break;
+                case StringExpression stringexp:
+                    SymbolTable.Define(asignation.Name.Text, stringexp.Evaluate(SymbolTable, Errors));
                     break;
                 case VariableExpression variable:
                     HandleVariableExpression(variable, asignation.Name.Text);
@@ -229,8 +236,7 @@ namespace GeoWall_E
         void HandleVariableExpression(VariableExpression variable, string text)
         {
             var variableFound = SymbolTable.Resolve(variable.Name.Text);
-            if (variableFound is not ErrorType) SymbolTable.Define(text, variableFound);
-            else Errors_.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
+            SymbolTable.Define(text, variableFound);
         }
 
         void HandleDrawNode(Draw draw, List<Tuple<Type, Color>> toDraw)
@@ -283,13 +289,23 @@ namespace GeoWall_E
             var variableFound = SymbolTable.Resolve(variable.Name.Text);
             if (variableFound is not ErrorType && variableFound as IDraw != null)
             {
+                if (variableFound is Sequence sequence)
+                {
+                    if (sequence.GetElement(0) is Undefined) return;
+                    if (sequence.GetElement(0) as IDraw == null)
+                    {
+                        Errors.AddError($"RUNTIME ERROR: Variable {variable.Name.Text} is a sequence of {variableFound.ObjectType}, which is not drawable, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
+                        return;
+                    }
+                }
+
                 ((IDraw)variableFound).SetName(name);
                 toDraw.Add(new Tuple<Type, Color>(variableFound, color));
             }
 
             else if (variableFound is ErrorType) Errors.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
 
-            else Errors.AddError($"Variable {variable.Name.Text} is {variableFound.ObjectType}, which is not drawable, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
+            else Errors.AddError($"RUNTIME ERROR: Variable {variable.Name.Text} is {variableFound.ObjectType}, which is not drawable, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
         }
     }
 }

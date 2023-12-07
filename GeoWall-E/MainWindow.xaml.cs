@@ -70,6 +70,7 @@ namespace GeoWall_E
             {
                 // Habilita el botón Run si no hay errores
                 Run.IsEnabled = true;
+                handler.HandleEvaluate();
             }
 
         }
@@ -78,79 +79,89 @@ namespace GeoWall_E
             // Borra el Canvas
             drawingCanvas.Children.Clear();
             Consola.Text = "";
-                foreach (var item in handler.ToDraw)
+
+            if (handler.CheckErrors() ) {
+                List<string> errors = handler.Errors.GetAllErrors.ToList();
+
+                foreach (string error in errors)
                 {
+                    Consola.Text += error + Environment.NewLine;
+                }
+            }
+            else { 
+            foreach (var item in handler.ToDraw)
+            {
 
-                    if (item.Item1 is Point point)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, point,item.Item2);
-                        drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(point.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(point.Y - 250);
+                if (item.Item1 is Point point)
+                {
+                    Picasso drawer = new Picasso(drawingCanvas, point, item.Item2);
+                    drawer.Draw();
+                    scaleTransform.ScaleX = 1;
+                    scaleTransform.ScaleY = 1;
+                    // Restablece el valor del Slider al valor predeterminado
+                    zoomSlider.Value = 1;
+                    scrollViewer.ScrollToHorizontalOffset(point.X - 400);
+                    scrollViewer.ScrollToVerticalOffset(point.Y - 250);
 
-                    }
-                    else if ( item.Item1 is Line line)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, line, item.Item2);
-                        drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(line.P1.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(line.P1.Y - 250);
-                    }
+                }
+                else if (item.Item1 is Line line)
+                {
+                    Picasso drawer = new Picasso(drawingCanvas, line, item.Item2);
+                    drawer.Draw();
+                    scaleTransform.ScaleX = 1;
+                    scaleTransform.ScaleY = 1;
+                    // Restablece el valor del Slider al valor predeterminado
+                    zoomSlider.Value = 1;
+                    scrollViewer.ScrollToHorizontalOffset(line.P1.X - 400);
+                    scrollViewer.ScrollToVerticalOffset(line.P1.Y - 250);
+                }
 
-                    else if ( item.Item1 is Segment segment)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, segment, item.Item2);
-                        drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(segment.Start.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(segment.Start.Y - 250);
-                    }
+                else if (item.Item1 is Segment segment)
+                {
+                    Picasso drawer = new Picasso(drawingCanvas, segment, item.Item2);
+                    drawer.Draw();
+                    scaleTransform.ScaleX = 1;
+                    scaleTransform.ScaleY = 1;
+                    // Restablece el valor del Slider al valor predeterminado
+                    zoomSlider.Value = 1;
+                    scrollViewer.ScrollToHorizontalOffset(segment.Start.X - 400);
+                    scrollViewer.ScrollToVerticalOffset(segment.Start.Y - 250);
+                }
 
-                    else if ( item.Item1 is Ray ray)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, ray, item.Item2);
-                        drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(ray.Start.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(ray.Start.Y - 250);
-                    }
+                else if (item.Item1 is Ray ray)
+                {
+                    Picasso drawer = new Picasso(drawingCanvas, ray, item.Item2);
+                    drawer.Draw();
+                    scaleTransform.ScaleX = 1;
+                    scaleTransform.ScaleY = 1;
+                    // Restablece el valor del Slider al valor predeterminado
+                    zoomSlider.Value = 1;
+                    scrollViewer.ScrollToHorizontalOffset(ray.Start.X - 400);
+                    scrollViewer.ScrollToVerticalOffset(ray.Start.Y - 250);
+                }
 
-                    else if ( item.Item1 is Circle circle)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, circle, item.Item2);
-                        drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(circle.Center.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(circle.Center.Y - 250);
-                    }
+                else if (item.Item1 is Circle circle)
+                {
+                    Picasso drawer = new Picasso(drawingCanvas, circle, item.Item2);
+                    drawer.Draw();
+                    scaleTransform.ScaleX = 1;
+                    scaleTransform.ScaleY = 1;
+                    // Restablece el valor del Slider al valor predeterminado
+                    zoomSlider.Value = 1;
+                    scrollViewer.ScrollToHorizontalOffset(circle.Center.X - 400);
+                    scrollViewer.ScrollToVerticalOffset(circle.Center.Y - 250);
+                }
 
-                    else if ( item.Item1 is Arc arc)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, arc, item.Item2);
-                        drawer.Draw();
-                        scrollViewer.ScrollToHorizontalOffset(arc.Center.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(arc.Center.Y - 250);
+                else if (item.Item1 is Arc arc)
+                {
+                    Picasso drawer = new Picasso(drawingCanvas, arc, item.Item2);
+                    drawer.Draw();
+                    scrollViewer.ScrollToHorizontalOffset(arc.Center.X - 400);
+                    scrollViewer.ScrollToVerticalOffset(arc.Center.Y - 250);
 
-                    }
-                    else if (item.Item1 is Sequence sequence)
-                    {
+                }
+                else if (item.Item1 is Sequence sequence)
+                {
                     foreach (var element in sequence.Elements)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, element, item.Item2);
@@ -212,7 +223,7 @@ namespace GeoWall_E
 
                     }
                 }
-                        
+            }       
             }
         }
 

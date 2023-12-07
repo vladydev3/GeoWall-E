@@ -46,26 +46,11 @@ namespace GeoWall_E
 
         public void HandleMeasureExpression(SymbolTable symbolTable, Error errors, string asignationName)
         {
-            if (P1 as IEvaluable != null && P2 as IEvaluable != null)
+            var measure = Evaluate(symbolTable, errors);
+            if (measure is not ErrorType)
             {
-                var p1 = ((IEvaluable)P1).Evaluate(symbolTable, errors);
-                var p2 = ((IEvaluable)P2).Evaluate(symbolTable, errors);
-                if (p1 is not ErrorType && p2 is not ErrorType)
-                {
-                    if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point)
-                    {
-                        var measure = new Measure((Point)p1, (Point)p2);
-                        if (symbolTable.Resolve(asignationName) is not ErrorType)
-                        {
-                            errors.AddError($"SEMANTIC ERROR: {asignationName} already defined, Line: {Positions["measure"].Item1}, Column: {Positions["measure"].Item2}");
-                        }
-                        symbolTable.Define(asignationName, measure);
-                    }
-                    else if (p1.ObjectType != ObjectTypes.Point) errors.AddError($"Expected Point type but got {p1.ObjectType} Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
-                    else errors.AddError($"Expected Point type but got {p2.ObjectType} Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
-                }
+                symbolTable.Define(asignationName, (Measure)measure);
             }
-            else errors.AddError($"Invalid expression in measure(), Line: {Positions["measure"].Item1}, Column: {Positions["measure"].Item2}");
         }
     }
 }
