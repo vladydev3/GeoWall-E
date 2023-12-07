@@ -9,7 +9,8 @@ namespace GeoWall_E
     internal class SemanticChecker
     {
         Error Errors_ { get; set; }
-        SymbolTable SymbolTable_ { get; set; }
+        SymbolTable? SymbolTable_ { get; set; }
+        HashSet<Expression> checkedExpressions = new();
 
         public SemanticChecker(Error error)
         {
@@ -200,6 +201,9 @@ namespace GeoWall_E
 
         internal void CheckExpression(Expression expression)
         {
+            // Si ya hemos chequeado la expresion, no la volvemos a chequear
+            if (checkedExpressions.Contains(expression)) return;
+            checkedExpressions.Add(expression);
             switch (expression)
             {
                 case ErrorExpression:
