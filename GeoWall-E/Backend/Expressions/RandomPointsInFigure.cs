@@ -21,7 +21,7 @@ namespace GeoWall_E
                 var figure = ((IEvaluable)Figure).Evaluate(symbolTable, error);
                 if (figure is Line line)
                 {
-                    IEnumerable<Point> points = GenerateRandomPointsOnLine(line);
+                    List<Point> points = GenerateRandomPointsOnLine(line);
                     return new Sequence(points);
                 }
                 else
@@ -36,22 +36,36 @@ namespace GeoWall_E
                 return new ErrorType();
             }
         }
-        public IEnumerable<Point> GenerateRandomPointsOnLine(Line line)
+        public List<Point> GenerateRandomPointsOnLine(Line line)
         {
+            List<Point> points = new List<Point>();
             Random random = new Random();
-            while (true)
+
+            int numPoints = random.Next(1, 51); // Genera un número aleatorio entre 1 y 50
+
+            for (int i = 0; i < numPoints; i++)
             {
                 double t;
-                // Genera t entre 0 y 1
-                t = random.NextDouble();
+                if (i < numPoints / 2)
+                {
+                    // Para la primera mitad de los puntos, genera t entre 0 y 0.1
+                    t = random.NextDouble() * 0.1;
+                }
+                else
+                {
+                    // Para la segunda mitad de los puntos, genera t entre 0.9 y 1
+                    t = 0.9 + random.NextDouble() * 0.1;
+                }
+
                 double x = line.P1.X + t * (line.P2.X - line.P1.X);
-                double y = line.P1.Y + t * (line.P2.Y - line.P1.Y);
+                double y = line.P1.Y + t * (line.P1.Y - line.P1.Y);
                 Point point = new Point();
                 point.AsignX(x);
                 point.AsignY(y);
-                yield return point;
+                points.Add(point);
             }
 
+            return points;
         }
     }
 }
