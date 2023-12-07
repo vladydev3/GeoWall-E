@@ -76,8 +76,17 @@ namespace GeoWall_E
                 }
 
                 Sequence sequence = new(sequenceElementsEvaluated);
-                sequence.SetName(name);
-                toDraw.Add(new Tuple<Type, Color>(sequence, color));
+                TypeInference typeInference = new(symbolTable);
+                foreach (var element in sequence.Elements)
+                {
+                    if (element is not IDraw)
+                    {
+                        var type = typeInference.InferType(element);
+                        errors.AddError($"RUNTIME ERROR: Variable in draw function is {SemanticChecker.InferedTypeToType(type).ObjectType}, which is not drawable.");
+                    }
+                    ((IDraw)element).SetName(name);
+                    toDraw.Add(new Tuple<Type, Color>(element, color));
+                }
                 return;
             }
         }
