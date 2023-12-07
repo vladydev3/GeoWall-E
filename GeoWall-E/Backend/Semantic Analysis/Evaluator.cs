@@ -29,6 +29,7 @@ namespace GeoWall_E
         }
 
         public Error Errors => Errors_;
+        public SymbolTable SymbolTable_ => SymbolTable;
 
         public Dictionary<string, Type> EvaluateLetBlock()
         {
@@ -94,6 +95,9 @@ namespace GeoWall_E
                     case ErrorStatement:
                     case EmptyNode:
                         break;
+                    case ImportStatement import:
+                        SymbolTable.Merge(import.Import(), Errors);
+                        break;
                     case AsignationStatement asignation:
                         HandleAsignationNode(asignation);
                         break;
@@ -101,19 +105,24 @@ namespace GeoWall_E
                         HandleMultipleAsignationNode(asignation);
                         break;
                     case PointStatement point:
-                        SymbolTable.Define(point.Name.Text, new Point(point.Name.Text));
+                        if (point.IsSequence) SymbolTable.Define(point.Name.Text, PointStatement.CreateSequence());
+                        else SymbolTable.Define(point.Name.Text, new Point(point.Name.Text));
                         break;
                     case LineStatement line:
-                        SymbolTable.Define(line.Name.Text, new Line(new Point(), new Point(), line.Name.Text));
+                        if (line.IsSequence) SymbolTable.Define(line.Name.Text, LineStatement.CreateSequence());
+                        else SymbolTable.Define(line.Name.Text, new Line(new Point(), new Point(), line.Name.Text));
                         break;
                     case SegmentStatement segment:
-                        SymbolTable.Define(segment.Name.Text, new Segment(new Point(), new Point(), segment.Name.Text));
+                        if (segment.IsSequence) SymbolTable.Define(segment.Name.Text, SegmentStatement.CreateSequence());
+                        else SymbolTable.Define(segment.Name.Text, new Segment(new Point(), new Point(), segment.Name.Text));
                         break;
                     case RayStatement ray:
-                        SymbolTable.Define(ray.Name.Text, new Ray(new Point(), new Point(), ray.Name.Text));
+                        if (ray.IsSequence) SymbolTable.Define(ray.Name.Text, RayStatement.CreateSequence());
+                        else SymbolTable.Define(ray.Name.Text, new Ray(new Point(), new Point(), ray.Name.Text));
                         break;
                     case CircleStatement circle:
-                        SymbolTable.Define(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point(), circle.Name.Text), circle.Name.Text));
+                        if (circle.IsSequence) SymbolTable.Define(circle.Name.Text, CircleStatement.CreateSequence());
+                        else SymbolTable.Define(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point(), circle.Name.Text), circle.Name.Text));
                         break;
                     case MeasureStatement measure:
                         SymbolTable.Define(measure.Name.Text, new Measure(new Point(), new Point(), measure.Name.Text));
@@ -269,6 +278,11 @@ namespace GeoWall_E
                     break;
                 case LetInExpression letin:
                     HandleLetInExpression(letin, toDraw, draw.Color);
+                    break;
+                case Samples samples:
+                    var points = samples.Evaluate(SymbolTable, Errors);
+                    ((IDraw)points).SetName(draw.Name);
+                    toDraw.Add(new Tuple<Type, Color>(points, draw.Color));
                     break;
             }
         }

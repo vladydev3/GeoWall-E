@@ -291,8 +291,15 @@ namespace GeoWall_E
             Canvas.SetLeft(label, midX);
             Canvas.SetTop(label, midY);
             // Calcular la pendiente de la línea
-            double m = (End.Y - Start.Y) / (End.X - Start.X);
-
+            double m;
+            if (End.X == Start.X)
+            {
+                m = (End.Y - Start.Y) / (End.X - Start.X + 1);
+            }
+            else
+            {
+                m = (End.Y - Start.Y) / (End.X - Start.X);
+            }
             // Calcular el intercepto y
             double b = Start.Y - m * Start.X;
 

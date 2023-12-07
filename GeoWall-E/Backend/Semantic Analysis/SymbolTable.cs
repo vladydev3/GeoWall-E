@@ -45,12 +45,14 @@ public class SymbolTable
         return new ErrorType();
     }
 
-    public Type ResolveInGlobalScope(string name)
+    public void Merge(SymbolTable symbolTable, Error error)
     {
-        if (scopes.Last().TryGetValue(name, out Type value))
+        foreach (var scope in symbolTable.scopes)
         {
-            return value;
+            foreach (var (key, value) in scope)
+            {
+                Define(key, value);
+            }
         }
-        return new ErrorType();
     }
 }
