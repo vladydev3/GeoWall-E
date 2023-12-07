@@ -14,10 +14,10 @@ public class Count : Expression, IEvaluable
 
     public Type Evaluate(SymbolTable symbolTable, Error error)
     {
-        var sequence = Sequence as IEvaluable;
-        if (sequence == null)
+        if (Sequence is not IEvaluable sequence)
         {
-            // TODO
+            error.AddError($"SEMANTIC ERROR: Expression in count() isn't a sequence");
+            return new ErrorType();
         }
         var sequenceEvaluated = sequence.Evaluate(symbolTable, error);
 
@@ -27,7 +27,7 @@ public class Count : Expression, IEvaluable
             return new ErrorType();
         }
 
-        return new NumberLiteral((double)seq.Count());
+        return new NumberLiteral(seq.Count());
     }
 }
 
@@ -37,7 +37,7 @@ public class Randoms : Expression, IEvaluable
 
     public Type Evaluate(SymbolTable symbolTable, Error error)
     {
-        var randoms = CreateRandoms();  // IEnumerable<NumberLiteral>
+        var randoms = CreateRandoms();  //IEnumerable<NumberLiteral>
         return new Sequence(randoms);
     }
 

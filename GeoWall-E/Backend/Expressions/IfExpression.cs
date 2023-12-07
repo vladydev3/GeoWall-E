@@ -25,6 +25,8 @@ public class IfExpression : Expression, IEvaluable
         var evaluatedThen = (IEvaluable)Then;
         var evaluatedElse = (IEvaluable)Else;
 
+        // TODO Then and Else must return the same type
+
         var evaluatedIfResult = evaluatedIf.Evaluate(symbolTable, error);
         if (evaluatedIfResult.ObjectType == ObjectTypes.Error) return evaluatedIfResult;
         if (evaluatedIfResult.ObjectType == ObjectTypes.Number)

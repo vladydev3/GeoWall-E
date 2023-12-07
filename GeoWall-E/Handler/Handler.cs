@@ -10,9 +10,10 @@ namespace GeoWall_E
     {
         private readonly string code;
         private Error errors;
-        private List<Tuple<Type,Color>> toDraw;
+        private List<Tuple<Type, Color>> toDraw;
         private List<Token> tokens;
         private AST? ast;
+        private Evaluator? evaluator;
 
         public Handler(string code)
         {
@@ -23,10 +24,16 @@ namespace GeoWall_E
 
             HandleLexer();
             HandleParse();
-            HandleEvaluator();
+            HandleSemantic();
         }
 
-        public void HandleLexer() { 
+        public void HandleEvaluate()
+        {
+            toDraw = evaluator.Evaluate();
+        }
+
+        public void HandleLexer()
+        {
             var lexer = new Lexer(code);
             tokens = lexer.Tokenize();
             errors = lexer.Errors;
@@ -34,16 +41,15 @@ namespace GeoWall_E
 
         public void HandleParse()
         {
-            var parser = new Parser(tokens,errors);
+            var parser = new Parser(tokens, errors);
             ast = parser.Parse_();
             errors = parser.Errors;
         }
 
-        public void HandleEvaluator()
+        public void HandleSemantic()
         {
             if (ast == null) return;
-            var evaluator = new Evaluator(ast.Root, errors);
-            toDraw = evaluator.Evaluate();
+            evaluator = new Evaluator(ast.Root, errors);
         }
 
         public bool CheckErrors()
@@ -51,7 +57,7 @@ namespace GeoWall_E
             return errors.AnyError();
         }
 
-        public List<Tuple<Type,Color>> ToDraw => toDraw;
+        public List<Tuple<Type, Color>> ToDraw => toDraw;
 
         public Error Errors => errors;
     }
