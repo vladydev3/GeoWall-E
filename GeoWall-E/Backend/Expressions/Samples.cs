@@ -12,11 +12,9 @@ namespace GeoWall_E
 
         static IEnumerable<Type> CreatePoints()
         {
-            // Cantidad de puntos a generar
             var random = new Random();
-            var count = random.Next(10, 10000);
 
-            for (var i = 0; i < count; i++)
+            while (true)
             {
                 var point = new Point();
                 // Asignar coordenadas random
