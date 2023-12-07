@@ -48,7 +48,6 @@ namespace GeoWall_E
             {
                 var startToken = Current;
                 var member = ParseMember();
-                if (skip) break;
                 if (member is ErrorExpression || member is ErrorStatement) break;
                 members.Add(member);
                 if (member as Expression != null) Match(TokenType.EOL);
@@ -124,6 +123,7 @@ namespace GeoWall_E
         {
             NextToken();
             var filename = Match(TokenType.String);
+            Match(TokenType.EOL);
             return new ImportStatement(filename);
         }
 
