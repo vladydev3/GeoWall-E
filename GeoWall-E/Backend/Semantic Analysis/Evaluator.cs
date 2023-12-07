@@ -234,6 +234,38 @@ namespace GeoWall_E
                         SymbolTable.Define(asignation.IDs[i].Text, new Undefined());
                     }
                     break;
+                case Samples samples:
+                    var points = samples.Evaluate(SymbolTable, Errors);
+                    if (points is ErrorType) return;
+
+                    for (int i = 0; i < asignation.IDs.Count; i++)
+                    {
+                        if (asignation.IDs[i].Type == TokenType.Underline) continue;
+
+                        if (i == asignation.IDs.Count - 1)
+                        {
+                            SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)points).RestOfElements(i)));
+                        }
+
+                        else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)points).GetElement(i));
+                    }
+                    break;
+                case RandomPointsInFigure random:
+                    var randomPoints = random.Evaluate(SymbolTable, Errors);
+                    if (randomPoints is ErrorType) return;
+
+                    for (int i = 0; i < asignation.IDs.Count; i++)
+                    {
+                        if (asignation.IDs[i].Type == TokenType.Underline) continue;
+
+                        if (i == asignation.IDs.Count - 1)
+                        {
+                            SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)randomPoints).RestOfElements(i)));
+                        }
+
+                        else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)randomPoints).GetElement(i));
+                    }
+                    break;
                 default:
                     HandleAsignationNode(new AsignationStatement(asignation.IDs[0], asignation.Value));
                     for (int i = 1; i < asignation.IDs.Count; i++)
@@ -350,11 +382,6 @@ namespace GeoWall_E
                     break;
                 case IfExpression ifexp:
                     HandleIfExpression(ifexp, toDraw, draw.Color);
-                    break;
-                case Samples samples:
-                    var points = samples.Evaluate(SymbolTable, Errors);
-                    ((IDraw)points).SetName(draw.Name);
-                    toDraw.Add(new Tuple<Type, Color>(points, draw.Color));
                     break;
                 case RandomPointsInFigure random:
                     var randomPoints = random.Evaluate(SymbolTable, Errors);
