@@ -356,6 +356,11 @@ namespace GeoWall_E
                     ((IDraw)points).SetName(draw.Name);
                     toDraw.Add(new Tuple<Type, Color>(points, draw.Color));
                     break;
+                case RandomPointsInFigure random:
+                    var randomPoints = random.Evaluate(SymbolTable, Errors);
+                    ((IDraw)randomPoints).SetName(draw.Name);
+                    toDraw.Add(new Tuple<Type, Color>(randomPoints, draw.Color));
+                    break;
                 case IntersectExpression intersect:
                     intersect.HandleIntersectExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;

@@ -21,7 +21,7 @@ namespace GeoWall_E
                 var figure = ((IEvaluable)Figure).Evaluate(symbolTable, error);
                 if (figure is Line line)
                 {
-                    List<Point> points=GenerateRandomPointsOnLine(line);
+                    List<Point> points = GenerateRandomPointsOnLine(line);
                     return new Sequence(points);
                 }
                 else
@@ -41,7 +41,7 @@ namespace GeoWall_E
             List<Point> points = new List<Point>();
             Random random = new Random();
 
-            int numPoints = random.Next(1, 51); // Genera un número aleatorio entre 1 y 50
+            int numPoints = random.Next(1, 51); // Genera un nï¿½mero aleatorio entre 1 y 50
 
             for (int i = 0; i < numPoints; i++)
             {
