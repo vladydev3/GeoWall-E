@@ -69,6 +69,64 @@ public class BinaryExpression : Expression, IEvaluable
                         return new ErrorType();
                 };
             }
+            else if (leftResult is StringLiteral stringLiteral && rightResult is StringLiteral stringLiteral1)
+            {
+                var left_ = stringLiteral;
+                var right_ = stringLiteral1;
+                switch (Operator.Text)
+                {
+                    case "+":
+                        return new StringLiteral(left_.Value + right_.Value);
+                    case "<":
+                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) < 0);
+                    case ">":
+                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) > 0);
+                    case "<=":
+                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) <= 0);
+                    case ">=":
+                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) >= 0);
+                    case "==":
+                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) == 0);
+                    case "!=":
+                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) != 0);
+                    default:
+                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for String type");
+                        return new ErrorType();
+                }
+            }
+            else if (leftResult is Undefined undefined && rightResult is Sequence)
+            {
+                switch (Operator.Text)
+                {
+                    case "+":
+                        return new Sequence(new List<Type>() { undefined });
+                    default:
+                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Undefined and Sequence type");
+                        return new ErrorType();
+                }
+            }
+            else if (leftResult is Sequence sequence2 && rightResult is Sequence sequence3)
+            {
+                switch (Operator.Text)
+                {
+                    case "+":
+                        return new Sequence(sequence2.Elements.Concat(sequence3.Elements));
+                    default:
+                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Sequence type");
+                        return new ErrorType();
+                }
+            }
+            else if (leftResult is Sequence sequence1 && rightResult is Undefined undefined1)
+            {
+                switch (Operator.Text)
+                {
+                    case "+":
+                        return new Sequence(sequence1.Elements.Append(undefined1));
+                    default:
+                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Sequence and Undefined type");
+                        return new ErrorType();
+                }
+            }
             else if (leftResult is Measure measure1 && rightResult is Measure measure2)
             {
                 switch (Operator.Text)
@@ -79,6 +137,18 @@ public class BinaryExpression : Expression, IEvaluable
                         return new Measure(Math.Abs(measure1.Value - measure2.Value));
                     case "/":
                         return new NumberLiteral((int)(measure1.Value / measure2.Value));
+                    case "<":
+                        return new BooleanLiteral(measure1.Value < measure2.Value);
+                    case ">":
+                        return new BooleanLiteral(measure1.Value > measure2.Value);
+                    case "<=":
+                        return new BooleanLiteral(measure1.Value <= measure2.Value);
+                    case ">=":
+                        return new BooleanLiteral(measure1.Value >= measure2.Value);
+                    case "==":
+                        return new BooleanLiteral(measure1.Value == measure2.Value);
+                    case "!=":
+                        return new BooleanLiteral(measure1.Value != measure2.Value);
                     default:
                         error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Measure type");
                         return new ErrorType();
