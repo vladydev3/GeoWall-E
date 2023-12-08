@@ -13,11 +13,7 @@ namespace GeoWall_E
         static IEnumerable<NumberLiteral> CreateRandoms()
         {
             var random = new Random();
-            // Se crean numeros de 0 a 1, la cantidad de numeros es aleatoria
-            // Cantidad de numeros
-            var count = random.Next(10, 100);
-            // Crear numeros
-            for (int i = 0; i <= count; i++)
+            while (true)
             {
                 yield return new NumberLiteral(random.NextDouble());
             }

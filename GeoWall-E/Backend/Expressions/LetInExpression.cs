@@ -19,13 +19,8 @@ public class LetInExpression : Expression, IEvaluable
     {
         symbolTable.EnterScope();
 
-        var evaluator = new Evaluator(Let, error);
-        var toAddtoScope = evaluator.EvaluateLetBlock();
-
-        foreach (var (name, type) in toAddtoScope)
-        {
-            symbolTable.Define(name, type);
-        }
+        var evaluator = new Evaluator(Let, error, symbolTable);
+        evaluator.EvaluateLetBlock();
 
         var evaluatedIn = (IEvaluable)In;
         var result = evaluatedIn.Evaluate(symbolTable, error);
