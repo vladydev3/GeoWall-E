@@ -35,6 +35,14 @@ namespace GeoWall_E
             SymbolTable.ExitScope();
         }
 
+        // private void CheckStatement<T>(T statement, Func<T> createSequence, Func<T> create) where T : Statement
+        // {
+        //     if (SymbolTable.Resolve(statement.Name.Text) is not ErrorType or Function)
+        //         Errors.AddError($"SEMANTIC ERROR: {typeof(T).Name} '{statement.Name.Text}' already defined");
+        //     else
+        //         SymbolTable.Define(statement.Name.Text, statement.IsSequence ? createSequence() : create());
+        // }
+
         private void Check(Node node)
         {
             switch (node)
@@ -214,12 +222,17 @@ namespace GeoWall_E
                 case SequenceExpression sequence:
                     if (sequence.Elements == null) break;
                     TypeInference inference = new(SymbolTable);
-                    var firstElementType = inference.InferType(sequence.Elements[0]);
-                    foreach (var element in sequence.Elements)
+
+                    if (sequence.Elements.Count > 0)
                     {
-                        if (inference.InferType(element) != firstElementType) Errors.AddError("SEMANTIC ERROR: Sequence elements must be of the same type");
-                        CheckExpression(element);
+                        var firstElementType = inference.InferType(sequence.Elements[0]);
+                        foreach (var element in sequence.Elements)
+                        {
+                            if (inference.InferType(element) != firstElementType) Errors.AddError("SEMANTIC ERROR: Sequence elements must be of the same type");
+                            CheckExpression(element);
+                        }
                     }
+
                     break;
                 case Count count:
                     CheckExpression(count.Sequence);
