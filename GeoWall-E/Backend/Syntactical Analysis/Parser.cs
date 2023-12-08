@@ -461,6 +461,13 @@ namespace GeoWall_E
             if (Peek(1).Type == TokenType.LParen) return ParseMeasureExpression();
 
             NextToken();
+            if (Current.Type == TokenType.Sequence)
+            {
+                NextToken();
+                var id_ = Match(TokenType.Identifier);
+                Match(TokenType.EOL);
+                return new MeasureStatement(id_, true);
+            }
             var name = Match(TokenType.Identifier);
             Match(TokenType.EOL);
 

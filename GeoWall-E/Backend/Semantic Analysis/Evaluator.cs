@@ -151,27 +151,28 @@ namespace GeoWall_E
                         HandleMultipleAsignationNode(asignation);
                         break;
                     case PointStatement point:
-                        if (point.IsSequence) SymbolTable.Define(point.Name.Text, PointStatement.CreateSequence());
+                        if (point.IsSequence) SymbolTable.Define(point.Name.Text, point.CreateSequence());
                         else SymbolTable.Define(point.Name.Text, new Point(point.Name.Text));
                         break;
                     case LineStatement line:
-                        if (line.IsSequence) SymbolTable.Define(line.Name.Text, LineStatement.CreateSequence());
+                        if (line.IsSequence) SymbolTable.Define(line.Name.Text, line.CreateSequence());
                         else SymbolTable.Define(line.Name.Text, new Line(new Point(), new Point(), line.Name.Text));
                         break;
                     case SegmentStatement segment:
-                        if (segment.IsSequence) SymbolTable.Define(segment.Name.Text, SegmentStatement.CreateSequence());
+                        if (segment.IsSequence) SymbolTable.Define(segment.Name.Text, segment.CreateSequence());
                         else SymbolTable.Define(segment.Name.Text, new Segment(new Point(), new Point(), segment.Name.Text));
                         break;
                     case RayStatement ray:
-                        if (ray.IsSequence) SymbolTable.Define(ray.Name.Text, RayStatement.CreateSequence());
+                        if (ray.IsSequence) SymbolTable.Define(ray.Name.Text, ray.CreateSequence());
                         else SymbolTable.Define(ray.Name.Text, new Ray(new Point(), new Point(), ray.Name.Text));
                         break;
                     case CircleStatement circle:
-                        if (circle.IsSequence) SymbolTable.Define(circle.Name.Text, CircleStatement.CreateSequence());
+                        if (circle.IsSequence) SymbolTable.Define(circle.Name.Text, circle.CreateSequence());
                         else SymbolTable.Define(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point(), circle.Name.Text), circle.Name.Text));
                         break;
                     case MeasureStatement measure:
-                        SymbolTable.Define(measure.Name.Text, new Measure(new Point(), new Point(), measure.Name.Text));
+                        if (measure.IsSequence) SymbolTable.Define(measure.Name.Text, measure.CreateSequence());
+                        else SymbolTable.Define(measure.Name.Text, new Measure(new Point(), new Point(), measure.Name.Text));
                         break;
                     case FunctionDeclaration function:
                         SymbolTable.Define(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
@@ -425,8 +426,6 @@ namespace GeoWall_E
                 ((IDraw)variableFound).SetName(name);
                 toDraw.Add(new Tuple<Type, Color>(variableFound, color));
             }
-
-            else if (variableFound is ErrorType) Errors.AddError($"Variable {variable.Name.Text} not declared, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
 
             else Errors.AddError($"RUNTIME ERROR: Variable {variable.Name.Text} is {variableFound.ObjectType}, which is not drawable, Line: {variable.Name.Line}, Column: {variable.Name.Column}");
         }
