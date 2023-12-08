@@ -14,6 +14,7 @@ global using System.Windows.Navigation;
 global using System.Windows.Shapes;
 global using System.Windows.Threading;
 using System.Collections;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows.Media.Media3D;
@@ -31,69 +32,65 @@ namespace GeoWall_E
         private System.Windows.Point zoomCenter;
         private double previousZoomFactor = 1.0;
         public Handler handler { get; set; }
-        public bool runner;
-        public bool saver;
-        public bool saver1;
-        public bool saver3;
+        public bool saveChecker;
+        public bool saveChecker1;
+        public bool saveChecker3;
         public MainWindow()
         {
-            InitializeComponent();
-            // Establecer el estilo de la ventana a None para ocultar la barra de título
-            this.WindowStyle = WindowStyle.None;
+            InitializeComponent(); // Este método se genera automáticamente y se utiliza para inicializar los componentes de la ventana.
 
-            // Establecer el estado de la ventana a Maximized para hacer que se abra en pantalla completa
-            this.WindowState = WindowState.Maximized;
-            // Asignar el Canvas del XAML a la propiedad estática
-            MainWindow.DrawingCanvas = this.drawingCanvas;
+            this.WindowStyle = WindowStyle.None; // Establece el estilo de la ventana a None para ocultar la barra de título.
 
-            zoomCenter = new System.Windows.Point(drawingCanvas.Width / 2, drawingCanvas.Height / 2);
+            this.WindowState = WindowState.Maximized; // Establece el estado de la ventana a Maximized para hacer que se abra en pantalla completa.
+
+            MainWindow.DrawingCanvas = this.drawingCanvas; // Asigna el Canvas del XAML a la propiedad estática DrawingCanvas.
+
+            zoomCenter = new System.Windows.Point(drawingCanvas.Width / 2, drawingCanvas.Height / 2); // Inicializa el centro del zoom en el centro del Canvas.
         }
 
-        private void Compile(object sender, RoutedEventArgs e)
+        private void Compile(object sender, RoutedEventArgs e)// Este método se ejecuta cuando se hace clic en el botón para compilar el código.
 
         {
-            saver3 = true;
-            Consola.Clear();
-            // Asi se procesaria el codigo del usuario
-            string code = Entrada.Text;
-            // esto es lo q te hace todo el proceso y te devuelve la lista de Type que es lo q tienes q dibujar
-            handler = new Handler(code);
-            if (handler.CheckErrors())
+            saveChecker3 = true; 
+
+            Consola.Clear(); // Limpia la consola.
+
+            string code = Entrada.Text; // Obtiene el código ingresado por el usuario.
+
+            handler = new Handler(code); // Crea una nueva instancia de la clase Handler con el código del usuario.
+
+            if (handler.CheckErrors()) 
             {
-                saver1 = true;
-                // Obtiene todos los errores 
-                List<string> errors = handler.Errors.GetAllErrors.ToList();
+                saveChecker1 = true; 
 
-
+                List<string> errors = handler.Errors.GetAllErrors.ToList(); // Obtiene todos los errores.
 
                 foreach (string error in errors)
                 {
-                    Consola.Text += error + Environment.NewLine;
+                    Consola.Text += error + Environment.NewLine; // Agrega el error a la consola.
                 }
             }
-            else
+            else 
             {
-                saver1 = false;
-                // Habilita el botón Run si no hay errores
-                Run.IsEnabled = true;
+                saveChecker1 = false;
+
+                Run.IsEnabled = true; // Habilita el botón Run.
             }
 
         }
-        private void RunClick(object sender, RoutedEventArgs e)
+        private void RunClick(object sender, RoutedEventArgs e)// Este método se ejecuta cuando se hace clic en un botón "Run".
         {
-
-            handler.HandleEvaluate();
+            handler.HandleEvaluate();// Evalúa el código ingresado por el usuario.
             // Borra el Canvas
-            drawingCanvas.Children.Clear();
-            Consola.Text = "";
+            drawingCanvas.Children.Clear();// Borra todos los elementos del Canvas.
 
             if (handler.CheckErrors())
             {
-                List<string> errors = handler.Errors.GetAllErrors.ToList();
+                List<string> errors = handler.Errors.GetAllErrors.ToList();// Obtiene todos los errores.
 
                 foreach (string error in errors)
                 {
-                    Consola.Text += error + Environment.NewLine;
+                    Consola.Text += error + Environment.NewLine;// Agrega el error a la consola.
                 }
             }
             else
@@ -103,62 +100,37 @@ namespace GeoWall_E
 
                     if (item.Item1 is Point point)
                     {
-                        Picasso drawer = new Picasso(drawingCanvas, point, item.Item2);
-                        drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(point.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(point.Y - 250);
+                        Picasso drawer = new Picasso(drawingCanvas, point, item.Item2);// Crea una nueva instancia de la clase Picasso con el Canvas, el punto y el segundo elemento del item.
+                        drawer.Draw();// Dibuja el punto en el Canvas.
+                        Adjust(point);// Ajusta el ScrollViewer al punto.
 
                     }
                     else if (item.Item1 is Line line)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, line, item.Item2);
                         drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(line.P1.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(line.P1.Y - 250);
+                        Adjust(line.P1);
                     }
 
                     else if (item.Item1 is Segment segment)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, segment, item.Item2);
                         drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(segment.Start.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(segment.Start.Y - 250);
+                        Adjust(segment.Start);
                     }
 
                     else if (item.Item1 is Ray ray)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, ray, item.Item2);
                         drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(ray.Start.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(ray.Start.Y - 250);
+                        Adjust(ray.Start);
                     }
 
                     else if (item.Item1 is Circle circle)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, circle, item.Item2);
                         drawer.Draw();
-                        scaleTransform.ScaleX = 1;
-                        scaleTransform.ScaleY = 1;
-                        // Restablece el valor del Slider al valor predeterminado
-                        zoomSlider.Value = 1;
-                        scrollViewer.ScrollToHorizontalOffset(circle.Center.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(circle.Center.Y - 250);
+                        Adjust(circle.Center);
                     }
 
                     else if (item.Item1 is Arc arc)
@@ -177,51 +149,26 @@ namespace GeoWall_E
                             drawer.Draw();
                             if (element is Point pointt)
                             {
-                                scaleTransform.ScaleX = 1;
-                                scaleTransform.ScaleY = 1;
-                                // Restablece el valor del Slider al valor predeterminado
-                                zoomSlider.Value = 1;
-                                scrollViewer.ScrollToHorizontalOffset(pointt.X - 400);
-                                scrollViewer.ScrollToVerticalOffset(pointt.Y - 250);
+                                Adjust(pointt);
 
                             }
                             else if (element is Line linet)
                             {
-                                scaleTransform.ScaleX = 1;
-                                scaleTransform.ScaleY = 1;
-                                // Restablece el valor del Slider al valor predeterminado
-                                zoomSlider.Value = 1;
-                                scrollViewer.ScrollToHorizontalOffset(linet.P1.X - 400);
-                                scrollViewer.ScrollToVerticalOffset(linet.P1.Y - 250);
+                                Adjust(linet.P1);
                             }
                             else if (item.Item1 is Segment segmentt)
                             {
-                                scaleTransform.ScaleX = 1;
-                                scaleTransform.ScaleY = 1;
-                                // Restablece el valor del Slider al valor predeterminado
-                                zoomSlider.Value = 1;
-                                scrollViewer.ScrollToHorizontalOffset(segmentt.Start.X - 400);
-                                scrollViewer.ScrollToVerticalOffset(segmentt.Start.Y - 250);
+                                Adjust(segmentt.Start);
 
                             }
                             else if (item.Item1 is Ray rayy)
                             {
-                                scaleTransform.ScaleX = 1;
-                                scaleTransform.ScaleY = 1;
-                                // Restablece el valor del Slider al valor predeterminado
-                                zoomSlider.Value = 1;
-                                scrollViewer.ScrollToHorizontalOffset(rayy.Start.X - 400);
-                                scrollViewer.ScrollToVerticalOffset(rayy.Start.Y - 250);
+                                Adjust(rayy.Start);
 
                             }
                             else if (item.Item1 is Circle circlee)
                             {
-                                scaleTransform.ScaleX = 1;
-                                scaleTransform.ScaleY = 1;
-                                // Restablece el valor del Slider al valor predeterminado
-                                zoomSlider.Value = 1;
-                                scrollViewer.ScrollToHorizontalOffset(circlee.Center.X - 400);
-                                scrollViewer.ScrollToVerticalOffset(circlee.Center.Y - 250);
+                                Adjust(circlee.Center);
 
                             }
                             else if (item.Item1 is Arc arcc)
@@ -238,13 +185,13 @@ namespace GeoWall_E
 
         private void Restart(object sender, RoutedEventArgs e)
         {
-            if (saver == false)
+            if (saveChecker == false)
             {
-                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres reiniciar sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres reiniciar sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);// Muestra un cuadro de mensaje preguntando al usuario si quiere reiniciar sin guardar.
                 if (result == MessageBoxResult.Yes)
                 {
-                    saver3 = false;
-                    saver1 = false;
+                    saveChecker3 = false;
+                    saveChecker1 = false;
                     // Borra el TextBox
                     Entrada.Text = "";
                     Consola.Text = "";
@@ -259,8 +206,8 @@ namespace GeoWall_E
             }
             else
             {
-                saver3 = false;
-                saver1 = false;
+                saveChecker3 = false;
+                saveChecker1 = false;
                 // Borra el TextBox
                 Entrada.Text = "";
                 Consola.Text = "";
@@ -276,9 +223,9 @@ namespace GeoWall_E
 
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)//Se activa cuando el usuario modifica algo en la entrada
         {
-            saver = false;
+            saveChecker = false;
             Run.IsEnabled = false;
             // Obtener el número y el contenido de cada línea
             string[] lines = Entrada.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
@@ -304,22 +251,22 @@ namespace GeoWall_E
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 100);
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 100);// Desplaza el ScrollViewer verticalmente 100 unidades hacia abajo.
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 100);
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 100); // Desplaza el ScrollViewer verticalmente 100 unidades hacia arriba.
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 100);
+            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 100);// Desplaza el ScrollViewer horizontalmente 100 unidades hacia la izquierda.
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + 100);
+            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + 100);// Desplaza el ScrollViewer horizontalmente 100 unidades hacia la derecha.
         }
 
 
@@ -373,84 +320,76 @@ namespace GeoWall_E
                 ApplyZoom(zoomSlider.Value);
             }
         }
-        private void Import(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                string contenido = System.IO.File.ReadAllText(openFileDialog.FileName);
-                string entrada = Entrada.Text = contenido;
-                RunClick(sender, e);
-
-            }
-        }
         private void Export(object sender, RoutedEventArgs e)
         {
-            if (Entrada.Text == "")
+            if (Entrada.Text == "") 
             {
-                MessageBox.Show("Error!! La entrada esta vacía", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error!! La entrada esta vacía", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // Muestra un cuadro de mensaje de error.
             }
-            else if (saver1 == true)
+            else if (saveChecker1 == true) 
             {
-                System.Windows.Forms.MessageBox.Show("Error!! corrija los errores antes de guardar", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+                System.Windows.Forms.MessageBox.Show("Error!! corrija los errores antes de guardar", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error); // Muestra un cuadro de mensaje de error.
             }
-            else if (saver3 == false)
+            else if (saveChecker3 == false) 
             {
-                MessageBox.Show("Error!!Compile antes de guardar", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Error!!Compile antes de guardar", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // Muestra un cuadro de mensaje de error.
             }
-            else
+            else 
             {
-                saver = true;
-                string text = Entrada.Text;
-                System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-                saveFileDialog.Filter = "Archivos GS(*.gs)|*.gs";
-                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                saveChecker = true; 
+                string text = Entrada.Text; // Obtiene el texto del TextBox de entrada.
+                System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog(); // Crea un nuevo cuadro de diálogo para guardar archivos.
+                saveFileDialog.Filter = "Archivos GS(*.gs)|*.gs"; // Establece el filtro del cuadro de diálogo para mostrar solo los archivos .gs.
+
+                string currentDirectory = System.IO.Directory.GetCurrentDirectory(); // Obtiene el directorio actual.
+                string projectDirectory = System.IO.Directory.GetParent(currentDirectory).Parent.Parent.FullName; // Obtiene el directorio del proyecto.
+                string subfolder = "SavedFiles"; // Establece el nombre de la subcarpeta.
+                string folderPath = System.IO.Path.Combine(projectDirectory, subfolder); // Combina el directorio del proyecto y la subcarpeta para obtener la ruta de la carpeta.
+                saveFileDialog.InitialDirectory = folderPath; // Establece el directorio inicial del cuadro de diálogo para guardar.
+
+                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) 
                 {
-                    string filePath = saveFileDialog.FileName;
-                    System.IO.File.WriteAllText(filePath, text);
-                    MessageBox.Show("Texto guardado correctamente");
+                    string filePath = saveFileDialog.FileName; // Obtiene la ruta del archivo seleccionado.
+                    System.IO.File.WriteAllText(filePath, text); // Escribe el texto en el archivo seleccionado.
+                    MessageBox.Show("Texto guardado correctamente"); // Muestra un cuadro de mensaje indicando que el texto se guardó correctamente.
                 }
             }
 
         }
         private void Exit(object sender, RoutedEventArgs e)
         {
-            if (saver == false)
+            if (saveChecker == false) 
             {
-                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres volver sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
+                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres volver sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question); // Muestra un cuadro de mensaje preguntando al usuario si quiere salir sin guardar.
+                if (result == MessageBoxResult.Yes) 
                 {
-                    // El usuario ha hecho clic en 'Sí', puedes cerrar la aplicación aquí
-                    this.Close();
+                    this.Close(); // Cierra la ventana.
                 }
-
-
             }
-            else
+            else 
             {
-                this.Close();
+                this.Close(); // Cierra la ventana.
             }
 
         }
 
         private void ReturnMenu(object sender, RoutedEventArgs e)
         {
-            if (saver == false)
+            if (saveChecker == false) 
             {
-                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres salir sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                if (result == MessageBoxResult.Yes)
+                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres salir sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question); // Muestra un cuadro de mensaje preguntando al usuario si quiere salir sin guardar.
+                if (result == MessageBoxResult.Yes) 
                 {
-                    var Menu = new Window1();
-                    Menu.Show();
-                    this.Close();
+                    var Menu = new Window1(); // Crea una nueva instancia de la clase Window1.
+                    Menu.Show(); // Muestra la ventana.
+                    this.Close(); // Cierra la ventana actual.
                 }
-
             }
-            else
+            else 
             {
-                var Menu = new Window1();
-                Menu.Show();
-                this.Close();
+                var Menu = new Window1(); // Crea una nueva instancia de la clase Window1.
+                Menu.Show(); // Muestra la ventana.
+                this.Close(); // Cierra la ventana actual.
             }
 
         }
@@ -480,6 +419,14 @@ namespace GeoWall_E
         {
             scrollViewer.ScrollToVerticalOffset((scrollViewer.ScrollableHeight / 2) - 350);
             scrollViewer.ScrollToHorizontalOffset((scrollViewer.ScrollableWidth / 2) - 250);
+        }
+        private void Adjust(Point point)
+        {
+            scaleTransform.ScaleX = 1;// Restablece la escala X del transform.
+            scaleTransform.ScaleY = 1; // Restablece la escala Y del transform.
+            zoomSlider.Value = 1; // Restablece el valor del Slider al valor predeterminado.
+            scrollViewer.ScrollToHorizontalOffset(point.X - 400);// Desplaza el ScrollViewer horizontalmente al punto X menos 400.
+            scrollViewer.ScrollToVerticalOffset(point.Y - 250); // Desplaza el ScrollViewer verticalmente al punto Y menos 250.
         }
     }
 }

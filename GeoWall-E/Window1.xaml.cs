@@ -52,6 +52,12 @@ namespace GeoWall_E
         private void Import(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            // Establece la carpeta inicial donde se abrirá el cuadro de diálogo para guardar
+            string currentDirectory = System.IO.Directory.GetCurrentDirectory();
+            string projectDirectory = System.IO.Directory.GetParent(currentDirectory).Parent.Parent.FullName;
+            string subfolder = "SavedFiles"; // Reemplaza esto con el nombre de tu subcarpeta
+            string folderPath = System.IO.Path.Combine(projectDirectory, subfolder);
+            openFileDialog.InitialDirectory = folderPath;
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string contenido = System.IO.File.ReadAllText(openFileDialog.FileName);
@@ -73,17 +79,17 @@ namespace GeoWall_E
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            this.Close();//Cierra la ventana
         }
 
         private void About(object sender, RoutedEventArgs e)
         {
-            var psi = new ProcessStartInfo
+            var psi = new ProcessStartInfo // Crea una nueva instancia de la clase ProcessStartInfo.
             {
-                FileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "cositas.docx"),
-                UseShellExecute = true
+                FileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "cositas.docx"), // Establece el nombre del archivo a abrir. En este caso, es un archivo .docx llamado "cositas" en el directorio actual de la aplicación.
+                UseShellExecute = true // Establece UseShellExecute a verdadero. Esto significa que el sistema operativo abrirá el archivo con la aplicación asociada a la extensión del archivo (.docx).
             };
-            Process.Start(psi);
+            Process.Start(psi); // Inicia el proceso con la información especificada en psi. En este caso, abrirá el archivo "cositas.docx".
         }
     }
 }
