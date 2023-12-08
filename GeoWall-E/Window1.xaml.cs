@@ -52,6 +52,12 @@ namespace GeoWall_E
         private void Import(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            // Establece la carpeta inicial donde se abrirá el cuadro de diálogo para guardar
+            string currentDirectory = System.IO.Directory.GetCurrentDirectory();
+            string projectDirectory = System.IO.Directory.GetParent(currentDirectory).Parent.Parent.FullName;
+            string subfolder = "SavedFiles"; // Reemplaza esto con el nombre de tu subcarpeta
+            string folderPath = System.IO.Path.Combine(projectDirectory, subfolder);
+            openFileDialog.InitialDirectory = folderPath;
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string contenido = System.IO.File.ReadAllText(openFileDialog.FileName);

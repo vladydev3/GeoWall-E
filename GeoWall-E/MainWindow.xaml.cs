@@ -402,6 +402,14 @@ namespace GeoWall_E
                 string text = Entrada.Text;
                 System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog();
                 saveFileDialog.Filter = "Archivos GS(*.gs)|*.gs";
+
+                // Establece la carpeta inicial donde se abrirá el cuadro de diálogo para guardar
+                string currentDirectory = System.IO.Directory.GetCurrentDirectory();
+                string projectDirectory = System.IO.Directory.GetParent(currentDirectory).Parent.Parent.FullName;
+                string subfolder = "SavedFiles"; // Reemplaza esto con el nombre de tu subcarpeta
+                string folderPath = System.IO.Path.Combine(projectDirectory, subfolder);
+                saveFileDialog.InitialDirectory = folderPath;
+
                 if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     string filePath = saveFileDialog.FileName;
