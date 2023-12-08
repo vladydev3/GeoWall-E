@@ -9,37 +9,34 @@ namespace GeoWall_E
         List<Statement>? LetBlock { get; set; }
         Error Errors_ { get; set; }
         SymbolTable SymbolTable { get; set; }
-        // Esta variable es temporal para comprobar que se evaluen bien las expresiones que no se pintan
-        public Type? Result;
 
         public Evaluator(List<Node> root, Error error) // If we want to evaluate the whole program
         {
-            Root = root;
+            Root = root ?? new List<Node>();
             Errors_ = error;
             SymbolTable = new SymbolTable();
             var checker = new SemanticChecker(Errors);
             checker.Check(Root);
         }
 
-        public Evaluator(List<Statement> letblock, Error error) // If we want to evaluate the let block
+        public Evaluator(List<Statement> letblock, Error error, SymbolTable symbolTable) // If we want to evaluate the let block
         {
-            LetBlock = letblock;
+            LetBlock = letblock ?? new List<Statement>();
             Errors_ = error;
-            SymbolTable = new SymbolTable();
+            SymbolTable = symbolTable;
         }
 
         public Error Errors => Errors_;
         public SymbolTable SymbolTable_ => SymbolTable;
 
-        public Dictionary<string, Type> EvaluateLetBlock()
+        public void EvaluateLetBlock()
         {
-            Dictionary<string, Type> addToScope = new();
             foreach (var statement in LetBlock)
             {
                 switch (statement)
                 {
                     case AsignationStatement asignation:
-                        addToScope.Add(asignation.Name.Text, HandleAsignationLet(asignation));
+                        SymbolTable.Define(asignation.Name.Text, HandleAsignationLet(asignation));
                         break;
                     case MultipleAsignationStatement asignation:
                         switch (asignation.Value)
@@ -54,10 +51,10 @@ namespace GeoWall_E
 
                                     if (i == asignation.IDs.Count - 1)
                                     {
-                                        addToScope.Add(asignation.IDs[i].Text, new Sequence(((Sequence)sequence).RestOfElements(i)));
+                                        SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)sequence).RestOfElements(i)));
                                     }
 
-                                    else addToScope.Add(asignation.IDs[i].Text, ((Sequence)sequence).GetElement(i));
+                                    else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)sequence).GetElement(i));
                                 }
                                 break;
                             case IntersectExpression intersectExpression:
@@ -70,48 +67,47 @@ namespace GeoWall_E
 
                                     if (i == asignation.IDs.Count - 1)
                                     {
-                                        addToScope.Add(asignation.IDs[i].Text, new Sequence(((Sequence)intersect).RestOfElements(i)));
+                                        SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)intersect).RestOfElements(i)));
                                     }
 
-                                    else addToScope.Add(asignation.IDs[i].Text, ((Sequence)intersect).GetElement(i));
+                                    else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)intersect).GetElement(i));
                                 }
                                 break;
                             case UndefinedExpression:
                                 for (int i = 0; i < asignation.IDs.Count; i++)
                                 {
-                                    addToScope.Add(asignation.IDs[i].Text, new Undefined());
+                                    SymbolTable.Define(asignation.IDs[i].Text, new Undefined());
                                 }
                                 break;
                             default:
                                 HandleAsignationNode(new AsignationStatement(asignation.IDs[0], asignation.Value));
                                 for (int i = 1; i < asignation.IDs.Count; i++)
                                 {
-                                    addToScope.Add(asignation.IDs[i].Text, new Undefined());
+                                    SymbolTable.Define(asignation.IDs[i].Text, new Undefined());
                                 }
                                 break;
                         }
                         break;
                     case PointStatement point:
-                        addToScope.Add(point.Name.Text, new Point(point.Name.Text));
+                        SymbolTable.Define(point.Name.Text, new Point(point.Name.Text));
                         break;
                     case LineStatement line:
-                        addToScope.Add(line.Name.Text, new Line(new Point(), new Point(), line.Name.Text));
+                        SymbolTable.Define(line.Name.Text, new Line(new Point(), new Point(), line.Name.Text));
                         break;
                     case SegmentStatement segment:
-                        addToScope.Add(segment.Name.Text, new Segment(new Point(), new Point(), segment.Name.Text));
+                        SymbolTable.Define(segment.Name.Text, new Segment(new Point(), new Point(), segment.Name.Text));
                         break;
                     case RayStatement ray:
-                        addToScope.Add(ray.Name.Text, new Ray(new Point(), new Point(), ray.Name.Text));
+                        SymbolTable.Define(ray.Name.Text, new Ray(new Point(), new Point(), ray.Name.Text));
                         break;
                     case CircleStatement circle:
-                        addToScope.Add(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point(), circle.Name.Text), circle.Name.Text));
+                        SymbolTable.Define(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point(), circle.Name.Text), circle.Name.Text));
                         break;
                     case FunctionDeclaration function:
-                        addToScope.Add(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
+                        SymbolTable.Define(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
                         break;
                 }
             }
-            return addToScope;
         }
 
         Type HandleAsignationLet(AsignationStatement asignation)
@@ -182,10 +178,6 @@ namespace GeoWall_E
                         break;
                     case Draw draw_:
                         HandleDrawNode(draw_, toDraw);
-                        break;
-                    default:
-                        var exp = (IEvaluable)node;
-                        Result = exp.Evaluate(SymbolTable, Errors_);
                         break;
                 }
             }
@@ -330,16 +322,12 @@ namespace GeoWall_E
 
         void HandleLetInAsignationExpression(LetInExpression letin, AsignationStatement asignation)
         {
-            // SymbolTable.EnterScope();
-            var evaluator = new Evaluator(letin.Let, Errors);
-            var toAddtoScope = evaluator.EvaluateLetBlock();
-            foreach (var item in toAddtoScope)
-            {
-                SymbolTable.Define(item.Key, item.Value);
-            }
+            SymbolTable.EnterScope();
+            var evaluator = new Evaluator(letin.Let, Errors, SymbolTable);
+            evaluator.EvaluateLetBlock();
             var evaluatedIn = (IEvaluable)letin.In;
             var result = evaluatedIn.Evaluate(SymbolTable, Errors);
-            // SymbolTable.ExitScope();
+            SymbolTable.ExitScope();
             SymbolTable.Define(asignation.Name.Text, result);
         }
 

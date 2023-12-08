@@ -53,17 +53,17 @@ public class BinaryExpression : Expression, IEvaluable
                     case "%":
                         return new NumberLiteral(left_.Value % right_.Value);
                     case "<":
-                        return new BooleanLiteral(left_.Value < right_.Value);
+                        return (left_.Value < right_.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case ">":
-                        return new BooleanLiteral(left_.Value > right_.Value);
+                        return (left_.Value > right_.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case "<=":
-                        return new BooleanLiteral(left_.Value <= right_.Value);
+                        return (left_.Value <= right_.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case ">=":
-                        return new BooleanLiteral(left_.Value >= right_.Value);
+                        return (left_.Value >= right_.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case "==":
-                        return new BooleanLiteral(left_.Value == right_.Value);
+                        return (left_.Value == right_.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case "!=":
-                        return new BooleanLiteral(left_.Value != right_.Value);
+                        return (left_.Value != right_.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     default:
                         error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Number type");
                         return new ErrorType();
@@ -78,17 +78,17 @@ public class BinaryExpression : Expression, IEvaluable
                     case "+":
                         return new StringLiteral(left_.Value + right_.Value);
                     case "<":
-                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) < 0);
+                        return (left_.Value.CompareTo(right_.Value) < 0) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case ">":
-                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) > 0);
+                        return (left_.Value.CompareTo(right_.Value) > 0) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case "<=":
-                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) <= 0);
+                        return (left_.Value.CompareTo(right_.Value) <= 0) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case ">=":
-                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) >= 0);
+                        return (left_.Value.CompareTo(right_.Value) >= 0) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case "==":
-                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) == 0);
+                        return (left_.Value.CompareTo(right_.Value) == 0) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case "!=":
-                        return new BooleanLiteral(left_.Value.CompareTo(right_.Value) != 0);
+                        return (left_.Value.CompareTo(right_.Value) != 0) ? new NumberLiteral(1) : new NumberLiteral(0);
                     default:
                         error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for String type");
                         return new ErrorType();
@@ -138,17 +138,17 @@ public class BinaryExpression : Expression, IEvaluable
                     case "/":
                         return new NumberLiteral((int)(measure1.Value / measure2.Value));
                     case "<":
-                        return new BooleanLiteral(measure1.Value < measure2.Value);
+                        return (measure1.Value < measure2.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case ">":
-                        return new BooleanLiteral(measure1.Value > measure2.Value);
+                        return (measure1.Value > measure2.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case "<=":
-                        return new BooleanLiteral(measure1.Value <= measure2.Value);
+                        return (measure1.Value <= measure2.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case ">=":
-                        return new BooleanLiteral(measure1.Value >= measure2.Value);
+                        return (measure1.Value >= measure2.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case "==":
-                        return new BooleanLiteral(measure1.Value == measure2.Value);
+                        return (measure1.Value == measure2.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     case "!=":
-                        return new BooleanLiteral(measure1.Value != measure2.Value);
+                        return (measure1.Value != measure2.Value) ? new NumberLiteral(1) : new NumberLiteral(0);
                     default:
                         error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Measure type");
                         return new ErrorType();
@@ -173,27 +173,6 @@ public class BinaryExpression : Expression, IEvaluable
                         return new Measure(measure3.Value * (int)number1.Value);
                     default:
                         error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Measure and Number type");
-                        return new ErrorType();
-                }
-            }
-            else if (leftResult is BooleanLiteral boolean1 && rightResult is BooleanLiteral boolean2)
-            {
-                var left_ = boolean1;
-                var right_ = boolean2;
-                switch (Operator.Text)
-                {
-                    case "&&":
-                        if (left_.Value == 1 && right_.Value == 1)
-                            return new BooleanLiteral(true);
-                        else
-                            return new BooleanLiteral(false);
-                    case "||":
-                        if (left_.Value == 1 || right_.Value == 1)
-                            return new BooleanLiteral(true);
-                        else
-                            return new BooleanLiteral(false);
-                    default:
-                        error.AddError($"RUNTIME ERROR: Operator {Operator.Text} not supported for Boolean type");
                         return new ErrorType();
                 }
             }

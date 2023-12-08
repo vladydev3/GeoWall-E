@@ -25,8 +25,6 @@ public class IfExpression : Expression, IEvaluable
         var evaluatedThen = (IEvaluable)Then;
         var evaluatedElse = (IEvaluable)Else;
 
-        // TODO Then and Else must return the same type
-
         var evaluatedIfResult = evaluatedIf.Evaluate(symbolTable, error);
         if (evaluatedIfResult.ObjectType == ObjectTypes.Error) return evaluatedIfResult;
         if (evaluatedIfResult.ObjectType == ObjectTypes.Number)
@@ -48,7 +46,7 @@ public class IfExpression : Expression, IEvaluable
         if (evaluatedIfResult.ObjectType == ObjectTypes.Sequence)
         {
             var sequence = (Sequence)evaluatedIfResult;
-            if (sequence.Elements.Count() == 0)
+            if (!sequence.Elements.Any())
             {
                 return evaluatedElse.Evaluate(symbolTable, error);
             }

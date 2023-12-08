@@ -309,6 +309,11 @@ namespace GeoWall_E
         Expression ParseSequence()
         {
             NextToken();
+            if (Current.Type == TokenType.RBracket)
+            {
+                NextToken();
+                return new SequenceExpression(new List<Expression>());
+            }
             if (Peek(1).Type == TokenType.InfiniteSequence)
             {
                 var lowerBound = Match(TokenType.Number);
