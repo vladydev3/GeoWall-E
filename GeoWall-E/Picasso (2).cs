@@ -71,18 +71,21 @@ namespace GeoWall_E
         public static void DrawArc(Arc arc,Canvas drawingCanvas,Color color)
         {
 
-            string colorString = color.ToString();
-            System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
-            double measure = arc.Measure.GetMeasure();
-            Point pointOnRay1 = GetPointOnRay(arc.Center, arc.Start, measure);
-            DrawPoint(pointOnRay1, drawingCanvas,color);
-            Point pointOnRay2 = GetPointOnRay(arc.Center, arc.End, measure);
-            DrawPoint(pointOnRay2, drawingCanvas,color);
-            Label label = new()
+            string colorString = color.ToString(); // Convierte el color a un string.
+            System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString); // Convierte el string de color a un Color de Media.
+
+            double measure = arc.Measure.GetMeasure(); // Obtiene la medida del arco.
+            Point pointOnRay1 = GetPointOnRay(arc.Center, arc.Start, measure); // Obtiene un punto en el rayo 1 del arco.
+            DrawPoint(pointOnRay1, drawingCanvas, color); // Dibuja el punto en el Canvas.
+
+            Point pointOnRay2 = GetPointOnRay(arc.Center, arc.End, measure); // Obtiene un punto en el rayo 2 del arco.
+            DrawPoint(pointOnRay2, drawingCanvas, color); // Dibuja el punto en el Canvas.
+
+            Label label = new() // Crea una nueva etiqueta.
             {
-                Content = arc.Name,
-                Foreground = Brushes.Black,
-                FontSize = 20
+                Content = arc.Name, // Establece el contenido de la etiqueta al nombre del arco.
+                Foreground = Brushes.Black, // Establece el color de primer plano de la etiqueta a negro.
+                FontSize = 20 // Establece el tamaño de la fuente de la etiqueta a 20.
             };
             // Agregar la etiqueta al canvas
             drawingCanvas.Children.Add(label);
