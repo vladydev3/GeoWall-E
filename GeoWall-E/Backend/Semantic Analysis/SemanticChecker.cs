@@ -45,6 +45,9 @@ namespace GeoWall_E
                 {
                     switch (figure)
                     {
+                        case PointStatement:
+                            SymbolTable.Define(figure.Name.Text, new Point(figure.Name.Text));
+                            break;
                         case CircleStatement:
                             SymbolTable.Define(figure.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point()), figure.Name.Text));
                             break;

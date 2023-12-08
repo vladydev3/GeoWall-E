@@ -5,6 +5,7 @@ public class FunctionCallExpression : Expression, IEvaluable
     public override TokenType Type => TokenType.FunctionCallExpression;
     private Token FunctionName_ { get; set; }
     private List<Expression> Arguments_ { get; set; }
+    private int depth = 0;
 
     public FunctionCallExpression(Token functionName, List<Expression> arguments)
     {
@@ -17,12 +18,13 @@ public class FunctionCallExpression : Expression, IEvaluable
 
     public Type Evaluate(SymbolTable symbolTable, Error error)
     {
-        var function = symbolTable.Resolve(FunctionName.Text);
-        if (function.ObjectType != ObjectTypes.Function || function.ObjectType == ObjectTypes.Error)
+        depth++;
+        if (depth > 100)
         {
-            error.AddError($"SEMANTIC ERROR: Function {FunctionName.Text} not defined");
-            return function;
+            error.AddError($"RUNTIME ERROR: StackOverflow");
+            return new ErrorType();
         }
+        var function = symbolTable.Resolve(FunctionName.Text);
 
         var functionDefined = (Function)function;
 
@@ -44,7 +46,7 @@ public class FunctionCallExpression : Expression, IEvaluable
             }
             catch (Exception)
             {
-                error.AddError($"SEMANTIC ERROR: Can't evaluate argument {i + 1} of function {FunctionName.Text}");
+                error.AddError($"RUNTIME ERROR: Can't evaluate argument {i + 1} of function {FunctionName.Text}");
                 return new ErrorType();
             }
         }

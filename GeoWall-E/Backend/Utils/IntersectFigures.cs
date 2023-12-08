@@ -9,7 +9,7 @@ namespace GeoWall_E
     {
         internal static Sequence IntersectPointAndRay(Type f1, Type f2)
         {
-            (Point point, Ray ray) = Utils.PointAndRayOrdered(f1, f2);
+            (Point point, Ray ray) = Utils.OrderByType<Point, Ray>(f1, f2);
 
             (var m, var b) = Utils.SlopeAndEquation(ray.Start, ray.End);
 
@@ -81,7 +81,7 @@ namespace GeoWall_E
 
         internal static Sequence IntersectPointAndCircle(Type f1, Type f2)
         {
-            (Circle circle, Point point) = Utils.CircleAndPointOrdered(f1, f2);
+            (Circle circle, Point point) = Utils.OrderByType<Circle, Point>(f1, f2);
 
             double d = Math.Sqrt(Math.Pow(point.X - circle.Center.X, 2) + Math.Pow(point.Y - circle.Center.Y, 2));
 
@@ -92,7 +92,7 @@ namespace GeoWall_E
 
         internal static Sequence IntersectSegmentAndPoint(Type f1, Type f2)
         {
-            (Segment segment, Point point) = Utils.SegmentAndPointOrdered(f1, f2);
+            (Segment segment, Point point) = Utils.OrderByType<Segment, Point>(f1, f2);
 
             // Si la pendiente de la recta es infinita
             if (segment.Start.X == segment.End.X) segment.End.AsignX(segment.End.X + 1);
@@ -118,23 +118,19 @@ namespace GeoWall_E
 
         internal static Sequence IntersectLineAndPoint(Type f1, Type f2)
         {
-            Point point;
-            Line line;
-
-            (line, point) = Utils.LineAndPointOrdered(f1, f2);
+            (Line line, Point point) = Utils.OrderByType<Line, Point>(f1, f2);
 
             // Si la pendiente de la recta es infinita
             if (line.P1.X == line.P2.X) line.P2.AsignX(line.P2.X + 1);
 
-            var m = (line.P2.Y - line.P1.Y) / (line.P2.X - line.P1.X);
-            var b = line.P1.Y - m * line.P1.X;
+            (var m, var b) = Utils.SlopeAndEquation(line.P1, line.P2);
 
             // Calcular la coordenada Y del punto en la recta
             var y = m * point.X + b;
 
             // Si la coordenada Y del punto es igual a la coordenada Y del punto en la recta, hay interseccion
             if (y == point.Y) return new Sequence(new List<Type>() { point });
-            else return new Sequence(new List<Type>() { new Undefined() });
+            return new Sequence(new List<Type>() { new Undefined() });
         }
 
         internal static Sequence IntersectTwoSegments(Type f1, Type f2)
@@ -174,10 +170,7 @@ namespace GeoWall_E
 
         internal static Sequence IntersectCircleAndArc(Type f1, Type f2)
         {
-            Arc arc;
-            Circle circle;
-
-            (circle, arc) = Utils.CircleAndArcOrdered(f1, f2);
+            (Circle circle, Arc arc) = Utils.OrderByType<Circle, Arc>(f1, f2);
 
             // Calcular la distancia entre el centro del circulo y el centro del arco
             var distance = Math.Sqrt(Math.Pow(arc.Center.X - circle.Center.X, 2) + Math.Pow(arc.Center.Y - circle.Center.Y, 2));
@@ -209,19 +202,19 @@ namespace GeoWall_E
             point2.AsignX(x3);
             point2.AsignY(y3);
             bool judge2 = PointOnArc(point2, arc);
-           // If they are, the intersection points are on the arc
-            if (judge1==true&&judge2==true)
+            // If they are, the intersection points are on the arc
+            if (judge1 == true && judge2 == true)
             {
                 return new Sequence(new List<Type>() { point1, point2 });
             }
-            else if (judge1==true)
+            else if (judge1 == true)
             {
-              
+
                 return new Sequence(new List<Type>() { point1 });
             }
-            else if (judge2==true)
+            else if (judge2 == true)
             {
-                
+
 
                 return new Sequence(new List<Type>() { point2 });
             }
@@ -230,10 +223,7 @@ namespace GeoWall_E
 
         internal static Sequence IntersectCircleAndSegment(Type f1, Type f2)
         {
-            Circle circle;
-            Segment segment;
-
-            (segment, circle) = Utils.SegmentAndCircleOrdered(f1, f2);
+            (Segment segment, Circle circle) = Utils.OrderByType<Segment, Circle>(f1, f2);
 
             (var m, var b) = Utils.SlopeAndEquation(segment.Start, segment.End);
 
@@ -291,10 +281,7 @@ namespace GeoWall_E
 
         internal static Sequence IntersectLineAndSegment(Type f1, Type f2)
         {
-            Line line;
-            Segment segment;
-
-            (line, segment) = Utils.LineAndSegmentOrdered(f1, f2);
+            (Line line, Segment segment) = Utils.OrderByType<Line, Segment>(f1, f2);
 
             if (line.P1.X == line.P2.X) line.P2.AsignX(line.P2.X + 1);
 
@@ -326,9 +313,7 @@ namespace GeoWall_E
 
         internal static Sequence IntersectLineAndCircle(Type f1, Type f2)
         {
-            Line line;
-            Circle circle;
-            (line, circle) = Utils.LineAndCircleOrdered(f1, f2);
+            (Line line, Circle circle) = Utils.OrderByType<Line, Circle>(f1, f2);
 
             (var m, var b) = Utils.SlopeAndEquation(line.P1, line.P2);
 
@@ -381,17 +366,15 @@ namespace GeoWall_E
         }
         internal static Sequence IntersectLineAndArc(Type f1, Type f2)
         {
-            Line line;
-            Arc arc;
-            (line, arc) = Utils.LineAndArcOrdered(f1, f2);
-            Circle circle = new Circle(arc.Center, arc.Measure);
+            (Line line, Arc arc) = Utils.OrderByType<Line, Arc>(f1, f2);
+            Circle circle = new(arc.Center, arc.Measure);
             IEnumerable<Type> intersection = IntersectLineAndCircle(line, circle).Elements;
             List<Type> intersectionList = intersection.ToList();
-            if (intersectionList.Count() == 0)
+            if (intersectionList.Count == 0)
             {
                 return new Sequence(new List<Type>() { new Undefined() });
             }
-            else if (intersectionList.Count() == 1 && intersectionList[0] is not Undefined)
+            else if (intersectionList.Count == 1 && intersectionList[0] is not Undefined)
             {
                 Point point = (Point)intersectionList[0];
                 bool judge = PointOnArc(point, arc);
@@ -404,7 +387,7 @@ namespace GeoWall_E
                     return new Sequence(new List<Type>() { new Undefined() });
                 }
             }
-            else if (intersectionList.Count() == 2)
+            else if (intersectionList.Count == 2)
             {
                 Point point1 = (Point)intersectionList[0];
                 Point point2 = (Point)intersectionList[1];
@@ -432,19 +415,17 @@ namespace GeoWall_E
                 return new Sequence(new List<Type>() { new Undefined() });
             }
         }
-        internal static Sequence IntersectSegmentAndArc(Type f1, Type f2) 
+        internal static Sequence IntersectSegmentAndArc(Type f1, Type f2)
         {
-            Segment segment;
-            Arc arc;
-            (segment, arc) = Utils.SegmentAndArcOrdered(f1, f2);
-            Circle circle = new Circle(arc.Center, arc.Measure);
+            (Segment segment, Arc arc) = Utils.OrderByType<Segment, Arc>(f1, f2);
+            Circle circle = new(arc.Center, arc.Measure);
             IEnumerable<Type> intersection = IntersectCircleAndSegment(segment, circle).Elements;
             List<Type> intersectionList = intersection.ToList();
-            if (intersectionList.Count() == 0)
+            if (intersectionList.Count == 0)
             {
                 return new Sequence(new List<Type>() { new Undefined() });
             }
-            else if (intersectionList.Count() == 1 && intersectionList[0] is not Undefined)
+            else if (intersectionList.Count == 1 && intersectionList[0] is not Undefined)
             {
                 Point point = (Point)intersectionList[0];
                 bool judge = PointOnArc(point, arc);
@@ -457,7 +438,7 @@ namespace GeoWall_E
                     return new Sequence(new List<Type>() { new Undefined() });
                 }
             }
-            else if (intersectionList.Count() == 2)
+            else if (intersectionList.Count == 2)
             {
                 Point point1 = (Point)intersectionList[0];
                 Point point2 = (Point)intersectionList[1];
@@ -485,46 +466,46 @@ namespace GeoWall_E
                 return new Sequence(new List<Type>() { new Undefined() });
             }
         }
-        internal static Sequence IntersectArcAndArc(Type f1, Type f2) 
+        internal static Sequence IntersectArcAndArc(Type f1, Type f2)
         {
-            Arc arc1= (Arc)f1;
-            Arc arc2= (Arc)f2;
-            Circle circle1 = new Circle(arc1.Center, arc1.Measure);
-            Circle circle2 = new Circle(arc2.Center, arc2.Measure);
+            Arc arc1 = (Arc)f1;
+            Arc arc2 = (Arc)f2;
+            Circle circle1 = new(arc1.Center, arc1.Measure);
+            Circle circle2 = new(arc2.Center, arc2.Measure);
             IEnumerable<Type> intersection = IntersectTwoCircles(circle1, circle2).Elements;
             List<Type> intersectionList = intersection.ToList();
-            if (intersectionList[0] is  Undefined)
+            if (intersectionList[0] is Undefined)
             {
                 return new Sequence(new List<Type>() { new Undefined() });
             }
-            else if (intersectionList.Count() == 1)
+            else if (intersectionList.Count == 1)
             {
                 Point point = (Point)intersectionList[0];
                 bool judge = PointOnArc(point, arc1);
-                bool judge1=PointOnArc(point, arc2);
-                if (judge == true&&judge1==true)
+                bool judge1 = PointOnArc(point, arc2);
+                if (judge == true && judge1 == true)
                 {
                     return new Sequence(new List<Type>() { point });
                 }
-           
+
                 else
                 {
                     return new Sequence(new List<Type>() { new Undefined() });
                 }
             }
-            else if (intersectionList.Count() == 2)
+            else if (intersectionList.Count == 2)
             {
                 Point point1 = (Point)intersectionList[0];
                 Point point2 = (Point)intersectionList[1];
                 bool judge1 = PointOnArc(point1, arc1);
                 bool judge2 = PointOnArc(point2, arc1);
-                bool judge3=PointOnArc(point1, arc2);
-                bool judge4=PointOnArc(point2, arc2);
-                if (judge1 == true&&judge3==true)
+                bool judge3 = PointOnArc(point1, arc2);
+                bool judge4 = PointOnArc(point2, arc2);
+                if (judge1 == true && judge3 == true)
                 {
                     return new Sequence(new List<Type>() { point1 });
                 }
-                else if (judge2 == true&&judge4==true)
+                else if (judge2 == true && judge4 == true)
                 {
                     return new Sequence(new List<Type>() { point2 });
                 }
@@ -543,8 +524,8 @@ namespace GeoWall_E
         {
             Line line;
             Ray ray;
-            (line,ray ) = Utils.LineAndRayOrdered(f1, f2);
-            Line line1= new Line(ray.Start,ray.End);
+            (line, ray) = Utils.OrderByType<Line, Ray>(f1, f2);
+            Line line1 = new(ray.Start, ray.End);
             IEnumerable<Type> intersection = IntersectTwoLines(line, line1).Elements;
             List<Type> intersectionList = intersection.ToList();
             if (intersectionList[0] is Undefined)
@@ -554,7 +535,7 @@ namespace GeoWall_E
             else
             {
                 Point intersection1 = (Point)intersectionList[0];
-                if (ray.Start.X<ray.End.X && intersection1.X>=ray.Start.X)
+                if (ray.Start.X < ray.End.X && intersection1.X >= ray.Start.X)
                 {
                     return new Sequence(new List<Type>() { intersection1 });
                 }
@@ -566,16 +547,16 @@ namespace GeoWall_E
                 {
                     return new Sequence(new List<Type>() { new Undefined() });
                 }
-               
+
             }
         }
         internal static Sequence IntersectRayAndSegment(Type f1, Type f2)
         {
             Segment segment;
             Ray ray;
-            (segment, ray) = Utils.SegmentAndRayOrdered(f1, f2);
-            Line line1 = new Line(ray.Start, ray.End);
-            Line line2= new Line(segment.Start, segment.End);
+            (segment, ray) = Utils.OrderByType<Segment, Ray>(f1, f2);
+            Line line1 = new(ray.Start, ray.End);
+            Line line2 = new(segment.Start, segment.End);
             IEnumerable<Type> intersection = IntersectTwoLines(line2, line1).Elements;
             List<Type> intersectionList = intersection.ToList();
             if (intersectionList[0] is Undefined)
@@ -585,11 +566,11 @@ namespace GeoWall_E
             else
             {
                 Point intersection1 = (Point)intersectionList[0];
-                if (ray.Start.X < ray.End.X && intersection1.X >= ray.Start.X&& IsPointOnSegment(intersection1,segment))
+                if (ray.Start.X < ray.End.X && intersection1.X >= ray.Start.X && IsPointOnSegment(intersection1, segment))
                 {
                     return new Sequence(new List<Type>() { intersection1 });
                 }
-                else if (ray.Start.X > ray.End.X && intersection1.X <= ray.Start.X&& IsPointOnSegment(intersection1, segment))
+                else if (ray.Start.X > ray.End.X && intersection1.X <= ray.Start.X && IsPointOnSegment(intersection1, segment))
                 {
                     return new Sequence(new List<Type>() { intersection1 });
                 }
@@ -598,24 +579,24 @@ namespace GeoWall_E
                     return new Sequence(new List<Type>() { new Undefined() });
                 }
 
-            }         
+            }
         }
         internal static Sequence IntersectRayAndCircle(Type f1, Type f2)
         {
             Circle circle;
             Ray ray;
-            (circle, ray) = Utils.CircleAndRayOrdered(f1, f2);
-            Line line=new Line(ray.Start, ray.End);
-            IEnumerable<Type> intersection = IntersectLineAndCircle(line,circle).Elements;
+            (circle, ray) = Utils.OrderByType<Circle, Ray>(f1, f2);
+            Line line = new(ray.Start, ray.End);
+            IEnumerable<Type> intersection = IntersectLineAndCircle(line, circle).Elements;
             List<Type> intersectionList = intersection.ToList();
             if (intersectionList[0] is Undefined)
             {
                 return new Sequence(new List<Type>() { new Undefined() });
             }
-            else if (intersectionList.Count==1)
+            else if (intersectionList.Count == 1)
             {
                 Point intersect = (Point)intersectionList[0];
-                if (IsPointOnRay(intersect,ray))
+                if (IsPointOnRay(intersect, ray))
                 {
                     return new Sequence(new List<Type>() { intersect });
                 }
@@ -627,10 +608,10 @@ namespace GeoWall_E
             else if (intersectionList.Count == 2)
             {
                 Point intersect1 = (Point)intersectionList[0];
-                Point intersect2= (Point)intersectionList[1];
-                if (IsPointOnRay(intersect1,ray) && IsPointOnRay(intersect2,ray))
+                Point intersect2 = (Point)intersectionList[1];
+                if (IsPointOnRay(intersect1, ray) && IsPointOnRay(intersect2, ray))
                 {
-                    return new Sequence(new List<Type>() { intersect1,intersect2 });
+                    return new Sequence(new List<Type>() { intersect1, intersect2 });
                 }
                 if (IsPointOnRay(intersect1, ray))
                 {
@@ -654,8 +635,8 @@ namespace GeoWall_E
         {
             Ray ray;
             Arc arc;
-            (arc, ray) = Utils.ArcAndRayOrdered(f1, f2);
-            Line line = new Line(ray.Start, ray.End);
+            (arc, ray) = Utils.OrderByType<Arc, Ray>(f1, f2);
+            Line line = new(ray.Start, ray.End);
             IEnumerable<Type> intersection = IntersectLineAndArc(arc, line).Elements;
             List<Type> intersectionList = intersection.ToList();
             if (intersectionList[0] is Undefined)
@@ -678,7 +659,7 @@ namespace GeoWall_E
             {
                 Point intersect1 = (Point)intersectionList[0];
                 Point intersect2 = (Point)intersectionList[1];
-                if (IsPointOnRay(intersect1, ray) && IsPointOnRay(intersect2, ray)&&PointOnArc(intersect1,arc)&&PointOnArc(intersect2,arc))
+                if (IsPointOnRay(intersect1, ray) && IsPointOnRay(intersect2, ray) && PointOnArc(intersect1, arc) && PointOnArc(intersect2, arc))
                 {
                     return new Sequence(new List<Type>() { intersect1, intersect2 });
                 }
@@ -704,10 +685,10 @@ namespace GeoWall_E
         internal static Sequence IntersectRayAndRay(Type f1, Type f2)
         {
 
-            Ray ray1=(Ray)f1;
-            Ray ray2= (Ray)f2;
-            Line line1 = new Line(ray1.Start, ray1.End);
-            Line line2 = new Line(ray2.Start, ray2.End);
+            Ray ray1 = (Ray)f1;
+            Ray ray2 = (Ray)f2;
+            Line line1 = new(ray1.Start, ray1.End);
+            Line line2 = new(ray2.Start, ray2.End);
             IEnumerable<Type> intersection = IntersectTwoLines(line1, line2).Elements;
             List<Type> intersectionList = intersection.ToList();
             if (intersectionList[0] is Undefined)
@@ -717,7 +698,7 @@ namespace GeoWall_E
             else
             {
                 Point intersection1 = (Point)intersectionList[0];
-                if (IsPointOnRay(intersection1,ray1)&&IsPointOnRay(intersection1,ray2))
+                if (IsPointOnRay(intersection1, ray1) && IsPointOnRay(intersection1, ray2))
                 {
                     return new Sequence(new List<Type>() { intersection1 });
                 }
@@ -729,7 +710,8 @@ namespace GeoWall_E
             }
         }
         internal static bool PointOnArc(Point point, Arc arc)
-        {// Convierte los puntos a vectores
+        {
+            // Convierte los puntos a vectores
             var vectorStart = new { X = arc.Extremo1.X - arc.Center.X, Y = arc.Extremo1.Y - arc.Center.Y };
             var vectorEnd = new { X = arc.Extremo2.X - arc.Center.X, Y = arc.Extremo2.Y - arc.Center.Y };
             var vectorPoint = new { X = point.X - arc.Center.X, Y = point.Y - arc.Center.Y };
@@ -742,20 +724,14 @@ namespace GeoWall_E
             bool isClockwise = vectorStart.X * vectorEnd.Y - vectorEnd.X * vectorStart.Y < 0;
 
             // Comprueba si el punto está en el arco
-            if (isClockwise)
-            {
-                return crossProductStart <= 0 && crossProductEnd >= 0;
-            }
-            else
-            {
-                return crossProductStart >= 0 && crossProductEnd <= 0;
-            }
+            if (isClockwise) return crossProductStart <= 0 && crossProductEnd >= 0;
+            else return crossProductStart >= 0 && crossProductEnd <= 0;
         }
         public static double Distance(this Point point1, Point point2)
         {
             return Math.Sqrt(Math.Pow(point2.X - point1.X, 2) + Math.Pow(point2.Y - point1.Y, 2));
         }
-        public static  bool IsPointOnSegment(Point point, Segment segment)
+        public static bool IsPointOnSegment(Point point, Segment segment)
         {
             double minX = Math.Min(segment.Start.X, segment.End.X);
             double maxX = Math.Max(segment.Start.X, segment.End.X);
@@ -767,20 +743,10 @@ namespace GeoWall_E
 
             return false;
         }
-        public static bool IsPointOnRay(Point point, Ray ray) 
+        public static bool IsPointOnRay(Point point, Ray ray)
         {
-            if (ray.Start.X < ray.End.X && point.X >= ray.Start.X)
-            {
-                return true;
-            }
-            else if (ray.Start.X > ray.End.X && point.X <= ray.Start.X )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            if (ray.Start.X < ray.End.X && point.X >= ray.Start.X || ray.Start.X > ray.End.X && point.X <= ray.Start.X) return true;
+            return false;
         }
     }
- }
+}

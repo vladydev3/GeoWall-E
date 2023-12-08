@@ -9,7 +9,6 @@ namespace GeoWall_E
         int position;
         Color PreviousColor = new(Colors.Black);
         Color color = new(Colors.Black);
-        bool skip = false;
 
         public Parser(List<Token> tokens, Error errors)
         {
@@ -29,7 +28,6 @@ namespace GeoWall_E
         {
             if (Current.Type == Type) return NextToken();
             errors.AddError($"SYNTAX ERROR: Expected {Type} but got {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
-            skip = true;
             return new Token(TokenType.Error, "", Current.Line, Current.Column);
         }
 

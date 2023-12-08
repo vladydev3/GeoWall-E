@@ -16,6 +16,7 @@ namespace GeoWall_E
             Errors_ = error;
             SymbolTable = new SymbolTable();
             var checker = new SemanticChecker(Errors);
+            Root = Utils.ReorderNodes(Root);
             checker.Check(Root);
         }
 
