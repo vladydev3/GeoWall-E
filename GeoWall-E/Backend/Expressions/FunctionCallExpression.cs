@@ -46,14 +46,12 @@ public class FunctionCallExpression : Expression, IEvaluable
             }
         }
 
-        symbolTable.EnterScope();
         foreach (var argument in argumentsDefined)
         {
             symbolTable.Define(argument.Key, argument.Value);
         }
         var body = (IEvaluable)functionDefined.Body;
         var result = body.Evaluate(symbolTable, error);
-        symbolTable.ExitScope();
         return result;
     }
 }
