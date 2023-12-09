@@ -242,7 +242,7 @@ namespace GeoWall_E
                     CheckExpression(arc.Measure);
                     break;
                 case CircleExpression circle:
-                    if (inference.InferType(circle.Center) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(circle.Center)} Line: {circle.Positions["center"].Item1}, Column: {circle.Positions["center"].Item2}");
+                    if (inference.InferType(circle.Center) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(circle.Center)} Line: {circle.Positions["c"].Item1}, Column: {circle.Positions["c"].Item2}");
                     if (inference.InferType(circle.Radius) != TypeInfered.Measure) Errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {inference.InferType(circle.Radius)} Line: {circle.Positions["radius"].Item1}, Column: {circle.Positions["radius"].Item2}");
                     CheckExpression(circle.Center);
                     CheckExpression(circle.Radius);
