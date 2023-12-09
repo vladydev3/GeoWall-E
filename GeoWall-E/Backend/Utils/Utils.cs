@@ -32,7 +32,7 @@ namespace GeoWall_E
             foreach (var node in nodes)
             {
                 if (node is ImportStatement) importNodes.Add(node);
-                else if (node is FunctionDeclaration) functionNodes.Add(node);
+                else if (node is FunctionDeclaration) functionNodes.Insert(0, node);
                 else otherNodes.Add(node);
             }
             newNodes.AddRange(importNodes);

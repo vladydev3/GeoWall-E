@@ -16,7 +16,7 @@ public class FunctionCallExpression : Expression, IEvaluable
     public Token FunctionName => FunctionName_;
     public List<Expression> Arguments => Arguments_;
 
-    public Type Evaluate(SymbolTable symbolTable, Error error)
+    public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
     {
         depth++;
 
@@ -35,7 +35,7 @@ public class FunctionCallExpression : Expression, IEvaluable
             try
             {
                 var arg = (IEvaluable)Arguments[i];
-                var evaluatedArgument = arg.Evaluate(symbolTable, error);
+                var evaluatedArgument = arg.Evaluate(symbolTable, error, toDraw);
                 if (evaluatedArgument.ObjectType == ObjectTypes.Error) return evaluatedArgument;
                 argumentsDefined.Add(functionDefined.Arguments[i].Text, evaluatedArgument);
             }
@@ -46,12 +46,14 @@ public class FunctionCallExpression : Expression, IEvaluable
             }
         }
 
+        symbolTable.EnterScope();
         foreach (var argument in argumentsDefined)
         {
             symbolTable.Define(argument.Key, argument.Value);
         }
         var body = (IEvaluable)functionDefined.Body;
-        var result = body.Evaluate(symbolTable, error);
+        var result = body.Evaluate(symbolTable, error, toDraw);
+        symbolTable.ExitScope();
         return result;
     }
 }

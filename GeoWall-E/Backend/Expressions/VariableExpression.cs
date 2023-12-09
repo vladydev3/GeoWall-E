@@ -11,14 +11,9 @@ namespace GeoWall_E
 
         public Token Name => Name_;
 
-        public Type Evaluate(SymbolTable table, Error error)
+        public Type Evaluate(SymbolTable table, Error error, List<Tuple<Type, Color>> toDraw)
         {
-            var variable = table.Resolve(Name.Text);
-            if (variable is ErrorType)
-            {
-                error.AddError($"SEMANTIC ERROR: Variable {Name.Text} is not defined");
-            }
-            return variable;
+            return table.Resolve(Name.Text);
         }
     }
 }

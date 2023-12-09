@@ -18,35 +18,28 @@ namespace GeoWall_E
         public Expression P2 => P2_;
         public Dictionary<string, Tuple<int, int>> Positions => Positions_;
 
-        public Type Evaluate(SymbolTable symbolTable, Error error)
+        public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
         {
             if (P1 as IEvaluable != null && P2 as IEvaluable != null)
             {
-                var p1 = ((IEvaluable)P1).Evaluate(symbolTable, error);
-                var p2 = ((IEvaluable)P2).Evaluate(symbolTable, error);
+                var p1 = ((IEvaluable)P1).Evaluate(symbolTable, error, toDraw);
+                var p2 = ((IEvaluable)P2).Evaluate(symbolTable, error, toDraw);
                 if (p1 is not ErrorType && p2 is not ErrorType)
                 {
                     if (p1.ObjectType == ObjectTypes.Point && p2.ObjectType == ObjectTypes.Point) return new Measure((Point)p1, (Point)p2);
-                    if (p1.ObjectType != ObjectTypes.Point)
-                    {
-                        error.AddError($"Expected Point type but got {p1.ObjectType} Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
-                        return new ErrorType();
-                    }
-                    error.AddError($"Expected Point type but got {p2.ObjectType} Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
                     return new ErrorType();
                 }
                 else return new ErrorType();
             }
             else
             {
-                error.AddError($"Invalid expression in measure(), Line: {Positions["measure"].Item1}, Column: {Positions["measure"].Item2}");
                 return new ErrorType();
             }
         }
 
         public void HandleMeasureExpression(SymbolTable symbolTable, Error errors, string asignationName)
         {
-            var measure = Evaluate(symbolTable, errors);
+            var measure = Evaluate(symbolTable, errors, toDraw: new List<Tuple<Type, Color>>());
             if (measure is not ErrorType)
             {
                 symbolTable.Define(asignationName, (Measure)measure);

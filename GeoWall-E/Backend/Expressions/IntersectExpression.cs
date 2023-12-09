@@ -18,12 +18,12 @@ namespace GeoWall_E
         public Expression F2 => F2_;
         public Dictionary<string, Tuple<int, int>> Positions => Positions_;
 
-        public Type Evaluate(SymbolTable symbolTable, Error errors)
+        public Type Evaluate(SymbolTable symbolTable, Error errors, List<Tuple<Type, Color>> toDraw)
         {
             if (F1 as IEvaluable != null && F2 as IEvaluable != null)
             {
-                var f1 = ((IEvaluable)F1).Evaluate(symbolTable, errors);
-                var f2 = ((IEvaluable)F2).Evaluate(symbolTable, errors);
+                var f1 = ((IEvaluable)F1).Evaluate(symbolTable, errors, toDraw);
+                var f2 = ((IEvaluable)F2).Evaluate(symbolTable, errors, toDraw);
                 if (f1 is not ErrorType && f2 is not ErrorType)
                 {
                     // Intersect between two lines
@@ -115,7 +115,7 @@ namespace GeoWall_E
 
         public void HandleIntersectAsignationExpression(SymbolTable symbolTable, Error errors, AsignationStatement asignation)
         {
-            var intersect = Evaluate(symbolTable, errors);
+            var intersect = Evaluate(symbolTable, errors, toDraw: new List<Tuple<Type, Color>>());
             if (intersect is not ErrorType)
             {
                 symbolTable.Define(asignation.Name.Text, (Sequence)intersect);
@@ -124,7 +124,7 @@ namespace GeoWall_E
 
         public void HandleIntersectExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
         {
-            var intersect = Evaluate(symbolTable, errors);
+            var intersect = Evaluate(symbolTable, errors, toDraw);
             if (intersect is not ErrorType)
             {
                 ((Sequence)intersect).SetName(name);

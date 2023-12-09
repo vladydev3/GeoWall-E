@@ -10,7 +10,7 @@ namespace GeoWall_E
         }
         public Token Number => Number_;
 
-        public Type Evaluate(SymbolTable table, Error error)
+        public Type Evaluate(SymbolTable table, Error error, List<Tuple<Type, Color>> toDraw)
         {
             return new NumberLiteral(double.Parse(Number_.Text));
         }
