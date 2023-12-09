@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class CircleStatement : Statement
+    public class CircleStatement : Statement, IFigureStatement
     {
         public override TokenType Type => TokenType.Circle;
 
@@ -17,7 +17,7 @@ namespace GeoWall_E
 
         public bool IsSequence => IsSequence_;
 
-        public static Sequence CreateSequence()
+        public Sequence CreateSequence()
         {
             // crear una secuencia de circulos aleatorios, una cantidad aleatoria entre 10 y 10000
             var random = new Random();

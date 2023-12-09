@@ -35,13 +35,40 @@ namespace GeoWall_E
             SymbolTable.ExitScope();
         }
 
-        // private void CheckStatement<T>(T statement, Func<T> createSequence, Func<T> create) where T : Statement
-        // {
-        //     if (SymbolTable.Resolve(statement.Name.Text) is not ErrorType or Function)
-        //         Errors.AddError($"SEMANTIC ERROR: {typeof(T).Name} '{statement.Name.Text}' already defined");
-        //     else
-        //         SymbolTable.Define(statement.Name.Text, statement.IsSequence ? createSequence() : create());
-        // }
+        void CheckFigureStatement(IFigureStatement figure)
+        {
+            if (SymbolTable.Resolve(figure.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: '{figure.Name.Text}' already defined");
+            else
+            {
+                if (figure.IsSequence) SymbolTable.Define(figure.Name.Text, figure.CreateSequence());
+                else
+                {
+                    switch (figure)
+                    {
+                        case PointStatement:
+                            SymbolTable.Define(figure.Name.Text, new Point(figure.Name.Text));
+                            break;
+                        case CircleStatement:
+                            SymbolTable.Define(figure.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point()), figure.Name.Text));
+                            break;
+                        case LineStatement:
+                            SymbolTable.Define(figure.Name.Text, new Line(new Point(), new Point(), figure.Name.Text));
+                            break;
+                        case RayStatement:
+                            SymbolTable.Define(figure.Name.Text, new Ray(new Point(), new Point(), figure.Name.Text));
+                            break;
+                        case SegmentStatement:
+                            SymbolTable.Define(figure.Name.Text, new Segment(new Point(), new Point(), figure.Name.Text));
+                            break;
+                        case MeasureStatement:
+                            SymbolTable.Define(figure.Name.Text, new Measure(new Point(), new Point(), figure.Name.Text));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
 
         private void Check(Node node)
         {
@@ -55,51 +82,25 @@ namespace GeoWall_E
                     SymbolTable.Merge(((ImportStatement)node).Import(), Errors);
                     break;
                 case PointStatement point:
-                    if (SymbolTable.Resolve(point.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Point '{point.Name.Text}' already defined");
-                    else
-                    {
-                        if (point.IsSequence) SymbolTable.Define(point.Name.Text, PointStatement.CreateSequence());
-                        else SymbolTable.Define(point.Name.Text, new Point(point.Name.Text));
-                    }
+                    CheckFigureStatement(point);
                     break;
                 case Draw draw:
                     CheckExpression(draw.Expression);
                     break;
                 case LineStatement line:
-                    if (SymbolTable.Resolve(line.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Line '{line.Name.Text}' already defined");
-                    else
-                    {
-                        if (line.IsSequence) SymbolTable.Define(line.Name.Text, LineStatement.CreateSequence());
-                        else SymbolTable.Define(line.Name.Text, new Line(new Point(), new Point(), line.Name.Text));
-                    }
+                    CheckFigureStatement(line);
                     break;
                 case CircleStatement circle:
-                    if (SymbolTable.Resolve(circle.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Circle '{circle.Name.Text}' already defined");
-                    else
-                    {
-                        if (circle.IsSequence) SymbolTable.Define(circle.Name.Text, CircleStatement.CreateSequence());
-                        else SymbolTable.Define(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point()), circle.Name.Text));
-                    }
+                    CheckFigureStatement(circle);
                     break;
                 case RayStatement ray:
-                    if (SymbolTable.Resolve(ray.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Ray '{ray.Name.Text}' already defined");
-                    else
-                    {
-                        if (ray.IsSequence) SymbolTable.Define(ray.Name.Text, RayStatement.CreateSequence());
-                        else SymbolTable.Define(ray.Name.Text, new Ray(new Point(), new Point(), ray.Name.Text));
-                    }
+                    CheckFigureStatement(ray);
                     break;
                 case SegmentStatement segment:
-                    if (SymbolTable.Resolve(segment.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Segment '{segment.Name.Text}' already defined");
-                    else
-                    {
-                        if (segment.IsSequence) SymbolTable.Define(segment.Name.Text, SegmentStatement.CreateSequence());
-                        else SymbolTable.Define(segment.Name.Text, new Segment(new Point(), new Point(), segment.Name.Text));
-                    }
+                    CheckFigureStatement(segment);
                     break;
                 case MeasureStatement measure:
-                    if (SymbolTable.Resolve(measure.Name.Text) is not ErrorType or Function) Errors.AddError($"SEMANTIC ERROR: Measure '{measure.Name.Text}' already defined");
-                    else SymbolTable.Define(measure.Name.Text, new Measure(new Point(), new Point(), measure.Name.Text));
+                    CheckFigureStatement(measure);
                     break;
                 case FunctionDeclaration function:
                     if (SymbolTable.Resolve(function.Name.Text) is Function) Errors.AddError($"SEMANTIC ERROR: Function '{function.Name.Text}' already defined");

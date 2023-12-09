@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class SegmentStatement : Statement
+    public class SegmentStatement : Statement, IFigureStatement
     {
         public override TokenType Type => TokenType.Segment;
         private Token Name_ { get; set; }
@@ -16,7 +16,7 @@ namespace GeoWall_E
 
         public bool IsSequence => IsSequence_;
 
-        public static Sequence CreateSequence()
+        public Sequence CreateSequence()
         {
             // crear una secuencia de segmentos aleatorios, una cantidad aleatoria entre 10 y 10000
             var random = new Random();

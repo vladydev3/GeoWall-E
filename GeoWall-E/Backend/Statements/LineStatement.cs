@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class LineStatement : Statement
+    public class LineStatement : Statement, IFigureStatement
     {
         public override TokenType Type => TokenType.Line;
         private Token Name_ { get; set; }
@@ -16,7 +16,7 @@ namespace GeoWall_E
 
         public bool IsSequence => IsSequence_;
 
-        public static Sequence CreateSequence()
+        public Sequence CreateSequence()
         {
             // crear una secuencia de rectas aleatorias, una cantidad aleatoria entre 10 y 10000
             var random = new Random();
