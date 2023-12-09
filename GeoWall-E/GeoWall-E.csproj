@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <RootNamespace>GeoWall_E</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>True</UseWindowsForms>
+    <ApplicationIcon>photo_2023-11-18_22-25-16.ico</ApplicationIcon>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="big_x.7fa8a138.png" />
+    <None Remove="blue-and-white-abstract-background-vector.jpg" />
+    <None Remove="depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" />
+    <None Remove="fondo.jpg" />
+    <None Remove="fondoblanco.jpg" />
+    <None Remove="kkk.jpg" />
+    <None Remove="location-pin-icon-location-pin-sign-blue-location-pin-symbol-map-pointer-icon-free-vector.jpg" />
+    <None Remove="logo azul.jpg" />
+    <None Remove="Logo.jpg" />
+    <None Remove="lool.jpg" />
+    <None Remove="OIG %281%29.jpg" />
+    <None Remove="OIG %282%29.jpg" />
+    <None Remove="photo-1548614229-c1fe21dfab63.webp" />
+    <None Remove="photo_2023-11-18_18-31-07.jpg" />
+    <None Remove="photo_2023-11-18_22-25-16.jpg" />
+    <None Remove="R %281%29.jpg" />
+    <None Remove="R.jpg" />
+    <None Remove="turquoise-blue-aqua-teal-line-png-favpng-qzwVFWgqxkTDZ4pnJ1TjCkRWq.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="photo_2023-11-18_22-25-16.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="big_x.7fa8a138.png" />
+    <Resource Include="blue-and-white-abstract-background-vector.jpg" />
+    <Resource Include="depositphotos_24419381-stock-photo-arrow-up-blue-circle-web.jpg" />
+    <Resource Include="fondo.jpg" />
+    <Resource Include="fondoblanco.jpg" />
+    <Resource Include="kkk.jpg" />
+    <Resource Include="location-pin-icon-location-pin-sign-blue-location-pin-symbol-map-pointer-icon-free-vector.jpg" />
+    <Resource Include="logo azul.jpg" />
+    <Resource Include="Logo.jpg" />
+    <Resource Include="lool.jpg" />
+    <Resource Include="OIG (1).jpg" />
+    <Resource Include="OIG (2).jpg" />
+    <Resource Include="photo-1548614229-c1fe21dfab63.webp" />
+    <Resource Include="photo_2023-11-18_18-31-07.jpg" />
+    <Resource Include="photo_2023-11-18_22-25-16.jpg" />
+    <Resource Include="R (1).jpg" />
+    <Resource Include="R.jpg" />
+    <Resource Include="turquoise-blue-aqua-teal-line-png-favpng-qzwVFWgqxkTDZ4pnJ1TjCkRWq.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageReference Include="xunit" Version="2.6.2" />
+  </ItemGroup>
+
+</Project>
