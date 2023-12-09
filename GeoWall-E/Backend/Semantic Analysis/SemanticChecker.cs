@@ -210,6 +210,7 @@ namespace GeoWall_E
 
         internal void CheckExpression(Expression expression)
         {
+            TypeInference inference = new(SymbolTable);
             // Si ya hemos chequeado la expresion, no la volvemos a chequear
             if (checkedExpressions.Contains(expression)) return;
             checkedExpressions.Add(expression);
@@ -222,7 +223,6 @@ namespace GeoWall_E
                     break;
                 case SequenceExpression sequence:
                     if (sequence.Elements == null) break;
-                    TypeInference inference = new(SymbolTable);
 
                     if (sequence.Elements.Count > 0)
                     {
@@ -246,21 +246,31 @@ namespace GeoWall_E
                     CheckExpression(unary.Operand);
                     break;
                 case ArcExpression arc:
+                    if (inference.InferType(arc.Center) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(arc.Center)} Line: {arc.Positions["center"].Item1}, Column: {arc.Positions["center"].Item2}");
+                    if (inference.InferType(arc.Start) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(arc.Start)} Line: {arc.Positions["start"].Item1}, Column: {arc.Positions["start"].Item2}");
+                    if (inference.InferType(arc.End) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(arc.End)} Line: {arc.Positions["end"].Item1}, Column: {arc.Positions["end"].Item2}");
+                    if (inference.InferType(arc.Measure) != TypeInfered.Measure) Errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {inference.InferType(arc.Measure)}, Line: {arc.Positions["measure"].Item1}, Column: {arc.Positions["measure"].Item2}");
                     CheckExpression(arc.Center);
                     CheckExpression(arc.Start);
                     CheckExpression(arc.End);
                     CheckExpression(arc.Measure);
                     break;
                 case CircleExpression circle:
+                    if (inference.InferType(circle.Center) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(circle.Center)} Line: {circle.Positions["center"].Item1}, Column: {circle.Positions["center"].Item2}");
+                    if (inference.InferType(circle.Radius) != TypeInfered.Measure) Errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {inference.InferType(circle.Radius)} Line: {circle.Positions["radius"].Item1}, Column: {circle.Positions["radius"].Item2}");
                     CheckExpression(circle.Center);
                     CheckExpression(circle.Radius);
                     break;
                 case IfExpression ifExpression:
+                    if (inference.InferType(ifExpression.Then) != inference.InferType(ifExpression.Else)) Errors.AddError($"SEMANTIC ERROR: Then and Else expression must return the same type.");
                     CheckExpression(ifExpression.Condition);
                     CheckExpression(ifExpression.Then);
                     CheckExpression(ifExpression.Else);
                     break;
                 case IntersectExpression intersect:
+                    var inferType1 = InferedTypeToType(inference.InferType(intersect.F1));
+                    var inferType2 = InferedTypeToType(inference.InferType(intersect.F2));
+                    if (inferType1 is not IDraw || inferType2 is not IDraw) Errors.AddError($"SEMANTIC ERROR: Intersect expression must receive two figures");
                     CheckExpression(intersect.F1);
                     CheckExpression(intersect.F2);
                     break;
