@@ -18,7 +18,7 @@ global using System.Windows.Threading;
 
 namespace GeoWall_E
 {
-    public class Picasso : IDrawable
+    public class Picasso 
     {
         public Type FigureToDraw;
         public Canvas drawingCanvas;
