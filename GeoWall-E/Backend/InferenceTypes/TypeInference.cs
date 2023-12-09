@@ -79,6 +79,8 @@ namespace GeoWall_E
                     return InferType(sequence.Elements[0]);
                 case FunctionDeclaration:
                     return TypeInfered.Function;
+                case LetInExpression letIn:
+                    return InferType(letIn.In);
                 default:
                     return TypeInfered.Any;
             }

@@ -24,17 +24,8 @@ namespace GeoWall_E
             {
                 var center = ((IEvaluable)Center).Evaluate(symbolTable, errors);
                 var radius = ((IEvaluable)Radius).Evaluate(symbolTable, errors);
-                if (center is not ErrorType && radius is not ErrorType)
-                {
-                    if (center.ObjectType == ObjectTypes.Point && radius.ObjectType == ObjectTypes.Measure) return new Circle((Point)center, (Measure)radius);
-
-                    else if (center.ObjectType != ObjectTypes.Point) errors.AddError($"SEMANTIC ERROR: Expected Point type but got {center.ObjectType} Line: {Positions["center"].Item1}, Column: {Positions["center"].Item2}");
-
-                    else errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {radius.ObjectType} Line: {Positions["radius"].Item1}, Column: {Positions["radius"].Item2}");
-                }
+                if (center is not ErrorType && radius is not ErrorType) return new Circle((Point)center, (Measure)radius);
             }
-            else errors.AddError($"SEMANTIC ERROR: Invalid expression in circle(), Line: {Positions["circle"].Item1}, Column: {Positions["circle"].Item2}");
-
             return new ErrorType();
         }
 
