@@ -19,6 +19,8 @@ namespace GeoWall_E
 
         public string Name => Name_;
 
+        public Point SignificativePoint => Start_;
+
         public void SetName(string name)
         {
             Name_ = name;

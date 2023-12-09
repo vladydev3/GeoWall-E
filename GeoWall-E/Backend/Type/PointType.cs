@@ -23,6 +23,8 @@ namespace GeoWall_E
 
         public double Y => Y_;
 
+        public Point SignificativePoint => this;
+
         public void AsignX(double x)
         {
             X_ = x;
