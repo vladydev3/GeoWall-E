@@ -68,16 +68,6 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button HorizontalAlignment="Left" Cursor="Hand" BorderThickness="0" Margin="392,437,0,0" VerticalAlignment="Top" Click="Button_Click_3" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent">
-                <Button.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="-90.59"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </Button.RenderTransform>
-            </Button>
             <Button HorizontalAlignment="Left" Cursor="Hand" FocusVisualStyle="{x:Null}" BorderThickness="0" Margin="200,560,0,0" VerticalAlignment="Top" Click="Button_Click_5" Height="55" Width="44" RenderTransformOrigin="0.571,0.493" BorderBrush="Transparent" Background="Transparent" Grid.Column="1">
                 <Button.RenderTransform>
                     <TransformGroup>
