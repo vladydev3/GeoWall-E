@@ -98,85 +98,22 @@ namespace GeoWall_E
                 foreach (var item in handler.ToDraw)
                 {
 
-                    if (item.Item1 is Point point)
+                    if (item.Item1 is IAdjustable adjustable)
                     {
-                        Picasso drawer = new Picasso(drawingCanvas, point, item.Item2);// Crea una nueva instancia de la clase Picasso con el Canvas, el punto y el segundo elemento del item.
-                        drawer.Draw();// Dibuja el punto en el Canvas.
-                        Adjust(point);// Ajusta el ScrollViewer al punto.
-
-                    }
-                    else if (item.Item1 is Line line)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, line, item.Item2);
+                        Picasso drawer = new Picasso(drawingCanvas, (Type)adjustable, item.Item2);
                         drawer.Draw();
-                        Adjust(line.P1);
-                    }
-
-                    else if (item.Item1 is Segment segment)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, segment, item.Item2);
-                        drawer.Draw();
-                        Adjust(segment.Start);
-                    }
-
-                    else if (item.Item1 is Ray ray)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, ray, item.Item2);
-                        drawer.Draw();
-                        Adjust(ray.Start);
-                    }
-
-                    else if (item.Item1 is Circle circle)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, circle, item.Item2);
-                        drawer.Draw();
-                        Adjust(circle.Center);
-                    }
-
-                    else if (item.Item1 is Arc arc)
-                    {
-                        Picasso drawer = new Picasso(drawingCanvas, arc, item.Item2);
-                        drawer.Draw();
-                        scrollViewer.ScrollToHorizontalOffset(arc.Center.X - 400);
-                        scrollViewer.ScrollToVerticalOffset(arc.Center.Y - 250);
-
+                        Adjust(adjustable.SignificativePoint);
                     }
                     else if (item.Item1 is Sequence sequence)
                     {
                         foreach (var element in sequence.Elements)
                         {
-                            Picasso drawer = new Picasso(drawingCanvas, element, item.Item2);
-                            drawer.Draw();
-                            if (element is Point pointt)
+                            if (element is IAdjustable adjustableElement)
                             {
-                                Adjust(pointt);
-
+                                Picasso drawer = new Picasso(drawingCanvas, (Type)adjustableElement, item.Item2);
+                                drawer.Draw();
+                                Adjust(adjustableElement.SignificativePoint);
                             }
-                            else if (element is Line linet)
-                            {
-                                Adjust(linet.P1);
-                            }
-                            else if (item.Item1 is Segment segmentt)
-                            {
-                                Adjust(segmentt.Start);
-
-                            }
-                            else if (item.Item1 is Ray rayy)
-                            {
-                                Adjust(rayy.Start);
-
-                            }
-                            else if (item.Item1 is Circle circlee)
-                            {
-                                Adjust(circlee.Center);
-
-                            }
-                            else if (item.Item1 is Arc arcc)
-                            {
-                                scrollViewer.ScrollToHorizontalOffset(arcc.Center.X - 400);
-                                scrollViewer.ScrollToVerticalOffset(arcc.Center.Y - 250);
-                            }
-
                         }
                     }
                 }

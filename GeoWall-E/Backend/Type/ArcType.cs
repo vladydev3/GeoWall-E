@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class Arc : Type, IDraw
+    public class Arc : Type,IAdjustable
     {
         public override ObjectTypes ObjectType => ObjectTypes.Arc;
         private Point Center_ { get; set; }
