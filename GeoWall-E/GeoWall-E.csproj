@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
-    <ApplicationIcon>photo_2023-11-18_22-25-16.ico</ApplicationIcon>
+    <ApplicationIcon>Images\photo_2023-11-18_22-25-16.ico</ApplicationIcon>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="photo_2023-11-18_22-25-16.ico" />
+    <Content Include="Images\photo_2023-11-18_22-25-16.ico" />
   </ItemGroup>
 
   <ItemGroup>
