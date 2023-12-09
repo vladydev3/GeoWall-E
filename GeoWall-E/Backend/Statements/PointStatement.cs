@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class PointStatement : Statement
+    public class PointStatement : Statement, IFigureStatement
     {
         public override TokenType Type => TokenType.Point;
         private Token Name_ { get; }
@@ -16,7 +16,7 @@ namespace GeoWall_E
 
         public bool IsSequence => IsSequence_;
 
-        public static Sequence CreateSequence()
+        public Sequence CreateSequence()
         {
             // crear una secuencia de puntos aleatorios, una cantidad aleatoria 10 y 10000
             var random = new Random();

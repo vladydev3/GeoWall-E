@@ -5,6 +5,7 @@ public class FunctionCallExpression : Expression, IEvaluable
     public override TokenType Type => TokenType.FunctionCallExpression;
     private Token FunctionName_ { get; set; }
     private List<Expression> Arguments_ { get; set; }
+    private int depth = 0;
 
     public FunctionCallExpression(Token functionName, List<Expression> arguments)
     {
@@ -17,20 +18,16 @@ public class FunctionCallExpression : Expression, IEvaluable
 
     public Type Evaluate(SymbolTable symbolTable, Error error)
     {
-        var function = symbolTable.Resolve(FunctionName.Text);
-        if (function.ObjectType != ObjectTypes.Function || function.ObjectType == ObjectTypes.Error)
-        {
-            error.AddError($"SEMANTIC ERROR: Function {FunctionName.Text} not defined");
-            return function;
-        }
+        depth++;
 
-        var functionDefined = (Function)function;
-
-        if (Arguments.Count != functionDefined.Arguments.Count)
+        if (depth > 500)
         {
-            error.AddError($"SEMANTIC ERROR: Function {FunctionName.Text} expected {functionDefined.Arguments.Count} arguments, but {Arguments.Count} were given");
+            error.AddError($"RUNTIME ERROR: StackOverflow");
             return new ErrorType();
         }
+        var function = symbolTable.Resolve(FunctionName.Text);
+
+        var functionDefined = (Function)function;
 
         Dictionary<string, Type> argumentsDefined = new();
         for (int i = 0; i < Arguments.Count; i++) // evaluo los argumentos y los agrego al dictionary
@@ -44,7 +41,7 @@ public class FunctionCallExpression : Expression, IEvaluable
             }
             catch (Exception)
             {
-                error.AddError($"SEMANTIC ERROR: Can't evaluate argument {i + 1} of function {FunctionName.Text}");
+                error.AddError($"RUNTIME ERROR: Can't evaluate argument {i + 1} of function {FunctionName.Text}");
                 return new ErrorType();
             }
         }

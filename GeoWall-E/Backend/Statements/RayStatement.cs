@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class RayStatement : Statement
+    public class RayStatement : Statement, IFigureStatement
     {
         public override TokenType Type => TokenType.Ray;
         private Token Name_ { get; set; }
@@ -16,7 +16,7 @@ namespace GeoWall_E
 
         public bool IsSequence => IsSequence_;
 
-        public static Sequence CreateSequence()
+        public Sequence CreateSequence()
         {
             // crear una secuencia de rayos aleatorios, una cantidad aleatoria entre 10 y 10000
             var random = new Random();

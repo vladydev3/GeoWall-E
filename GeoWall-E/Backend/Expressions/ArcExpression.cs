@@ -26,12 +26,12 @@ namespace GeoWall_E
 
         public Type Evaluate(SymbolTable symbolTable, Error error)
         {
-            if (Center as IEvaluable != null && Start as IEvaluable != null && End as IEvaluable != null && Measure as IEvaluable != null)
+            if (Center is IEvaluable centerEvaluable && Start is IEvaluable startEvaluable && End is IEvaluable endEvaluable && Measure is IEvaluable measureEvaluable)
             {
-                var center = ((IEvaluable)Center).Evaluate(symbolTable, error);
-                var start = ((IEvaluable)Start).Evaluate(symbolTable, error);
-                var end = ((IEvaluable)End).Evaluate(symbolTable, error);
-                var measure = ((IEvaluable)Measure).Evaluate(symbolTable, error);
+                var center = centerEvaluable.Evaluate(symbolTable, error);
+                var start = startEvaluable.Evaluate(symbolTable, error);
+                var end = endEvaluable.Evaluate(symbolTable, error);
+                var measure = measureEvaluable.Evaluate(symbolTable, error);
                 if (center is not ErrorType && start is not ErrorType && end is not ErrorType && measure is not ErrorType)
                 {
                     if (center.ObjectType == ObjectTypes.Point && start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point && measure.ObjectType == ObjectTypes.Measure) return new Arc((Point)center, (Point)start, (Point)end, (Measure)measure);
