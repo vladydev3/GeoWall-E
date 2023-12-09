@@ -89,7 +89,7 @@ namespace GeoWall_E
 
             var psi = new ProcessStartInfo
             {
-                FileName = System.IO.Path.Combine(parentDirectory.FullName, "GeoWalle_E.pdf"), // Usa el directorio padre para construir la ruta al archivo.
+                FileName = System.IO.Path.Combine(parentDirectory.FullName, "GeoWall_E.pdf"), // Usa el directorio padre para construir la ruta al archivo.
                 UseShellExecute = true
             };
             Process.Start(psi);
