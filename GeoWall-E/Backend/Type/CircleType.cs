@@ -1,6 +1,6 @@
 namespace GeoWall_E
 {
-    public class Circle : Type, IDraw
+    public class Circle : Type,IAdjustable
     {
         public override ObjectTypes ObjectType => ObjectTypes.Circle;
         private Point Center_ { get; set; }
