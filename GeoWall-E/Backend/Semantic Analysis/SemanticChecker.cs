@@ -74,41 +74,27 @@ namespace GeoWall_E
         {
             switch (node)
             {
-                case EmptyNode:
-                case ErrorExpression:
-                case ErrorStatement:
-                    break;
                 case ImportStatement:
                     SymbolTable.Merge(((ImportStatement)node).Import(), Errors);
                     break;
-                case PointStatement point:
-                    CheckFigureStatement(point);
+                case PointStatement:
+                case CircleStatement:
+                case RayStatement:
+                case SegmentStatement:
+                case MeasureStatement:
+                case LineStatement:
+                    CheckFigureStatement(node as IFigureStatement);
                     break;
                 case Draw draw:
                     CheckExpression(draw.Expression);
                     break;
-                case LineStatement line:
-                    CheckFigureStatement(line);
-                    break;
-                case CircleStatement circle:
-                    CheckFigureStatement(circle);
-                    break;
-                case RayStatement ray:
-                    CheckFigureStatement(ray);
-                    break;
-                case SegmentStatement segment:
-                    CheckFigureStatement(segment);
-                    break;
-                case MeasureStatement measure:
-                    CheckFigureStatement(measure);
-                    break;
                 case FunctionDeclaration function:
-                    if (SymbolTable.Resolve(function.Name.Text) is Function) Errors.AddError($"SEMANTIC ERROR: Function '{function.Name.Text}' already defined");
+                    if (SymbolTable.Resolve(function.Name.Text) is Function) Errors.AddError($"SEMANTIC ERROR: Function '{function.Name.Text}' already defined.");
                     else SymbolTable.Define(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
                     break;
                 case AsignationStatement asignation:
                     if (asignation.Name.Type == TokenType.Underline) break;
-                    if (SymbolTable.Resolve(asignation.Name.Text) is not ErrorType) Errors.AddError($"SEMANTIC ERROR: Variable '{asignation.Name.Text}' already defined");
+                    if (SymbolTable.Resolve(asignation.Name.Text) is not ErrorType) Errors.AddError($"SEMANTIC ERROR: Variable '{asignation.Name.Text}' already defined.");
                     else
                     {
                         CheckExpression(asignation.Value);
@@ -122,7 +108,7 @@ namespace GeoWall_E
                     foreach (var variable in multipleAsignation.IDs)
                     {
                         if (variable.Type == TokenType.Underline) continue;
-                        if (SymbolTable.Resolve(variable.Text) is not ErrorType) Errors.AddError($"SEMANTIC ERROR: Variable '{variable.Text}' already defined");
+                        if (SymbolTable.Resolve(variable.Text) is not ErrorType) Errors.AddError($"SEMANTIC ERROR: Variable '{variable.Text}' already defined.");
                         else
                         {
                             CheckExpression(multipleAsignation.Value);
@@ -262,7 +248,9 @@ namespace GeoWall_E
                     CheckExpression(circle.Radius);
                     break;
                 case IfExpression ifExpression:
-                    if (inference.InferType(ifExpression.Then) != inference.InferType(ifExpression.Else)) Errors.AddError($"SEMANTIC ERROR: Then and Else expression must return the same type.");
+                    var inferenceThen = inference.InferType(ifExpression.Then);
+                    var inferenceElse = inference.InferType(ifExpression.Else);
+                    if (inferenceThen != inferenceElse && inferenceThen != TypeInfered.Any && inferenceElse != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Then and Else expression must return the same type.");
                     CheckExpression(ifExpression.Condition);
                     CheckExpression(ifExpression.Then);
                     CheckExpression(ifExpression.Else);
@@ -278,10 +266,14 @@ namespace GeoWall_E
                     CheckLetInStatements(letIn);
                     break;
                 case LineExpression line:
+                    if (inference.InferType(line.P1) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(line.P1)}, Line: {line.Positions["p1"].Item1}, Column: {line.Positions["p1"].Item2}");
+                    if (inference.InferType(line.P2) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(line.P2)}, Line: {line.Positions["p2"].Item1}, Column: {line.Positions["p2"].Item2}");
                     CheckExpression(line.P1);
                     CheckExpression(line.P2);
                     break;
                 case MeasureExpression measure:
+                    if (inference.InferType(measure.P1) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(measure.P1)}, Line: {measure.Positions["p1"].Item1}, Column: {measure.Positions["p1"].Item2}");
+                    if (inference.InferType(measure.P2) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(measure.P2)}, Line: {measure.Positions["p2"].Item1}, Column: {measure.Positions["p2"].Item2}");
                     CheckExpression(measure.P1);
                     CheckExpression(measure.P2);
                     break;
@@ -289,10 +281,14 @@ namespace GeoWall_E
                     CheckExpression(paren.Expression);
                     break;
                 case RayExpression ray:
+                    if (inference.InferType(ray.Start) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(ray.Start)}, Line: {ray.Positions["start"].Item1}, Column: {ray.Positions["start"].Item2}");
+                    if (inference.InferType(ray.End) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(ray.End)}, Line: {ray.Positions["end"].Item1}, Column: {ray.Positions["end"].Item2}");
                     CheckExpression(ray.Start);
                     CheckExpression(ray.End);
                     break;
                 case SegmentExpression segment:
+                    if (inference.InferType(segment.Start) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.Start)}, Line: {segment.Positions["start"].Item1}, Column: {segment.Positions["start"].Item2}");
+                    if (inference.InferType(segment.End) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.End)}, Line: {segment.Positions["end"].Item1}, Column: {segment.Positions["end"].Item2}");
                     CheckExpression(segment.Start);
                     CheckExpression(segment.End);
                     break;
