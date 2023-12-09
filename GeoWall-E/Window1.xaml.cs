@@ -84,12 +84,15 @@ namespace GeoWall_E
 
         private void About(object sender, RoutedEventArgs e)
         {
-            var psi = new ProcessStartInfo // Crea una nueva instancia de la clase ProcessStartInfo.
+            var currentDirectory = Directory.GetCurrentDirectory(); // Obtiene el directorio actual.
+            var parentDirectory = Directory.GetParent(currentDirectory).Parent.Parent.Parent; // Obtiene el directorio padre.
+
+            var psi = new ProcessStartInfo
             {
-                FileName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "cositas.docx"), // Establece el nombre del archivo a abrir. En este caso, es un archivo .docx llamado "cositas" en el directorio actual de la aplicación.
-                UseShellExecute = true // Establece UseShellExecute a verdadero. Esto significa que el sistema operativo abrirá el archivo con la aplicación asociada a la extensión del archivo (.docx).
+                FileName = System.IO.Path.Combine(parentDirectory.FullName, "GeoWall_E.pdf"), // Usa el directorio padre para construir la ruta al archivo.
+                UseShellExecute = true
             };
-            Process.Start(psi); // Inicia el proceso con la información especificada en psi. En este caso, abrirá el archivo "cositas.docx".
+            Process.Start(psi);
         }
     }
 }
