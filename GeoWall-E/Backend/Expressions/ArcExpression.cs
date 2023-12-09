@@ -32,34 +32,10 @@ namespace GeoWall_E
                 var start = startEvaluable.Evaluate(symbolTable, error);
                 var end = endEvaluable.Evaluate(symbolTable, error);
                 var measure = measureEvaluable.Evaluate(symbolTable, error);
-                if (center is not ErrorType && start is not ErrorType && end is not ErrorType && measure is not ErrorType)
-                {
-                    if (center.ObjectType == ObjectTypes.Point && start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point && measure.ObjectType == ObjectTypes.Measure) return new Arc((Point)center, (Point)start, (Point)end, (Measure)measure);
-                    if (center.ObjectType != ObjectTypes.Point)
-                    {
-                        error.AddError($"SEMANTIC ERROR: Expected Point type but got {center.ObjectType} Line: {Positions["center"].Item1}, Column: {Positions["center"].Item2}");
-                        return new ErrorType();
-                    }
-                    if (start.ObjectType != ObjectTypes.Point)
-                    {
-                        error.AddError($"SEMANTIC ERROR: Expected Point type but got {start.ObjectType} Line: {Positions["start"].Item1}, Column: {Positions["start"].Item2}");
-                        return new ErrorType();
-                    }
-                    if (end.ObjectType != ObjectTypes.Point)
-                    {
-                        error.AddError($"SEMANTIC ERROR: Expected Point type but got {end.ObjectType} Line: {Positions["end"].Item1}, Column: {Positions["end"].Item2}");
-                        return new ErrorType();
-                    }
-                    error.AddError($"SEMANTIC ERROR: Expected Measure type but got {measure.ObjectType} Line: {Positions["measure"].Item1}, Column: {Positions["measure"].Item2}");
-                    return new ErrorType();
-                }
+                if (center is not ErrorType && start is not ErrorType && end is not ErrorType && measure is not ErrorType) return new Arc((Point)center, (Point)start, (Point)end, (Measure)measure);
                 else return new ErrorType();
             }
-            else
-            {
-                error.AddError($"SEMANTIC ERROR: Invalid expression in arc(), Line: {Positions["arc"].Item1}, Column: {Positions["arc"].Item2}");
-                return new ErrorType();
-            }
+            else return new ErrorType();
         }
 
         public void HandleArcExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
