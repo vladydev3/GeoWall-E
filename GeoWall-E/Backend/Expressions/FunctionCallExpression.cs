@@ -19,7 +19,8 @@ public class FunctionCallExpression : Expression, IEvaluable
     public Type Evaluate(SymbolTable symbolTable, Error error)
     {
         depth++;
-        if (depth > 100)
+
+        if (depth > 500)
         {
             error.AddError($"RUNTIME ERROR: StackOverflow");
             return new ErrorType();
@@ -27,12 +28,6 @@ public class FunctionCallExpression : Expression, IEvaluable
         var function = symbolTable.Resolve(FunctionName.Text);
 
         var functionDefined = (Function)function;
-
-        if (Arguments.Count != functionDefined.Arguments.Count)
-        {
-            error.AddError($"SEMANTIC ERROR: Function {FunctionName.Text} expected {functionDefined.Arguments.Count} arguments, but {Arguments.Count} were given");
-            return new ErrorType();
-        }
 
         Dictionary<string, Type> argumentsDefined = new();
         for (int i = 0; i < Arguments.Count; i++) // evaluo los argumentos y los agrego al dictionary
