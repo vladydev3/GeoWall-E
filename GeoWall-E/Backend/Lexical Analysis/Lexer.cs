@@ -146,7 +146,11 @@ namespace GeoWall_E
                 if (Current == '=')
                 {
                     currentIndex++;
-                    if (Current == '=') tokens.Add(new Token(TokenType.Equal, "==", line, column - 1));
+                    if (Current == '=')
+                    {
+                        tokens.Add(new Token(TokenType.Equal, "==", line, column - 1));
+                        currentIndex++;
+                    }
                     else tokens.Add(new Token(TokenType.Asignation, "=", line, column - 1));
                     column++;
                     continue;

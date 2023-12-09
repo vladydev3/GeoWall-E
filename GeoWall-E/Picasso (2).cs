@@ -20,6 +20,7 @@ namespace GeoWall_E
 {
     public class Picasso 
     {
+
         public Type FigureToDraw;
         public Canvas drawingCanvas;
         public Color color;

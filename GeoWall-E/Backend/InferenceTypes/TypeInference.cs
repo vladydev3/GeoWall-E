@@ -11,7 +11,6 @@ namespace GeoWall_E
         Arc,
         Segment,
         Measure,
-        Function,
         Any,
         ErrorType
     }
@@ -59,7 +58,7 @@ namespace GeoWall_E
                 case MeasureStatement:
                     return TypeInfered.Measure;
                 case FunctionCallExpression:
-                    return TypeInfered.Function;
+                    return TypeInfered.Any;
                 case VariableExpression identifier:
                     var symbol = SymbolTable.Resolve(identifier.Name.Text);
                     return InferType(symbol);
@@ -78,7 +77,7 @@ namespace GeoWall_E
                 case SequenceExpression sequence:
                     return InferType(sequence.Elements[0]);
                 case FunctionDeclaration:
-                    return TypeInfered.Function;
+                    return TypeInfered.Any;
                 case LetInExpression letIn:
                     return InferType(letIn.In);
                 default:
@@ -99,7 +98,7 @@ namespace GeoWall_E
                 Arc => TypeInfered.Arc,
                 Segment => TypeInfered.Segment,
                 Measure => TypeInfered.Measure,
-                Function => TypeInfered.Function,
+                Function => TypeInfered.Any,
                 Sequence sequence => CheckSequenceType(sequence),
                 ErrorType => TypeInfered.ErrorType,
                 _ => TypeInfered.Any,
