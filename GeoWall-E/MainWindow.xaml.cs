@@ -365,6 +365,10 @@ namespace GeoWall_E
             scrollViewer.ScrollToHorizontalOffset(point.X - 400);// Desplaza el ScrollViewer horizontalmente al punto X menos 400.
             scrollViewer.ScrollToVerticalOffset(point.Y - 250); // Desplaza el ScrollViewer verticalmente al punto Y menos 250.
         }
+        private void TextBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {                      
+                Enumerador.ScrollToVerticalOffset(e.VerticalOffset);                                   
+        }
     }
 }
 
