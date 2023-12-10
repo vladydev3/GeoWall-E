@@ -215,7 +215,7 @@ namespace GeoWall_E
                         var firstElementType = inference.InferType(sequence.Elements[0]);
                         foreach (var element in sequence.Elements)
                         {
-                            if (inference.InferType(element) != firstElementType) Errors.AddError("SEMANTIC ERROR: Sequence elements must be of the same type");
+                            if (inference.InferType(element) != firstElementType && inference.InferType(element) != TypeInfered.Any && firstElementType != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Sequence elements must be of the same type. {firstElementType} != {inference.InferType(element)}");
                             CheckExpression(element);
                         }
                     }
@@ -232,18 +232,24 @@ namespace GeoWall_E
                     CheckExpression(unary.Operand);
                     break;
                 case ArcExpression arc:
-                    if (inference.InferType(arc.Center) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(arc.Center)} Line: {arc.Positions["center"].Item1}, Column: {arc.Positions["center"].Item2}");
-                    if (inference.InferType(arc.Start) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(arc.Start)} Line: {arc.Positions["start"].Item1}, Column: {arc.Positions["start"].Item2}");
-                    if (inference.InferType(arc.End) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(arc.End)} Line: {arc.Positions["end"].Item1}, Column: {arc.Positions["end"].Item2}");
-                    if (inference.InferType(arc.Measure) != TypeInfered.Measure) Errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {inference.InferType(arc.Measure)}, Line: {arc.Positions["measure"].Item1}, Column: {arc.Positions["measure"].Item2}");
+                    var center = inference.InferType(arc.Center);
+                    if (center != TypeInfered.Point && center != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {center} Line: {arc.Positions["center"].Item1}, Column: {arc.Positions["center"].Item2}");
+                    var start = inference.InferType(arc.Start);
+                    if (start != TypeInfered.Point && start != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {start} Line: {arc.Positions["start"].Item1}, Column: {arc.Positions["start"].Item2}");
+                    var end = inference.InferType(arc.End);
+                    if (end != TypeInfered.Point && end != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {end} Line: {arc.Positions["end"].Item1}, Column: {arc.Positions["end"].Item2}");
+                    var measure = inference.InferType(arc.Measure);
+                    if (measure != TypeInfered.Measure && measure != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {measure}, Line: {arc.Positions["measure"].Item1}, Column: {arc.Positions["measure"].Item2}");
                     CheckExpression(arc.Center);
                     CheckExpression(arc.Start);
                     CheckExpression(arc.End);
                     CheckExpression(arc.Measure);
                     break;
                 case CircleExpression circle:
-                    if (inference.InferType(circle.Center) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(circle.Center)} Line: {circle.Positions["center"].Item1}, Column: {circle.Positions["center"].Item2}");
-                    if (inference.InferType(circle.Radius) != TypeInfered.Measure) Errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {inference.InferType(circle.Radius)} Line: {circle.Positions["radius"].Item1}, Column: {circle.Positions["radius"].Item2}");
+                    var center1 = inference.InferType(circle.Center);
+                    if (center1 != TypeInfered.Point && center1 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {center1} Line: {circle.Positions["c"].Item1}, Column: {circle.Positions["c"].Item2}");
+                    var radius = inference.InferType(circle.Radius);
+                    if (radius != TypeInfered.Measure) Errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {radius} Line: {circle.Positions["m"].Item1}, Column: {circle.Positions["m"].Item2}");
                     CheckExpression(circle.Center);
                     CheckExpression(circle.Radius);
                     break;
@@ -258,7 +264,7 @@ namespace GeoWall_E
                 case IntersectExpression intersect:
                     var inferType1 = InferedTypeToType(inference.InferType(intersect.F1));
                     var inferType2 = InferedTypeToType(inference.InferType(intersect.F2));
-                    if (inferType1 is not IDraw || inferType2 is not IDraw) Errors.AddError($"SEMANTIC ERROR: Intersect expression must receive two figures");
+                    if ((inferType1 is not IDraw || inferType2 is not IDraw) && inference.InferType(intersect.F1) != TypeInfered.Any && inference.InferType(intersect.F2) != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Intersect expression must receive two figures");
                     CheckExpression(intersect.F1);
                     CheckExpression(intersect.F2);
                     break;
@@ -266,23 +272,29 @@ namespace GeoWall_E
                     CheckLetInStatements(letIn);
                     break;
                 case LineExpression line:
-                    if (inference.InferType(line.P1) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(line.P1)}, Line: {line.Positions["p1"].Item1}, Column: {line.Positions["p1"].Item2}");
-                    if (inference.InferType(line.P2) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(line.P2)}, Line: {line.Positions["p2"].Item1}, Column: {line.Positions["p2"].Item2}");
+                    var p1_ = inference.InferType(line.P1);
+                    if (p1_ != TypeInfered.Point && p1_ != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(line.P1)}, Line: {line.Positions["p1"].Item1}, Column: {line.Positions["p1"].Item2}");
+                    var p2_ = inference.InferType(line.P2);
+                    if (p2_ != TypeInfered.Point && p2_ != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(line.P2)}, Line: {line.Positions["p2"].Item1}, Column: {line.Positions["p2"].Item2}");
                     CheckExpression(line.P1);
                     CheckExpression(line.P2);
                     break;
-                case MeasureExpression measure:
-                    if (inference.InferType(measure.P1) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(measure.P1)}, Line: {measure.Positions["p1"].Item1}, Column: {measure.Positions["p1"].Item2}");
-                    if (inference.InferType(measure.P2) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(measure.P2)}, Line: {measure.Positions["p2"].Item1}, Column: {measure.Positions["p2"].Item2}");
-                    CheckExpression(measure.P1);
-                    CheckExpression(measure.P2);
+                case MeasureExpression measure1:
+                    var p1 = inference.InferType(measure1.P1);
+                    if (p1 != TypeInfered.Point && p1 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(measure1.P1)}, Line: {measure1.Positions["p1"].Item1}, Column: {measure1.Positions["p1"].Item2}");
+                    var p2 = inference.InferType(measure1.P2);
+                    if (p2 != TypeInfered.Point && p2 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(measure1.P2)}, Line: {measure1.Positions["p2"].Item1}, Column: {measure1.Positions["p2"].Item2}");
+                    CheckExpression(measure1.P1);
+                    CheckExpression(measure1.P2);
                     break;
                 case ParenExpression paren:
                     CheckExpression(paren.Expression);
                     break;
                 case RayExpression ray:
-                    if (inference.InferType(ray.Start) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(ray.Start)}, Line: {ray.Positions["start"].Item1}, Column: {ray.Positions["start"].Item2}");
-                    if (inference.InferType(ray.End) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(ray.End)}, Line: {ray.Positions["end"].Item1}, Column: {ray.Positions["end"].Item2}");
+                    var start1 = inference.InferType(ray.Start);
+                    if (start1 != TypeInfered.Point && start1 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(ray.Start)}, Line: {ray.Positions["start"].Item1}, Column: {ray.Positions["start"].Item2}");
+                    var end1 = inference.InferType(ray.End);
+                    if (end1 != TypeInfered.Point && end1 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(ray.End)}, Line: {ray.Positions["end"].Item1}, Column: {ray.Positions["end"].Item2}");
                     CheckExpression(ray.Start);
                     CheckExpression(ray.End);
                     break;

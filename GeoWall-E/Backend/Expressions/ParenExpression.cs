@@ -10,9 +10,9 @@ public class ParenExpression : Expression, IEvaluable
         Expression = expression;
     }
 
-    public Type Evaluate(SymbolTable symbolTable, Error error)
+    public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
     {
         var exp = (IEvaluable)Expression;
-        return exp.Evaluate(symbolTable, error);
+        return exp.Evaluate(symbolTable, error, toDraw);
     }
 }

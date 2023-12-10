@@ -18,35 +18,28 @@ namespace GeoWall_E
         public Expression End => End_;
         public Dictionary<string, Tuple<int, int>> Positions => Positions_;
 
-        public Type Evaluate(SymbolTable symbolTable, Error error)
+        public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
         {
             if (Start as IEvaluable != null && End as IEvaluable != null)
             {
-                var start = ((IEvaluable)Start).Evaluate(symbolTable, error);
-                var end = ((IEvaluable)End).Evaluate(symbolTable, error);
+                var start = ((IEvaluable)Start).Evaluate(symbolTable, error, toDraw);
+                var end = ((IEvaluable)End).Evaluate(symbolTable, error, toDraw);
                 if (start is not ErrorType && end is not ErrorType)
                 {
                     if (start.ObjectType == ObjectTypes.Point && end.ObjectType == ObjectTypes.Point) return new Ray((Point)start, (Point)end);
-                    if (start.ObjectType != ObjectTypes.Point)
-                    {
-                        error.AddError($"Expected Point type but got {start.ObjectType}, Line: {Positions["p1"].Item1}, Column: {Positions["p1"].Item2}");
-                        return new ErrorType();
-                    }
-                    error.AddError($"Expected Point type but got {end.ObjectType}, Line: {Positions["p2"].Item1}, Column: {Positions["p2"].Item2}");
                     return new ErrorType();
                 }
                 else return new ErrorType();
             }
             else
             {
-                error.AddError($"Invalid expression in ray(), Line: {Positions["ray"].Item1}, Column: {Positions["ray"].Item2}");
                 return new ErrorType();
             }
         }
 
         public void HandleRayExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
         {
-            var ray = Evaluate(symbolTable, errors);
+            var ray = Evaluate(symbolTable, errors, toDraw);
             if (ray is not ErrorType)
             {
                 ((Ray)ray).SetName(name);
@@ -56,7 +49,7 @@ namespace GeoWall_E
 
         public void HandleRayAsignationExpression(SymbolTable symbolTable, Error errors, AsignationStatement asignation)
         {
-            var ray = Evaluate(symbolTable, errors);
+            var ray = Evaluate(symbolTable, errors, toDraw: new List<Tuple<Type, Color>>());
             if (ray is not ErrorType)
             {
                 symbolTable.Define(asignation.Name.Text, (Ray)ray);

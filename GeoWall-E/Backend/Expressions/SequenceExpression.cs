@@ -27,7 +27,7 @@ namespace GeoWall_E
 
         public List<Expression>? Elements => Elements_;
 
-        public Type Evaluate(SymbolTable symbolTable, Error error)
+        public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
         {
             var sequenceElementsEvaluated = new List<Type>();
             if (Elements != null)
@@ -36,7 +36,7 @@ namespace GeoWall_E
                 foreach (var element in Elements)
                 {
                     var elementEvaluable = (IEvaluable)element;
-                    var evaluatedElement = elementEvaluable.Evaluate(symbolTable, error);
+                    var evaluatedElement = elementEvaluable.Evaluate(symbolTable, error, toDraw);
                     if (evaluatedElement != null) sequenceElementsEvaluated.Add(evaluatedElement);
                 }
 
@@ -71,7 +71,7 @@ namespace GeoWall_E
                 foreach (var element in Elements)
                 {
                     var elementEvaluable = (IEvaluable)element;
-                    var evaluatedElement = elementEvaluable.Evaluate(symbolTable, errors);
+                    var evaluatedElement = elementEvaluable.Evaluate(symbolTable, errors, toDraw);
                     if (evaluatedElement != null) sequenceElementsEvaluated.Add(evaluatedElement);
                 }
 

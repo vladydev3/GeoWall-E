@@ -18,46 +18,46 @@ public class IfExpression : Expression, IEvaluable
     public Expression Then => Then_;
     public Expression Else => Else_;
 
-    public Type Evaluate(SymbolTable symbolTable, Error error)
+    public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
     {
         symbolTable.EnterScope();
         var evaluatedIf = (IEvaluable)Condition;
         var evaluatedThen = (IEvaluable)Then;
         var evaluatedElse = (IEvaluable)Else;
 
-        var evaluatedIfResult = evaluatedIf.Evaluate(symbolTable, error);
+        var evaluatedIfResult = evaluatedIf.Evaluate(symbolTable, error, toDraw);
         if (evaluatedIfResult.ObjectType == ObjectTypes.Error) return evaluatedIfResult;
         if (evaluatedIfResult.ObjectType == ObjectTypes.Number)
         {
             var number = (NumberLiteral)evaluatedIfResult;
             if (number.Value == 0)
             {
-                return evaluatedElse.Evaluate(symbolTable, error);
+                return evaluatedElse.Evaluate(symbolTable, error, toDraw);
             }
             else
             {
-                return evaluatedThen.Evaluate(symbolTable, error);
+                return evaluatedThen.Evaluate(symbolTable, error, toDraw);
             }
         }
         if (evaluatedIfResult.ObjectType == ObjectTypes.Undefined)
         {
-            return evaluatedElse.Evaluate(symbolTable, error);
+            return evaluatedElse.Evaluate(symbolTable, error, toDraw);
         }
         if (evaluatedIfResult.ObjectType == ObjectTypes.Sequence)
         {
             var sequence = (Sequence)evaluatedIfResult;
             if (!sequence.Elements.Any())
             {
-                return evaluatedElse.Evaluate(symbolTable, error);
+                return evaluatedElse.Evaluate(symbolTable, error, toDraw);
             }
             else
             {
-                return evaluatedThen.Evaluate(symbolTable, error);
+                return evaluatedThen.Evaluate(symbolTable, error, toDraw);
             }
         }
         else
         {
-            return evaluatedThen.Evaluate(symbolTable, error);
+            return evaluatedThen.Evaluate(symbolTable, error, toDraw);
         }
     }
 }

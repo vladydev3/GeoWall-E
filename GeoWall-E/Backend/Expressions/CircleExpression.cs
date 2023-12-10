@@ -18,12 +18,12 @@ namespace GeoWall_E
         public Expression Radius => Radius_;
         public Dictionary<string, Tuple<int, int>> Positions => Positions_;
 
-        public Type Evaluate(SymbolTable symbolTable, Error errors)
+        public Type Evaluate(SymbolTable symbolTable, Error errors, List<Tuple<Type, Color>> toDraw)
         {
             if (Center as IEvaluable != null && Radius as IEvaluable != null)
             {
-                var center = ((IEvaluable)Center).Evaluate(symbolTable, errors);
-                var radius = ((IEvaluable)Radius).Evaluate(symbolTable, errors);
+                var center = ((IEvaluable)Center).Evaluate(symbolTable, errors, toDraw);
+                var radius = ((IEvaluable)Radius).Evaluate(symbolTable, errors, toDraw);
                 if (center is not ErrorType && radius is not ErrorType) return new Circle((Point)center, (Measure)radius);
             }
             return new ErrorType();
@@ -31,7 +31,7 @@ namespace GeoWall_E
 
         public void HandleCircleExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
         {
-            var circle = Evaluate(symbolTable, errors);
+            var circle = Evaluate(symbolTable, errors, toDraw);
             if (circle is not ErrorType)
             {
                 ((Circle)circle).SetName(name);
@@ -41,7 +41,7 @@ namespace GeoWall_E
 
         public void HandleCircleAsignationExpression(SymbolTable symbolTable, Error errors, AsignationStatement asignation)
         {
-            var circle = Evaluate(symbolTable, errors);
+            var circle = Evaluate(symbolTable, errors, toDraw: new List<Tuple<Type, Color>>());
             if (circle is not ErrorType)
             {
                 symbolTable.Define(asignation.Name.Text, (Circle)circle);

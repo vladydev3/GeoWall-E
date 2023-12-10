@@ -16,10 +16,10 @@ public class UnaryExpression : Expression, IEvaluable
 
     public Expression Operand => Operand_;
 
-    public Type Evaluate(SymbolTable symbolTable, Error error)
+    public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
     {
         var evaluatedOperand = (IEvaluable)Operand;
-        var operandResult = evaluatedOperand.Evaluate(symbolTable, error);
+        var operandResult = evaluatedOperand.Evaluate(symbolTable, error, toDraw: new List<Tuple<Type, Color>>());
         if (operandResult.ObjectType == ObjectTypes.Error) return operandResult;
         if (operandResult.ObjectType == ObjectTypes.Number)
         {
@@ -34,13 +34,11 @@ public class UnaryExpression : Expression, IEvaluable
             }
             else
             {
-                error.AddError($"SEMANTIC ERROR: Unknown unary operator {Operator.Text}");
-                return new ErrorType();
+                return new Undefined();
             }
         }
         else
         {
-            error.AddError($"SEMANTIC ERROR: Unknown unary operator {Operator.Text}");
             return new Undefined();
         }
     }
