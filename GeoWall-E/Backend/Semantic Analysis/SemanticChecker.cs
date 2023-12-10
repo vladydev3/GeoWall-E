@@ -249,7 +249,7 @@ namespace GeoWall_E
                     var center1 = inference.InferType(circle.Center);
                     if (center1 != TypeInfered.Point && center1 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {center1} Line: {circle.Positions["c"].Item1}, Column: {circle.Positions["c"].Item2}");
                     var radius = inference.InferType(circle.Radius);
-                    if (radius != TypeInfered.Measure) Errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {radius} Line: {circle.Positions["radius"].Item1}, Column: {circle.Positions["radius"].Item2}");
+                    if (radius != TypeInfered.Measure) Errors.AddError($"SEMANTIC ERROR: Expected Measure type but got {radius} Line: {circle.Positions["m"].Item1}, Column: {circle.Positions["m"].Item2}");
                     CheckExpression(circle.Center);
                     CheckExpression(circle.Radius);
                     break;

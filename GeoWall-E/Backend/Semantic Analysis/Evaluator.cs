@@ -197,8 +197,14 @@ namespace GeoWall_E
         {
             switch (asignation.Value)
             {
+                case ParenExpression parenExpression:
+                    SymbolTable.Define(asignation.Name.Text, parenExpression.Evaluate(SymbolTable, Errors, ToDraw));
+                    break;
                 case BinaryExpression binaryExpression:
                     SymbolTable.Define(asignation.Name.Text, binaryExpression.Evaluate(SymbolTable, Errors, ToDraw));
+                    break;
+                case UnaryExpression unaryExpression:
+                    SymbolTable.Define(asignation.Name.Text, unaryExpression.Evaluate(SymbolTable, Errors, ToDraw));
                     break;
                 case UndefinedExpression:
                     SymbolTable.Define(asignation.Name.Text, new Undefined());
@@ -241,6 +247,25 @@ namespace GeoWall_E
                     break;
                 case IntersectExpression intersect:
                     intersect.HandleIntersectAsignationExpression(SymbolTable, Errors, asignation);
+                    break;
+                case FunctionCallExpression function:
+                    var result = function.Evaluate(SymbolTable, Errors, ToDraw);
+                    if (result is not ErrorType) SymbolTable.Define(asignation.Name.Text, result);
+                    break;
+                case IfExpression ifexp:
+                    var resultIf = ifexp.Evaluate(SymbolTable, Errors, ToDraw);
+                    if (resultIf is not ErrorType) SymbolTable.Define(asignation.Name.Text, resultIf);
+                    break;
+                case RandomPointsInFigure random:
+                    var randomPoints = random.Evaluate(SymbolTable, Errors, ToDraw);
+                    if (randomPoints is not ErrorType) SymbolTable.Define(asignation.Name.Text, randomPoints);
+                    break;
+                case Samples samples:
+                    var points = samples.Evaluate(SymbolTable, Errors, ToDraw);
+                    if (points is not ErrorType) SymbolTable.Define(asignation.Name.Text, points);
+                    break;
+                default:
+                    Errors.AddError($"RUNTIME ERROR: Expression in asignation is {asignation.Value.Type}, which is not assignable");
                     break;
             }
         }
