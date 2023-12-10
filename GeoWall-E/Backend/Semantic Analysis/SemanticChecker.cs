@@ -100,7 +100,7 @@ namespace GeoWall_E
                         CheckExpression(asignation.Value);
                         TypeInference inference = new(SymbolTable);
                         var type = inference.InferType(asignation.Value);
-
+                        if (type == TypeInfered.ErrorType) Errors.AddError($"SEMANTIC ERROR: Variable '{asignation.Name.Text}' is not defined, Line: {asignation.Name.Line}, Column: {asignation.Name.Column}.");
                         SymbolTable.Define(asignation.Name.Text, InferedTypeToType(type));
                     }
                     break;
@@ -125,74 +125,6 @@ namespace GeoWall_E
             }
         }
 
-        private void CheckFunctionCall(FunctionCallExpression functionCall)
-        {
-            var function = SymbolTable.Resolve(functionCall.FunctionName.Text);
-            if (function.ObjectType != ObjectTypes.Function || function.ObjectType == ObjectTypes.Error)
-            {
-                Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' not defined");
-                return;
-            }
-
-            SymbolTable.EnterScope();
-
-            var functionDefined = (Function)function;
-
-            if (functionCall.Arguments.Count != functionDefined.Arguments.Count)
-            {
-                Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' expected {functionDefined.Arguments.Count} argument(s), but {functionCall.Arguments.Count} were given");
-                return;
-            }
-
-            for (int i = 0; i < functionCall.Arguments.Count; i++)
-            {
-                TypeInference inference = new(SymbolTable);
-                var argumentType = inference.InferType(functionCall.Arguments[i]);
-
-                SymbolTable.Define(functionDefined.Arguments[i].Text, InferedTypeToType(argumentType));
-
-                if (argumentType == TypeInfered.ErrorType) Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' argument '{functionDefined.Arguments[i].Text}' is not defined");
-
-                if (argumentType == TypeInfered.Any) continue;
-            }
-
-            // Chequear el cuerpo de la funcion con los argumentos actuales
-            CheckExpression(functionDefined.Body);
-
-            SymbolTable.ExitScope();
-        }
-
-        private void CheckLetInStatements(LetInExpression letIn)
-        {
-            SymbolTable.EnterScope();
-
-            foreach (var statement in letIn.Let)
-            {
-                Check(statement);
-            }
-
-            CheckExpression(letIn.In);
-
-            SymbolTable.ExitScope();
-        }
-
-        internal static Type InferedTypeToType(TypeInfered argumentType)
-        {
-            return argumentType switch
-            {
-                TypeInfered.Any => new Undefined(),
-                TypeInfered.Number => new NumberLiteral(0),
-                TypeInfered.String => new StringLiteral(""),
-                TypeInfered.Point => new Point(),
-                TypeInfered.Line => new Line(new Point(), new Point()),
-                TypeInfered.Circle => new Circle(new Point(), new Measure(new Point(), new Point())),
-                TypeInfered.Ray => new Ray(new Point(), new Point()),
-                TypeInfered.Arc => new Arc(new Point(), new Point(), new Point(), new Measure(new Point(), new Point())),
-                TypeInfered.Segment => new Segment(new Point(), new Point()),
-                TypeInfered.Measure => new Measure(new Point(), new Point()),
-                _ => new ErrorType(),
-            };
-        }
 
         internal void CheckExpression(Expression expression)
         {
@@ -314,6 +246,74 @@ namespace GeoWall_E
                 default:
                     break;
             }
+        }
+
+        private void CheckLetInStatements(LetInExpression letIn)
+        {
+            SymbolTable.EnterScope();
+
+            foreach (var statement in letIn.Let)
+            {
+                Check(statement);
+            }
+
+            CheckExpression(letIn.In);
+
+            SymbolTable.ExitScope();
+        }
+        private void CheckFunctionCall(FunctionCallExpression functionCall)
+        {
+            var function = SymbolTable.Resolve(functionCall.FunctionName.Text);
+            if (function.ObjectType != ObjectTypes.Function || function.ObjectType == ObjectTypes.Error)
+            {
+                Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' not defined");
+                return;
+            }
+
+            SymbolTable.EnterScope();
+
+            var functionDefined = (Function)function;
+
+            if (functionCall.Arguments.Count != functionDefined.Arguments.Count)
+            {
+                Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' expected {functionDefined.Arguments.Count} argument(s), but {functionCall.Arguments.Count} were given");
+                return;
+            }
+
+            for (int i = 0; i < functionCall.Arguments.Count; i++)
+            {
+                TypeInference inference = new(SymbolTable);
+                var argumentType = inference.InferType(functionCall.Arguments[i]);
+
+                SymbolTable.Define(functionDefined.Arguments[i].Text, InferedTypeToType(argumentType));
+
+                if (argumentType == TypeInfered.ErrorType) Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' argument '{functionDefined.Arguments[i].Text}' is not defined");
+
+                if (argumentType == TypeInfered.Any) continue;
+            }
+
+            // Chequear el cuerpo de la funcion con los argumentos actuales
+            CheckExpression(functionDefined.Body);
+
+            SymbolTable.ExitScope();
+        }
+
+        internal static Type InferedTypeToType(TypeInfered argumentType)
+        {
+            return argumentType switch
+            {
+                TypeInfered.Any => new Undefined(),
+                TypeInfered.Number => new NumberLiteral(0),
+                TypeInfered.String => new StringLiteral(""),
+                TypeInfered.Point => new Point(),
+                TypeInfered.Line => new Line(new Point(), new Point()),
+                TypeInfered.Circle => new Circle(new Point(), new Measure(new Point(), new Point())),
+                TypeInfered.Ray => new Ray(new Point(), new Point()),
+                TypeInfered.Arc => new Arc(new Point(), new Point(), new Point(), new Measure(new Point(), new Point())),
+                TypeInfered.Segment => new Segment(new Point(), new Point()),
+                TypeInfered.Measure => new Measure(new Point(), new Point()),
+                _ => new ErrorType(),
+            };
         }
     }
 }
