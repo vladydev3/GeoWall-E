@@ -29,7 +29,8 @@ namespace GeoWall_E
 
         public void HandleEvaluate()
         {
-            toDraw = evaluator.Evaluate();
+            evaluator.Evaluate();
+            toDraw = evaluator.ToDraw;
         }
 
         public void HandleLexer()

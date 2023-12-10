@@ -4,7 +4,7 @@ namespace GeoWall_E
     {
         public override TokenType Type => TokenType.Randoms;
 
-        public Type Evaluate(SymbolTable symbolTable, Error error)
+        public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
         {
             var randoms = CreateRandoms();  //IEnumerable<NumberLiteral>
             return new Sequence(randoms);

@@ -3,7 +3,7 @@ using System.Windows.Markup;
 namespace GeoWall_E
 {
 
-    public class Sequence : Type
+    public class Sequence : Type, IDraw
     {
         public override ObjectTypes ObjectType => ObjectTypes.Sequence;
         IEnumerable<Type> Elements_ { get; set; }

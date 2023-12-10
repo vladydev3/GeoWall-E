@@ -29,8 +29,9 @@ namespace GeoWall_E
         {
             switch (node)
             {
-                case EmptyNode:
-                    return TypeInfered.Any;
+
+                case IntersectExpression:
+                    return TypeInfered.Point;
                 case ErrorExpression:
                 case ErrorStatement:
                     return TypeInfered.ErrorType;
@@ -98,7 +99,7 @@ namespace GeoWall_E
                 Arc => TypeInfered.Arc,
                 Segment => TypeInfered.Segment,
                 Measure => TypeInfered.Measure,
-                Function => TypeInfered.Any,
+                Intersect => TypeInfered.Point,
                 Sequence sequence => CheckSequenceType(sequence),
                 ErrorType => TypeInfered.ErrorType,
                 _ => TypeInfered.Any,

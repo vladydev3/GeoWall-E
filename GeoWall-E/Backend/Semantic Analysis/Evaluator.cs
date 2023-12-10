@@ -6,9 +6,9 @@ namespace GeoWall_E
     public class Evaluator
     {
         List<Node>? Root { get; set; }
-        List<Statement>? LetBlock { get; set; }
         Error Errors_ { get; set; }
         SymbolTable SymbolTable { get; set; }
+        List<Tuple<Type, Color>> ToDraw_ { get; set; }
 
         public Evaluator(List<Node> root, Error error) // If we want to evaluate the whole program
         {
@@ -18,122 +18,25 @@ namespace GeoWall_E
             var checker = new SemanticChecker(Errors);
             Root = Utils.ReorderNodes(Root);
             checker.Check(Root);
+            ToDraw_ = new List<Tuple<Type, Color>>();
         }
 
-        public Evaluator(List<Statement> letblock, Error error, SymbolTable symbolTable) // If we want to evaluate the let block
+        // Contructor for the evaluator of the let block
+        public Evaluator(List<Statement> root, Error error, SymbolTable symbolTable)
         {
-            LetBlock = letblock ?? new List<Statement>();
+            // cast the list of statements to a list of nodes
+            Root = root.ConvertAll(x => (Node)x);
             Errors_ = error;
             SymbolTable = symbolTable;
+            ToDraw_ = new List<Tuple<Type, Color>>();
         }
 
         public Error Errors => Errors_;
         public SymbolTable SymbolTable_ => SymbolTable;
+        public List<Tuple<Type, Color>> ToDraw => ToDraw_;
 
-        public void EvaluateLetBlock()
+        public void Evaluate()
         {
-            foreach (var statement in LetBlock)
-            {
-                switch (statement)
-                {
-                    case AsignationStatement asignation:
-                        SymbolTable.Define(asignation.Name.Text, HandleAsignationLet(asignation));
-                        break;
-                    case MultipleAsignationStatement asignation:
-                        switch (asignation.Value)
-                        {
-                            case SequenceExpression sequenceExpression:
-                                var sequence = sequenceExpression.Evaluate(SymbolTable, Errors);
-                                if (sequence is ErrorType) break;
-
-                                for (int i = 0; i < asignation.IDs.Count; i++)
-                                {
-                                    if (asignation.IDs[i].Type == TokenType.Underline) continue;
-
-                                    if (i == asignation.IDs.Count - 1)
-                                    {
-                                        SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)sequence).RestOfElements(i)));
-                                    }
-
-                                    else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)sequence).GetElement(i));
-                                }
-                                break;
-                            case IntersectExpression intersectExpression:
-                                var intersect = intersectExpression.Evaluate(SymbolTable, Errors);
-                                if (intersect is ErrorType) break;
-
-                                for (int i = 0; i < asignation.IDs.Count; i++)
-                                {
-                                    if (asignation.IDs[i].Type == TokenType.Underline) continue;
-
-                                    if (i == asignation.IDs.Count - 1)
-                                    {
-                                        SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)intersect).RestOfElements(i)));
-                                    }
-
-                                    else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)intersect).GetElement(i));
-                                }
-                                break;
-                            case UndefinedExpression:
-                                for (int i = 0; i < asignation.IDs.Count; i++)
-                                {
-                                    SymbolTable.Define(asignation.IDs[i].Text, new Undefined());
-                                }
-                                break;
-                            default:
-                                HandleAsignationNode(new AsignationStatement(asignation.IDs[0], asignation.Value));
-                                for (int i = 1; i < asignation.IDs.Count; i++)
-                                {
-                                    SymbolTable.Define(asignation.IDs[i].Text, new Undefined());
-                                }
-                                break;
-                        }
-                        break;
-                    case PointStatement point:
-                        SymbolTable.Define(point.Name.Text, new Point(point.Name.Text));
-                        break;
-                    case LineStatement line:
-                        SymbolTable.Define(line.Name.Text, new Line(new Point(), new Point(), line.Name.Text));
-                        break;
-                    case SegmentStatement segment:
-                        SymbolTable.Define(segment.Name.Text, new Segment(new Point(), new Point(), segment.Name.Text));
-                        break;
-                    case RayStatement ray:
-                        SymbolTable.Define(ray.Name.Text, new Ray(new Point(), new Point(), ray.Name.Text));
-                        break;
-                    case CircleStatement circle:
-                        SymbolTable.Define(circle.Name.Text, new Circle(new Point(), new Measure(new Point(), new Point(), circle.Name.Text), circle.Name.Text));
-                        break;
-                    case FunctionDeclaration function:
-                        SymbolTable.Define(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
-                        break;
-                }
-            }
-        }
-
-        Type HandleAsignationLet(AsignationStatement asignation)
-        {
-            return asignation.Value switch
-            {
-                VariableExpression variable => variable.Evaluate(SymbolTable, Errors),
-                MeasureExpression measure => measure.Evaluate(SymbolTable, Errors),
-                LineExpression lineexp => lineexp.Evaluate(SymbolTable, Errors),
-                SequenceExpression sequence => sequence.Evaluate(SymbolTable, Errors),
-                SegmentExpression segmentexp => segmentexp.Evaluate(SymbolTable, Errors),
-                RayExpression rayexp => rayexp.Evaluate(SymbolTable, Errors),
-                CircleExpression circleexp => circleexp.Evaluate(SymbolTable, Errors),
-                ArcExpression arcexp => arcexp.Evaluate(SymbolTable, Errors),
-                LetInExpression letin => letin.Evaluate(SymbolTable, Errors),
-                NumberExpression exp => exp.Evaluate(SymbolTable, Errors),
-                ParenExpression exp => exp.Evaluate(SymbolTable, Errors),
-                StringExpression exp => exp.Evaluate(SymbolTable, Errors),
-                _ => new ErrorType(),
-            };
-        }
-
-        public List<Tuple<Type, Color>> Evaluate()
-        {
-            List<Tuple<Type, Color>> toDraw = new();
             foreach (var node in Root)
             {
                 switch (node)
@@ -179,11 +82,10 @@ namespace GeoWall_E
                         SymbolTable.Define(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
                         break;
                     case Draw draw_:
-                        HandleDrawNode(draw_, toDraw);
+                        HandleDrawNode(draw_);
                         break;
                 }
             }
-            return toDraw;
         }
 
         void HandleMultipleAsignationNode(MultipleAsignationStatement asignation)
@@ -191,7 +93,7 @@ namespace GeoWall_E
             switch (asignation.Value)
             {
                 case SequenceExpression sequenceExpression:
-                    var sequence = sequenceExpression.Evaluate(SymbolTable, Errors);
+                    var sequence = sequenceExpression.Evaluate(SymbolTable, Errors, ToDraw);
                     if (sequence is ErrorType) return;
 
                     for (int i = 0; i < asignation.IDs.Count; i++)
@@ -207,7 +109,7 @@ namespace GeoWall_E
                     }
                     break;
                 case IntersectExpression intersectExpression:
-                    var intersect = intersectExpression.Evaluate(SymbolTable, Errors);
+                    var intersect = intersectExpression.Evaluate(SymbolTable, Errors, ToDraw);
                     if (intersect is ErrorType) return;
 
                     for (int i = 0; i < asignation.IDs.Count; i++)
@@ -229,7 +131,7 @@ namespace GeoWall_E
                     }
                     break;
                 case Samples samples:
-                    var points = samples.Evaluate(SymbolTable, Errors);
+                    var points = samples.Evaluate(SymbolTable, Errors, ToDraw);
                     if (points is ErrorType) return;
 
                     for (int i = 0; i < asignation.IDs.Count; i++)
@@ -245,7 +147,7 @@ namespace GeoWall_E
                     }
                     break;
                 case RandomPointsInFigure random:
-                    var randomPoints = random.Evaluate(SymbolTable, Errors);
+                    var randomPoints = random.Evaluate(SymbolTable, Errors, ToDraw);
                     if (randomPoints is ErrorType) return;
 
                     for (int i = 0; i < asignation.IDs.Count; i++)
@@ -258,6 +160,27 @@ namespace GeoWall_E
                         }
 
                         else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)randomPoints).GetElement(i));
+                    }
+                    break;
+                case FunctionCallExpression function:
+                    var result = function.Evaluate(SymbolTable, Errors, ToDraw);
+                    if (result is ErrorType) return;
+
+                    if (result is not Sequence)
+                    {
+                        SymbolTable.Define(asignation.IDs[0].Text, result);
+                    }
+
+                    for (int i = 0; i < asignation.IDs.Count; i++)
+                    {
+                        if (asignation.IDs[i].Type == TokenType.Underline) continue;
+
+                        if (i == asignation.IDs.Count - 1)
+                        {
+                            SymbolTable.Define(asignation.IDs[i].Text, new Sequence(((Sequence)result).RestOfElements(i)));
+                        }
+
+                        else SymbolTable.Define(asignation.IDs[i].Text, ((Sequence)result).GetElement(i));
                     }
                     break;
                 default:
@@ -274,23 +197,29 @@ namespace GeoWall_E
         {
             switch (asignation.Value)
             {
+                case ParenExpression parenExpression:
+                    SymbolTable.Define(asignation.Name.Text, parenExpression.Evaluate(SymbolTable, Errors, ToDraw));
+                    break;
                 case BinaryExpression binaryExpression:
-                    SymbolTable.Define(asignation.Name.Text, binaryExpression.Evaluate(SymbolTable, Errors));
+                    SymbolTable.Define(asignation.Name.Text, binaryExpression.Evaluate(SymbolTable, Errors, ToDraw));
+                    break;
+                case UnaryExpression unaryExpression:
+                    SymbolTable.Define(asignation.Name.Text, unaryExpression.Evaluate(SymbolTable, Errors, ToDraw));
                     break;
                 case UndefinedExpression:
                     SymbolTable.Define(asignation.Name.Text, new Undefined());
                     break;
                 case SequenceExpression sequence:
-                    SymbolTable.Define(asignation.Name.Text, sequence.Evaluate(SymbolTable, Errors));
+                    SymbolTable.Define(asignation.Name.Text, sequence.Evaluate(SymbolTable, Errors, ToDraw));
                     break;
                 case Count count:
-                    SymbolTable.Define(asignation.Name.Text, count.Evaluate(SymbolTable, Errors));
+                    SymbolTable.Define(asignation.Name.Text, count.Evaluate(SymbolTable, Errors, ToDraw));
                     break;
                 case NumberExpression number:
-                    SymbolTable.Define(asignation.Name.Text, number.Evaluate(SymbolTable, Errors));
+                    SymbolTable.Define(asignation.Name.Text, number.Evaluate(SymbolTable, Errors, ToDraw));
                     break;
                 case StringExpression stringexp:
-                    SymbolTable.Define(asignation.Name.Text, stringexp.Evaluate(SymbolTable, Errors));
+                    SymbolTable.Define(asignation.Name.Text, stringexp.Evaluate(SymbolTable, Errors, ToDraw));
                     break;
                 case VariableExpression variable:
                     HandleVariableExpression(variable, asignation.Name.Text);
@@ -319,6 +248,25 @@ namespace GeoWall_E
                 case IntersectExpression intersect:
                     intersect.HandleIntersectAsignationExpression(SymbolTable, Errors, asignation);
                     break;
+                case FunctionCallExpression function:
+                    var result = function.Evaluate(SymbolTable, Errors, ToDraw);
+                    if (result is not ErrorType) SymbolTable.Define(asignation.Name.Text, result);
+                    break;
+                case IfExpression ifexp:
+                    var resultIf = ifexp.Evaluate(SymbolTable, Errors, ToDraw);
+                    if (resultIf is not ErrorType) SymbolTable.Define(asignation.Name.Text, resultIf);
+                    break;
+                case RandomPointsInFigure random:
+                    var randomPoints = random.Evaluate(SymbolTable, Errors, ToDraw);
+                    if (randomPoints is not ErrorType) SymbolTable.Define(asignation.Name.Text, randomPoints);
+                    break;
+                case Samples samples:
+                    var points = samples.Evaluate(SymbolTable, Errors, ToDraw);
+                    if (points is not ErrorType) SymbolTable.Define(asignation.Name.Text, points);
+                    break;
+                default:
+                    Errors.AddError($"RUNTIME ERROR: Expression in asignation is {asignation.Value.Type}, which is not assignable");
+                    break;
             }
         }
 
@@ -326,9 +274,9 @@ namespace GeoWall_E
         {
             SymbolTable.EnterScope();
             var evaluator = new Evaluator(letin.Let, Errors, SymbolTable);
-            evaluator.EvaluateLetBlock();
+            evaluator.Evaluate();
             var evaluatedIn = (IEvaluable)letin.In;
-            var result = evaluatedIn.Evaluate(SymbolTable, Errors);
+            var result = evaluatedIn.Evaluate(SymbolTable, Errors, ToDraw);
             SymbolTable.ExitScope();
             SymbolTable.Define(asignation.Name.Text, result);
         }
@@ -339,47 +287,47 @@ namespace GeoWall_E
             SymbolTable.Define(text, variableFound);
         }
 
-        void HandleDrawNode(Draw draw, List<Tuple<Type, Color>> toDraw)
+        void HandleDrawNode(Draw draw)
         {
             switch (draw.Expression)
             {
                 case VariableExpression variable:
-                    AddTypeToDraw(variable, toDraw, draw.Color, draw.Name);
+                    AddTypeToDraw(variable, draw.Color, draw.Name);
                     break;
                 case LineExpression lineexp:
-                    lineexp.HandleLineExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
+                    lineexp.HandleLineExpression(ToDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case SegmentExpression segmentexp:
-                    segmentexp.HandleSegmentExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
+                    segmentexp.HandleSegmentExpression(ToDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case RayExpression rayexp:
-                    rayexp.HandleRayExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
+                    rayexp.HandleRayExpression(ToDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case CircleExpression circleexp:
-                    circleexp.HandleCircleExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
+                    circleexp.HandleCircleExpression(ToDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case ArcExpression arcexp:
-                    arcexp.HandleArcExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
+                    arcexp.HandleArcExpression(ToDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case SequenceExpression seqexp:
-                    seqexp.HandleSequenceExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
+                    seqexp.HandleSequenceExpression(ToDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 case FunctionCallExpression function:
-                    HandleFunctionCallExpression(function, toDraw, draw.Color, draw.Name);
+                    HandleFunctionCallExpression(function, draw.Color, draw.Name);
                     break;
                 case LetInExpression letin:
-                    HandleLetInExpression(letin, toDraw, draw.Color);
+                    HandleLetInExpression(letin, draw.Color);
                     break;
                 case IfExpression ifexp:
-                    HandleIfExpression(ifexp, toDraw, draw.Color);
+                    HandleIfExpression(ifexp, draw.Color);
                     break;
                 case RandomPointsInFigure random:
-                    var randomPoints = random.Evaluate(SymbolTable, Errors);
+                    var randomPoints = random.Evaluate(SymbolTable, Errors, ToDraw);
                     ((IDraw)randomPoints).SetName(draw.Name);
-                    toDraw.Add(new Tuple<Type, Color>(randomPoints, draw.Color));
+                    ToDraw.Add(new Tuple<Type, Color>(randomPoints, draw.Color));
                     break;
                 case IntersectExpression intersect:
-                    intersect.HandleIntersectExpression(toDraw, Errors, SymbolTable, draw.Color, draw.Name);
+                    intersect.HandleIntersectExpression(ToDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
                 default:
                     Errors.AddError($"RUNTIME ERROR: Expression in draw is {draw.Expression.Type}, which is not drawable");
@@ -387,29 +335,29 @@ namespace GeoWall_E
             }
         }
 
-        private void HandleIfExpression(IfExpression ifexp, List<Tuple<Type, Color>> toDraw, Color color)
+        private void HandleIfExpression(IfExpression ifexp, Color color)
         {
-            var result = ifexp.Evaluate(SymbolTable, Errors);
+            var result = ifexp.Evaluate(SymbolTable, Errors, ToDraw);
             if (result is not ErrorType && result as IDraw != null)
             {
-                toDraw.Add(new Tuple<Type, Color>(result, color));
+                ToDraw.Add(new Tuple<Type, Color>(result, color));
             }
             else Errors.AddError($"RUNTIME ERROR: If expression in draw is {result.ObjectType}, which is not drawable.");
         }
 
-        void HandleLetInExpression(LetInExpression letin, List<Tuple<Type, Color>> toDraw, Color color) => toDraw.Add(new Tuple<Type, Color>(letin.Evaluate(SymbolTable, Errors), color));
+        void HandleLetInExpression(LetInExpression letin, Color color) => ToDraw.Add(new Tuple<Type, Color>(letin.Evaluate(SymbolTable, Errors, ToDraw), color));
 
-        void HandleFunctionCallExpression(FunctionCallExpression function, List<Tuple<Type, Color>> toDraw, Color color, string name)
+        void HandleFunctionCallExpression(FunctionCallExpression function, Color color, string name)
         {
-            var result = function.Evaluate(SymbolTable, Errors);
+            var result = function.Evaluate(SymbolTable, Errors, ToDraw);
             if (result is not ErrorType && result as IDraw != null)
             {
                 ((IDraw)result).SetName(name);
-                toDraw.Add(new Tuple<Type, Color>(result, color));
+                ToDraw.Add(new Tuple<Type, Color>(result, color));
             }
-            else Errors.AddError($"RUNTIME ERROR: Function '{function.FunctionName.Text}' in draw is {result.ObjectType}, which is not drawable (its value is {((NumberLiteral)result).Value}), Line: {function.FunctionName.Line}, Column: {function.FunctionName.Column}");
+            else Errors.AddError($"RUNTIME ERROR: Function '{function.FunctionName.Text}' in draw is {result.ObjectType}, which is not drawable, Line: {function.FunctionName.Line}, Column: {function.FunctionName.Column}");
         }
-        void AddTypeToDraw(VariableExpression variable, List<Tuple<Type, Color>> toDraw, Color color, string name)
+        void AddTypeToDraw(VariableExpression variable, Color color, string name)
         {
             var variableFound = SymbolTable.Resolve(variable.Name.Text);
             if (variableFound is not ErrorType && variableFound as IDraw != null)
@@ -425,7 +373,7 @@ namespace GeoWall_E
                 }
 
                 ((IDraw)variableFound).SetName(name);
-                toDraw.Add(new Tuple<Type, Color>(variableFound, color));
+                ToDraw.Add(new Tuple<Type, Color>(variableFound, color));
             }
 
             else Errors.AddError($"RUNTIME ERROR: Variable {variable.Name.Text} is {variableFound.ObjectType}, which is not drawable, Line: {variable.Name.Line}, Column: {variable.Name.Column}");

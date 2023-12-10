@@ -15,11 +15,11 @@ namespace GeoWall_E
 
         public Expression Figure => Figure_;
 
-        public Type Evaluate(SymbolTable symbolTable, Error error)
+        public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
         {
             if (Figure as IEvaluable != null)
             {
-                var figure = ((IEvaluable)Figure).Evaluate(symbolTable, error);
+                var figure = ((IEvaluable)Figure).Evaluate(symbolTable, error, toDraw);
                 if (figure is Line line)
                 {
                     IEnumerable<Point> points = GenerateRandomPointsOnLine(line);
@@ -45,7 +45,7 @@ namespace GeoWall_E
                     Circle circle1 = new Circle(arc.Center, arc.Measure);
                     double startAngle = Math.Atan2(arc.Extremo1.Y - circle1.Center.Y, arc.Extremo1.X - circle1.Center.X);
                     double endAngle = Math.Atan2(arc.Extremo2.Y - circle1.Center.Y, arc.Extremo2.X - circle1.Center.X);
-                    IEnumerable<Point> points = GenerateRandomPointsOnArc(circle1,startAngle,endAngle);
+                    IEnumerable<Point> points = GenerateRandomPointsOnArc(circle1, startAngle, endAngle);
                     return new Sequence(points);
                 }
                 else
@@ -103,7 +103,7 @@ namespace GeoWall_E
             {
                 double t;
                 // Genera t entre 0 y infinito
-                t = random.NextDouble()*10;
+                t = random.NextDouble() * 10;
 
                 // Verifica si el punto generado está dentro del rayo 
                 if (t >= 0)
@@ -169,4 +169,4 @@ namespace GeoWall_E
             }
         }
     }
- }
+}

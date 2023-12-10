@@ -4,7 +4,7 @@ namespace GeoWall_E
     {
         public override TokenType Type => TokenType.Samples;
 
-        public Type Evaluate(SymbolTable symbolTable, Error error)
+        public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
         {
             var points = CreatePoints();
             return new Sequence(points);

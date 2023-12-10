@@ -20,14 +20,14 @@ public class BinaryExpression : Expression, IEvaluable
     public Token Operator => Operator_;
     public Expression Right => Right_;
 
-    public Type Evaluate(SymbolTable symbolTable, Error error)
+    public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
     {
         if (Left as IEvaluable != null && Right as IEvaluable != null)
         {
             var left = (IEvaluable)Left;
             var right = (IEvaluable)Right;
-            Type leftResult = left.Evaluate(symbolTable, error);
-            Type rightResult = right.Evaluate(symbolTable, error);
+            Type leftResult = left.Evaluate(symbolTable, error, toDraw);
+            Type rightResult = right.Evaluate(symbolTable, error, toDraw);
 
             if (leftResult is NumberLiteral literal && rightResult is NumberLiteral literal1)
             {
