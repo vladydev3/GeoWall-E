@@ -81,6 +81,14 @@ namespace GeoWall_E
                     return TypeInfered.Any;
                 case LetInExpression letIn:
                     return InferType(letIn.In);
+                case IfExpression ifExpression:
+                    var then = InferType(ifExpression.Then);
+                    var else_ = InferType(ifExpression.Else);
+                    if (then == TypeInfered.ErrorType || else_ == TypeInfered.ErrorType) return TypeInfered.ErrorType;
+                    if (then == TypeInfered.Any) return else_;
+                    if (else_ == TypeInfered.Any) return then;
+                    if (then == else_) return then;
+                    return TypeInfered.Any;
                 default:
                     return TypeInfered.Any;
             }
