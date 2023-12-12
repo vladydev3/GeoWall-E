@@ -84,8 +84,11 @@ namespace GeoWall_E
                         var type = typeInference.InferType(element);
                         errors.AddError($"RUNTIME ERROR: Variable in draw function is {SemanticChecker.InferedTypeToType(type).ObjectType}, which is not drawable.");
                     }
-                    ((IDraw)element).SetName(name);
-                    toDraw.Add(new Tuple<Type, Color>(element, color));
+                    else
+                    {
+                        ((IDraw)element).SetName(name);
+                        toDraw.Add(new Tuple<Type, Color>(element, color));
+                    }
                 }
                 return;
             }

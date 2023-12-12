@@ -13,18 +13,19 @@ global using System.Windows.Media.Imaging;
 global using System.Windows.Navigation;
 global using System.Windows.Shapes;
 global using System.Windows.Threading;
+using System.Threading;
 
 
 
 namespace GeoWall_E
 {
-    public class Picasso 
+    public class Picasso
     {
 
         public Type FigureToDraw;
         public Canvas drawingCanvas;
         public Color color;
-        public Picasso(Canvas drawingCanvas, Type FiguretoDraw,Color color)
+        public Picasso(Canvas drawingCanvas, Type FiguretoDraw, Color color)
         {
             this.FigureToDraw = FiguretoDraw;
             this.drawingCanvas = drawingCanvas;
@@ -34,36 +35,37 @@ namespace GeoWall_E
         {
             if (FigureToDraw is Point point)
             {
-                DrawPoint(point,drawingCanvas,color);
+                DrawPoint(point, drawingCanvas, color);
             }
             else if (FigureToDraw is Line line)
             {
-                DrawLines(line,drawingCanvas,color);
+                DrawLines(line, drawingCanvas, color);
             }
             else if (FigureToDraw is Segment segment)
             {
-                DrawSegment(segment,drawingCanvas,color);
+                DrawSegment(segment, drawingCanvas, color);
             }
             else if (FigureToDraw is Ray ray)
             {
-                DrawRay(ray,drawingCanvas,color);
+                DrawRay(ray, drawingCanvas, color);
             }
             else if (FigureToDraw is Circle circle)
             {
-                DrawCircle(circle,drawingCanvas,color);
+                DrawCircle(circle, drawingCanvas, color);
             }
             else if (FigureToDraw is Arc arc)
             {
                 Point center = arc.Center;
-                DrawPoint(center,drawingCanvas,color);
+                DrawPoint(center, drawingCanvas, color);
                 Ray ray1 = new(arc.Center, arc.Start);
-                DrawRay(ray1,drawingCanvas,color);
+                DrawRay(ray1, drawingCanvas, color);
                 Ray ray2 = new Ray(arc.Center, arc.End);
-                DrawRay(ray2,drawingCanvas,color);
-                DrawArc(arc,drawingCanvas,color);
+                DrawRay(ray2, drawingCanvas, color);
+                DrawArc(arc, drawingCanvas, color);
             }
+
         }
-        public static void DrawArc(Arc arc,Canvas drawingCanvas,Color color)
+        public static void DrawArc(Arc arc, Canvas drawingCanvas, Color color)
         {
             string colorString = color.ToString(); // Convierte el color a un string.
             System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString); // Convierte el string de color a un Color de Media.
@@ -79,7 +81,7 @@ namespace GeoWall_E
             double labelY = (arc.Start.Y + arc.End.Y) / 2;
             // Posicionar la etiqueta
             Canvas.SetLeft(label, labelX);
-            Canvas.SetTop(label, labelY+label.ActualWidth);
+            Canvas.SetTop(label, labelY + label.ActualWidth);
             // Crear un nuevo objeto Path
             Path arcPath = new()
             {
@@ -91,7 +93,7 @@ namespace GeoWall_E
             // Crear un nuevo objeto PathFigure
             PathFigure pathFigure = new();
             System.Windows.Point startPoint = new(pointOnRay1.X, pointOnRay1.Y); // Usar 'pointOnRay1' como el punto de inicio
-            pathFigure.StartPoint = startPoint;           
+            pathFigure.StartPoint = startPoint;
             SweepDirection sweepDirection = GetSweepDirection(pointOnRay1, arc.Center, pointOnRay2);
             // Crear un nuevo objeto ArcSegment
             ArcSegment arcSegment = new();
@@ -108,7 +110,7 @@ namespace GeoWall_E
             // Añadir Path al Canvas
             drawingCanvas.Children.Add(arcPath);
             Circle circle = new Circle(arc.Center, arc.Measure);
-            DrawCircle(circle, drawingCanvas,color);
+            DrawCircle(circle, drawingCanvas, color);
         }
         public static SweepDirection GetSweepDirection(Point p1, Point p2, Point p3)
         {
@@ -144,7 +146,7 @@ namespace GeoWall_E
             newPoint.AsignY(y);
             return newPoint;
         }
-        public static void DrawSegment(Segment segment, Canvas drawingCanvas,Color color)
+        public static void DrawSegment(Segment segment, Canvas drawingCanvas, Color color)
         {
             Point Start = segment.Start;
             Point End = segment.End;
@@ -170,12 +172,12 @@ namespace GeoWall_E
             // Posicionar la etiqueta
             Canvas.SetLeft(label, midX);
             Canvas.SetTop(label, midY);
-            DrawPoint(Start, drawingCanvas,color);
-            DrawPoint(End, drawingCanvas,color);
+            DrawPoint(Start, drawingCanvas, color);
+            DrawPoint(End, drawingCanvas, color);
             // Agregar la línea al canvas
             drawingCanvas.Children.Add(line2);
         }
-        public static void DrawCircle(Circle circle,Canvas drawingCanvas,Color color)
+        public static void DrawCircle(Circle circle, Canvas drawingCanvas, Color color)
         {
             Point Center = circle.Center;
             Measure radius = circle.Radius;
@@ -193,7 +195,7 @@ namespace GeoWall_E
             miCirculo.StrokeThickness = 2;
             Label label = CreateLabel(circle.Name);
             // Agregar la etiqueta al canvas
-            drawingCanvas.Children.Add(label);           
+            drawingCanvas.Children.Add(label);
             double labelX = circle.Center.X + circle.Radius.Value + label.ActualWidth / 2;
             double labelY = circle.Center.Y;
             // Posicionar la etiqueta
@@ -202,26 +204,26 @@ namespace GeoWall_E
             // Establecer el punto central
             double centroX = Center.X; // Establecer la coordenada X del centro
             double centroY = Center.Y; // Establecer la coordenada Y del centro
-            DrawPoint(Center, drawingCanvas,color);             
+            DrawPoint(Center, drawingCanvas, color);
             Canvas.SetTop(miCirculo, centroY - radio); // Establecer la posición superior
             Canvas.SetLeft(miCirculo, centroX - radio); // Establecer la posición izquierda
             drawingCanvas.Children.Add(miCirculo); // Añadir el círculo al Canvas     
         }
 
-        public static void DrawRay(Ray ray, Canvas drawingCanvas,Color color)
+        public static void DrawRay(Ray ray, Canvas drawingCanvas, Color color)
         {
             Point Start = ray.Start;
             Point End = ray.End;
             string colorString = color.ToString(); // Suponiendo que esto devuelve "blue"
             System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
-            DrawPoint(Start, drawingCanvas,color);
-            DrawPoint(End, drawingCanvas,color);
+            DrawPoint(Start, drawingCanvas, color);
+            DrawPoint(End, drawingCanvas, color);
             System.Windows.Shapes.Line line3 = new()
             {
                 // Establecer propiedades de la línea
                 Stroke = new SolidColorBrush(mediaColor)
             };
-            Label label = CreateLabel(ray.Name);      
+            Label label = CreateLabel(ray.Name);
             // Agregar la etiqueta al canvas
             drawingCanvas.Children.Add(label);
             // Calcular el punto medio del segmento
@@ -259,11 +261,11 @@ namespace GeoWall_E
             line3.Y2 = m * line3.X2 + b;
             drawingCanvas.Children.Add(line3);
         }
-        public static void DrawPoint(Point P,Canvas drawingCanvas,Color color)
+        public static void DrawPoint(Point P, Canvas drawingCanvas, Color color)
         {
             string colorString = color.ToString();
             System.Windows.Media.Color mediaColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(colorString);
-            Ellipse point = CreateEllipse(mediaColor, P.Name);         
+            Ellipse point = CreateEllipse(mediaColor, P.Name);
             // Crear una etiqueta con el nombre del punto
             Label label = CreateLabel(P.Name);
             drawingCanvas.Children.Add(point);
@@ -289,7 +291,7 @@ namespace GeoWall_E
                 Stroke = new SolidColorBrush(mediaColor)
             };
             // Crear una etiqueta con el nombre del punto
-            Label label = CreateLabel(line.Name);           
+            Label label = CreateLabel(line.Name);
             // Agregar la etiqueta al canvas
             drawingCanvas.Children.Add(label);
             // Calcular el punto medio de la línea
@@ -316,7 +318,7 @@ namespace GeoWall_E
             // Agregar la línea al canvas
             drawingCanvas.Children.Add(line1);
         }
-        public static Label CreateLabel(string name) 
+        public static Label CreateLabel(string name)
         {
             Label label = new()
             {
@@ -326,7 +328,7 @@ namespace GeoWall_E
             };
             return label;
         }
-        public static Ellipse CreateEllipse(System.Windows.Media.Color color,string name)
+        public static Ellipse CreateEllipse(System.Windows.Media.Color color, string name)
         {
             Ellipse point = new()
             {

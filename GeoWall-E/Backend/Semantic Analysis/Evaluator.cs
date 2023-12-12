@@ -326,6 +326,10 @@ namespace GeoWall_E
                     ((IDraw)randomPoints).SetName(draw.Name);
                     ToDraw.Add(new Tuple<Type, Color>(randomPoints, draw.Color));
                     break;
+                case Samples samples:
+                    var sample = samples.Evaluate(SymbolTable, Errors, ToDraw);
+                    ToDraw.Add(new Tuple<Type, Color>(sample, draw.Color));
+                    break;
                 case IntersectExpression intersect:
                     intersect.HandleIntersectExpression(ToDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;
@@ -355,7 +359,7 @@ namespace GeoWall_E
                 ((IDraw)result).SetName(name);
                 ToDraw.Add(new Tuple<Type, Color>(result, color));
             }
-            else Errors.AddError($"RUNTIME ERROR: Function '{function.FunctionName.Text}' in draw is {result.ObjectType}, which is not drawable, Line: {function.FunctionName.Line}, Column: {function.FunctionName.Column}");
+            else Errors.AddError($"RUNTIME ERROR: Function '{function.FunctionName.Text}' in draw is {result.ObjectType}, which is not drawable result:{((NumberLiteral)result).Value}, Line: {function.FunctionName.Line}, Column: {function.FunctionName.Column}");
         }
         void AddTypeToDraw(VariableExpression variable, Color color, string name)
         {
