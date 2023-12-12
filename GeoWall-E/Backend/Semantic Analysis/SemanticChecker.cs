@@ -245,6 +245,10 @@ namespace GeoWall_E
                     var variableType = SymbolTable.Resolve(variable.Name.Text);
                     if (variableType.ObjectType == ObjectTypes.Error) Errors.AddError($"SEMANTIC ERROR: Variable '{variable.Name.Text}' not defined");
                     break;
+                case RandomPointsInFigure randomPointsInFigure:
+                    var figureType = SymbolTable.Resolve(randomPointsInFigure.Figure.Text);
+                    if (figureType.ObjectType == ObjectTypes.Error) Errors.AddError($"SEMANTIC ERROR: Figure '{randomPointsInFigure.Figure.Text}' not defined");
+                    break;
                 default:
                     break;
             }

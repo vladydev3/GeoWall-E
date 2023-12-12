@@ -127,7 +127,7 @@ namespace GeoWall_E
                             {
                                 Picasso drawer = new Picasso(drawingCanvas, (Type)adjustableElement, item.Item2);
                                 drawer.Draw();
-                                Adjust(adjustableElement.SignificativePoint);
+                                // Adjust(adjustableElement.SignificativePoint);
                                 await Task.Delay(50);
                             }
                         }

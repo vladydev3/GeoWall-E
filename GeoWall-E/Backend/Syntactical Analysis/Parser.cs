@@ -423,7 +423,7 @@ namespace GeoWall_E
         {
             NextToken();
             Match(TokenType.LParen);
-            var fig = ParseExpression();
+            var fig = Match(TokenType.Identifier);
             Match(TokenType.RParen);
             return new RandomPointsInFigure(fig);
         }
