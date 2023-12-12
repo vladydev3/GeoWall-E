@@ -231,8 +231,10 @@ namespace GeoWall_E
                     CheckExpression(ray.End);
                     break;
                 case SegmentExpression segment:
-                    if (inference.InferType(segment.Start) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.Start)}, Line: {segment.Positions["start"].Item1}, Column: {segment.Positions["start"].Item2}");
-                    if (inference.InferType(segment.End) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.End)}, Line: {segment.Positions["end"].Item1}, Column: {segment.Positions["end"].Item2}");
+                    var start2 = inference.InferType(segment.Start);
+                    if (start2 != TypeInfered.Point && start2 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.Start)}, Line: {segment.Positions["start"].Item1}, Column: {segment.Positions["start"].Item2}");
+                    var end2 = inference.InferType(segment.End);
+                    if (end2 != TypeInfered.Point && end2 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.End)}, Line: {segment.Positions["end"].Item1}, Column: {segment.Positions["end"].Item2}");
                     CheckExpression(segment.Start);
                     CheckExpression(segment.End);
                     break;

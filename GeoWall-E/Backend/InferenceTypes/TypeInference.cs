@@ -76,6 +76,7 @@ namespace GeoWall_E
                 case UnaryExpression unary:
                     return InferType(unary.Operand);
                 case SequenceExpression sequence:
+                    if (sequence.Elements.Count == 0) return TypeInfered.Any;
                     return InferType(sequence.Elements[0]);
                 case FunctionDeclaration:
                     return TypeInfered.Any;

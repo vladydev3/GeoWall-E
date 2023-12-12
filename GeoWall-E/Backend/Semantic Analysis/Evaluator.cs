@@ -326,6 +326,10 @@ namespace GeoWall_E
                     ((IDraw)randomPoints).SetName(draw.Name);
                     ToDraw.Add(new Tuple<Type, Color>(randomPoints, draw.Color));
                     break;
+                case Samples samples:
+                    var sample = samples.Evaluate(SymbolTable, Errors, ToDraw);
+                    ToDraw.Add(new Tuple<Type, Color>(sample, draw.Color));
+                    break;
                 case IntersectExpression intersect:
                     intersect.HandleIntersectExpression(ToDraw, Errors, SymbolTable, draw.Color, draw.Name);
                     break;

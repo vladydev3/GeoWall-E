@@ -5,6 +5,7 @@ public class FunctionCallExpression : Expression, IEvaluable
     public override TokenType Type => TokenType.FunctionCallExpression;
     private Token FunctionName_ { get; set; }
     private List<Expression> Arguments_ { get; set; }
+    private Expression? Body_ { get; set; }
     private int depth = 0;
 
     public FunctionCallExpression(Token functionName, List<Expression> arguments)
@@ -15,6 +16,7 @@ public class FunctionCallExpression : Expression, IEvaluable
 
     public Token FunctionName => FunctionName_;
     public List<Expression> Arguments => Arguments_;
+    public Expression Body => Body_;
 
     public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
     {
@@ -54,8 +56,6 @@ public class FunctionCallExpression : Expression, IEvaluable
         var body = (IEvaluable)functionDefined.Body;
         var result = body.Evaluate(symbolTable, error, toDraw);
         symbolTable.ExitScope();
-
-        symbolTable.Define(FunctionName.Text, result);
         return result;
     }
 }
