@@ -25,7 +25,7 @@ public class FunctionCallExpression : Expression, IEvaluable
             error.AddError($"RUNTIME ERROR: StackOverflow");
             return new ErrorType();
         }
-        var function = symbolTable.Resolve(FunctionName.Text);
+        var function = symbolTable.ResolveFunction(FunctionName.Text);
 
         var functionDefined = (Function)function;
 
@@ -54,6 +54,8 @@ public class FunctionCallExpression : Expression, IEvaluable
         var body = (IEvaluable)functionDefined.Body;
         var result = body.Evaluate(symbolTable, error, toDraw);
         symbolTable.ExitScope();
+
+        symbolTable.Define(FunctionName.Text, result);
         return result;
     }
 }

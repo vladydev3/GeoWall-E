@@ -36,11 +36,17 @@ public class SymbolTable
         return new ErrorType();
     }
 
-    public Type ResolveInCurrentScope(string name)
+    public Type ResolveFunction(string name)
     {
-        if (scopes.Peek().TryGetValue(name, out Type value))
+        foreach (var scope in scopes)
         {
-            return value;
+            if (scope.TryGetValue(name, out Type value))
+            {
+                if (value.ObjectType == ObjectTypes.Function)
+                {
+                    return value;
+                }
+            }
         }
         return new ErrorType();
     }
