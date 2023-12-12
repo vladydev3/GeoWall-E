@@ -17,6 +17,7 @@ using System.Collections;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
 using System.Windows.Media.Media3D;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -35,6 +36,7 @@ namespace GeoWall_E
         public bool saveChecker;
         public bool saveChecker1;
         public bool saveChecker3;
+        private bool shouldContinueDrawing = true;
         public MainWindow()
         {
             InitializeComponent(); // Este método se genera automáticamente y se utiliza para inicializar los componentes de la ventana.
@@ -51,7 +53,7 @@ namespace GeoWall_E
         private void Compile(object sender, RoutedEventArgs e)// Este método se ejecuta cuando se hace clic en el botón para compilar el código.
 
         {
-            saveChecker3 = true; 
+            saveChecker3 = true;
 
             Consola.Clear(); // Limpia la consola.
 
@@ -59,9 +61,9 @@ namespace GeoWall_E
 
             handler = new Handler(code); // Crea una nueva instancia de la clase Handler con el código del usuario.
 
-            if (handler.CheckErrors()) 
+            if (handler.CheckErrors())
             {
-                saveChecker1 = true; 
+                saveChecker1 = true;
 
                 List<string> errors = handler.Errors.GetAllErrors.ToList(); // Obtiene todos los errores.
 
@@ -70,7 +72,7 @@ namespace GeoWall_E
                     Consola.Text += error + Environment.NewLine; // Agrega el error a la consola.
                 }
             }
-            else 
+            else
             {
                 saveChecker1 = false;
 
@@ -78,8 +80,9 @@ namespace GeoWall_E
             }
 
         }
-        private void RunClick(object sender, RoutedEventArgs e)// Este método se ejecuta cuando se hace clic en un botón "Run".
+        private async void RunClick(object sender, RoutedEventArgs e)// Este método se ejecuta cuando se hace clic en un botón "Run".
         {
+            shouldContinueDrawing = true;
             handler.HandleEvaluate();// Evalúa el código ingresado por el usuario.
             // Borra el Canvas
             drawingCanvas.Children.Clear();// Borra todos los elementos del Canvas.
@@ -97,22 +100,31 @@ namespace GeoWall_E
             {
                 foreach (var item in handler.ToDraw)
                 {
-
+                    if (!shouldContinueDrawing)
+                    {
+                        return;
+                    }
                     if (item.Item1 is IAdjustable adjustable)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, (Type)adjustable, item.Item2);
                         drawer.Draw();
                         Adjust(adjustable.SignificativePoint);
+                        await Task.Delay(200);
                     }
                     else if (item.Item1 is Sequence sequence)
                     {
                         foreach (var element in sequence.Elements)
                         {
+                            if (!shouldContinueDrawing)
+                            {
+                                return;
+                            }
                             if (element is IAdjustable adjustableElement)
                             {
                                 Picasso drawer = new Picasso(drawingCanvas, (Type)adjustableElement, item.Item2);
                                 drawer.Draw();
                                 Adjust(adjustableElement.SignificativePoint);
+                                await Task.Delay(50);
                             }
                         }
                     }
@@ -122,6 +134,7 @@ namespace GeoWall_E
 
         private void Restart(object sender, RoutedEventArgs e)
         {
+            shouldContinueDrawing = false;
             if (saveChecker == false)
             {
                 MessageBoxResult result = MessageBox.Show("¿Seguro que quieres reiniciar sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);// Muestra un cuadro de mensaje preguntando al usuario si quiere reiniciar sin guardar.
@@ -259,21 +272,21 @@ namespace GeoWall_E
         }
         private void Export(object sender, RoutedEventArgs e)
         {
-            if (Entrada.Text == "") 
+            if (Entrada.Text == "")
             {
                 MessageBox.Show("Error!! La entrada esta vacía", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // Muestra un cuadro de mensaje de error.
             }
-            else if (saveChecker1 == true) 
+            else if (saveChecker1 == true)
             {
                 System.Windows.Forms.MessageBox.Show("Error!! corrija los errores antes de guardar", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error); // Muestra un cuadro de mensaje de error.
             }
-            else if (saveChecker3 == false) 
+            else if (saveChecker3 == false)
             {
                 MessageBox.Show("Error!!Compile antes de guardar", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // Muestra un cuadro de mensaje de error.
             }
-            else 
+            else
             {
-                saveChecker = true; 
+                saveChecker = true;
                 string text = Entrada.Text; // Obtiene el texto del TextBox de entrada.
                 System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog(); // Crea un nuevo cuadro de diálogo para guardar archivos.
                 saveFileDialog.Filter = "Archivos GS(*.gs)|*.gs"; // Establece el filtro del cuadro de diálogo para mostrar solo los archivos .gs.
@@ -284,7 +297,7 @@ namespace GeoWall_E
                 string folderPath = System.IO.Path.Combine(projectDirectory, subfolder); // Combina el directorio del proyecto y la subcarpeta para obtener la ruta de la carpeta.
                 saveFileDialog.InitialDirectory = folderPath; // Establece el directorio inicial del cuadro de diálogo para guardar.
 
-                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) 
+                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     string filePath = saveFileDialog.FileName; // Obtiene la ruta del archivo seleccionado.
                     System.IO.File.WriteAllText(filePath, text); // Escribe el texto en el archivo seleccionado.
@@ -295,15 +308,15 @@ namespace GeoWall_E
         }
         private void Exit(object sender, RoutedEventArgs e)
         {
-            if (saveChecker == false) 
+            if (saveChecker == false)
             {
                 MessageBoxResult result = MessageBox.Show("¿Seguro que quieres volver sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question); // Muestra un cuadro de mensaje preguntando al usuario si quiere salir sin guardar.
-                if (result == MessageBoxResult.Yes) 
+                if (result == MessageBoxResult.Yes)
                 {
                     this.Close(); // Cierra la ventana.
                 }
             }
-            else 
+            else
             {
                 this.Close(); // Cierra la ventana.
             }
@@ -312,17 +325,17 @@ namespace GeoWall_E
 
         private void ReturnMenu(object sender, RoutedEventArgs e)
         {
-            if (saveChecker == false) 
+            if (saveChecker == false)
             {
                 MessageBoxResult result = MessageBox.Show("¿Seguro que quieres salir sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question); // Muestra un cuadro de mensaje preguntando al usuario si quiere salir sin guardar.
-                if (result == MessageBoxResult.Yes) 
+                if (result == MessageBoxResult.Yes)
                 {
                     var Menu = new Window1(); // Crea una nueva instancia de la clase Window1.
                     Menu.Show(); // Muestra la ventana.
                     this.Close(); // Cierra la ventana actual.
                 }
             }
-            else 
+            else
             {
                 var Menu = new Window1(); // Crea una nueva instancia de la clase Window1.
                 Menu.Show(); // Muestra la ventana.
@@ -366,8 +379,8 @@ namespace GeoWall_E
             scrollViewer.ScrollToVerticalOffset(point.Y - 250); // Desplaza el ScrollViewer verticalmente al punto Y menos 250.
         }
         private void TextBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
-        {                      
-                Enumerador.ScrollToVerticalOffset(e.VerticalOffset);                                   
+        {
+            Enumerador.ScrollToVerticalOffset(e.VerticalOffset);
         }
     }
 }

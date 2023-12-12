@@ -6,8 +6,7 @@ namespace GeoWall_E
 
         public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
         {
-            var points = CreatePoints();
-            return new Sequence(points);
+            return new Sequence(CreatePoints());
         }
 
         static IEnumerable<Type> CreatePoints()

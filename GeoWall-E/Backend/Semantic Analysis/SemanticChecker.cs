@@ -89,7 +89,7 @@ namespace GeoWall_E
                     CheckExpression(draw.Expression);
                     break;
                 case FunctionDeclaration function:
-                    if (SymbolTable.Resolve(function.Name.Text) is Function) Errors.AddError($"SEMANTIC ERROR: Function '{function.Name.Text}' already defined.");
+                    if (SymbolTable.ResolveFunction(function.Name.Text) is Function) Errors.AddError($"SEMANTIC ERROR: Function '{function.Name.Text}' already defined.");
                     else SymbolTable.Define(function.Name.Text, new Function(function.Name, function.Arguments, function.Body));
                     break;
                 case AsignationStatement asignation:
@@ -231,8 +231,10 @@ namespace GeoWall_E
                     CheckExpression(ray.End);
                     break;
                 case SegmentExpression segment:
-                    if (inference.InferType(segment.Start) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.Start)}, Line: {segment.Positions["start"].Item1}, Column: {segment.Positions["start"].Item2}");
-                    if (inference.InferType(segment.End) != TypeInfered.Point) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.End)}, Line: {segment.Positions["end"].Item1}, Column: {segment.Positions["end"].Item2}");
+                    var start2 = inference.InferType(segment.Start);
+                    if (start2 != TypeInfered.Point && start2 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.Start)}, Line: {segment.Positions["start"].Item1}, Column: {segment.Positions["start"].Item2}");
+                    var end2 = inference.InferType(segment.End);
+                    if (end2 != TypeInfered.Point && end2 != TypeInfered.Any) Errors.AddError($"SEMANTIC ERROR: Expected Point type but got {inference.InferType(segment.End)}, Line: {segment.Positions["end"].Item1}, Column: {segment.Positions["end"].Item2}");
                     CheckExpression(segment.Start);
                     CheckExpression(segment.End);
                     break;
@@ -263,8 +265,8 @@ namespace GeoWall_E
         }
         private void CheckFunctionCall(FunctionCallExpression functionCall)
         {
-            var function = SymbolTable.Resolve(functionCall.FunctionName.Text);
-            if (function.ObjectType != ObjectTypes.Function || function.ObjectType == ObjectTypes.Error)
+            var function = SymbolTable.ResolveFunction(functionCall.FunctionName.Text);
+            if (function.ObjectType == ObjectTypes.Error)
             {
                 Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' not defined");
                 return;
