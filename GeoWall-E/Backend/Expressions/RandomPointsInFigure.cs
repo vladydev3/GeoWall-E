@@ -45,7 +45,7 @@ namespace GeoWall_E
                     Circle circle1 = new Circle(arc.Center, arc.Measure);
                     double startAngle = Math.Atan2(arc.Extremo1.Y - circle1.Center.Y, arc.Extremo1.X - circle1.Center.X);
                     double endAngle = Math.Atan2(arc.Extremo2.Y - circle1.Center.Y, arc.Extremo2.X - circle1.Center.X);
-                    IEnumerable<Point> points = GenerateRandomPointsOnArc(circle1, startAngle, endAngle);
+                    IEnumerable<Point> points = GenerateRandomPointsOnArc(circle1, startAngle, endAngle,arc);
                     return new Sequence(points);
                 }
                 else
@@ -140,7 +140,7 @@ namespace GeoWall_E
                 yield return point;
             }
         }
-        public IEnumerable<Point> GenerateRandomPointsOnArc(Circle circle, double startAngle, double endAngle)
+        public IEnumerable<Point> GenerateRandomPointsOnArc(Circle circle, double startAngle, double endAngle,Arc arc)
         {
             Random random = new Random();
 
@@ -164,9 +164,13 @@ namespace GeoWall_E
                 Point point = new Point();
                 point.AsignX(x);
                 point.AsignY(y);
-
-                yield return point;
+                if (IntersectFigures.PointOnArc(point,arc))
+                {
+                    yield return point;
+                }
+               
             }
         }
     }
 }
+

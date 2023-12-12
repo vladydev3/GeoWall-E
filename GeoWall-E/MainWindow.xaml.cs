@@ -13,6 +13,7 @@ global using System.Windows.Media.Imaging;
 global using System.Windows.Navigation;
 global using System.Windows.Shapes;
 global using System.Windows.Threading;
+using System.Diagnostics;
 using System.Collections;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -20,6 +21,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Windows.Media.Media3D;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using System.Threading;
 
 namespace GeoWall_E
 {
@@ -98,12 +100,14 @@ namespace GeoWall_E
             }
             else
             {
+                
                 foreach (var item in handler.ToDraw)
                 {
                     if (!shouldContinueDrawing)
                     {
                         return;
                     }
+                    
                     if (item.Item1 is IAdjustable adjustable)
                     {
                         Picasso drawer = new Picasso(drawingCanvas, (Type)adjustable, item.Item2);
