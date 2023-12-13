@@ -6,20 +6,21 @@ namespace GeoWall_E
     public class RandomPointsInFigure : Expression, IEvaluable
     {
         public override TokenType Type => TokenType.Points;
-        Expression Figure_ { get; set; }
+        Token Figure_ { get; set; }
 
-        public RandomPointsInFigure(Expression figure)
+        public RandomPointsInFigure(Token figure)
         {
             Figure_ = figure;
         }
 
-        public Expression Figure => Figure_;
+        public Token Figure => Figure_;
 
         public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
         {
-            if (Figure as IEvaluable != null)
+            // Buscar la figura en el scope
+            var figureResolved = symbolTable.Resolve(Figure.Text);
+            if (figureResolved is IDraw figure)
             {
-                var figure = ((IEvaluable)Figure).Evaluate(symbolTable, error, toDraw);
                 if (figure is Line line)
                 {
                     IEnumerable<Point> points = GenerateRandomPointsOnLine(line);
@@ -45,20 +46,12 @@ namespace GeoWall_E
                     Circle circle1 = new Circle(arc.Center, arc.Measure);
                     double startAngle = Math.Atan2(arc.Extremo1.Y - circle1.Center.Y, arc.Extremo1.X - circle1.Center.X);
                     double endAngle = Math.Atan2(arc.Extremo2.Y - circle1.Center.Y, arc.Extremo2.X - circle1.Center.X);
-                    IEnumerable<Point> points = GenerateRandomPointsOnArc(circle1, startAngle, endAngle,arc);
+                    IEnumerable<Point> points = GenerateRandomPointsOnArc(circle1, startAngle, endAngle, arc);
                     return new Sequence(points);
                 }
-                else
-                {
-                    error.AddError($"SEMANTIC ERROR: Invalid expression in points()");
-                    return new ErrorType();
-                }
             }
-            else
-            {
-                error.AddError($"SEMANTIC ERROR: Invalid expression in points()");
-                return new ErrorType();
-            }
+            error.AddError($"RUNTIME ERROR: Can't generate random points in '{Figure.Text}'.");
+            return new Sequence(new List<Type>());
         }
         public IEnumerable<Point> GenerateRandomPointsOnLine(Line line)
         {
@@ -140,7 +133,7 @@ namespace GeoWall_E
                 yield return point;
             }
         }
-        public IEnumerable<Point> GenerateRandomPointsOnArc(Circle circle, double startAngle, double endAngle,Arc arc)
+        public IEnumerable<Point> GenerateRandomPointsOnArc(Circle circle, double startAngle, double endAngle, Arc arc)
         {
             Random random = new Random();
 
@@ -164,11 +157,11 @@ namespace GeoWall_E
                 Point point = new Point();
                 point.AsignX(x);
                 point.AsignY(y);
-                if (IntersectFigures.PointOnArc(point,arc))
+                if (IntersectFigures.PointOnArc(point, arc))
                 {
                     yield return point;
                 }
-               
+
             }
         }
     }

@@ -117,6 +117,7 @@ namespace GeoWall_E
                     }
                     else if (item.Item1 is Sequence sequence)
                     {
+                        int count = 0; // Para que ajuste la visual
                         foreach (var element in sequence.Elements)
                         {
                             if (!shouldContinueDrawing)
@@ -127,8 +128,9 @@ namespace GeoWall_E
                             {
                                 Picasso drawer = new Picasso(drawingCanvas, (Type)adjustableElement, item.Item2);
                                 drawer.Draw();
-                                Adjust(adjustableElement.SignificativePoint);
-                                await Task.Delay(50);
+                                if (count == 0) Adjust(adjustableElement.SignificativePoint);
+                                count++;
+                                await Task.Delay(10);
                             }
                         }
                     }

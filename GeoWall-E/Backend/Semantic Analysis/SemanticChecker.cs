@@ -151,7 +151,6 @@ namespace GeoWall_E
                             CheckExpression(element);
                         }
                     }
-
                     break;
                 case Count count:
                     CheckExpression(count.Sequence);
@@ -245,6 +244,10 @@ namespace GeoWall_E
                     var variableType = SymbolTable.Resolve(variable.Name.Text);
                     if (variableType.ObjectType == ObjectTypes.Error) Errors.AddError($"SEMANTIC ERROR: Variable '{variable.Name.Text}' not defined");
                     break;
+                case RandomPointsInFigure randomPointsInFigure:
+                    var figureType = SymbolTable.Resolve(randomPointsInFigure.Figure.Text);
+                    if (figureType.ObjectType == ObjectTypes.Error) Errors.AddError($"SEMANTIC ERROR: Figure '{randomPointsInFigure.Figure.Text}' not defined");
+                    break;
                 default:
                     break;
             }
@@ -265,39 +268,56 @@ namespace GeoWall_E
         }
         private void CheckFunctionCall(FunctionCallExpression functionCall)
         {
-            var function = SymbolTable.ResolveFunction(functionCall.FunctionName.Text);
-            if (function.ObjectType == ObjectTypes.Error)
+            var function = CheckFunctionDefinition(functionCall);
+            if (function == null)
             {
-                Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' not defined");
                 return;
             }
 
             SymbolTable.EnterScope();
+
+            CheckArguments(functionCall, function);
+
+            // Check the function body with the current arguments
+            CheckExpression(function.Body);
+
+            SymbolTable.ExitScope();
+        }
+
+        private Function CheckFunctionDefinition(FunctionCallExpression functionCall)
+        {
+            var function = SymbolTable.ResolveFunction(functionCall.FunctionName.Text);
+            if (function.ObjectType == ObjectTypes.Error)
+            {
+                Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' not defined");
+                return null!;
+            }
 
             var functionDefined = (Function)function;
 
             if (functionCall.Arguments.Count != functionDefined.Arguments.Count)
             {
                 Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' expected {functionDefined.Arguments.Count} argument(s), but {functionCall.Arguments.Count} were given");
-                return;
+                return null!;
             }
 
+            return functionDefined;
+        }
+
+        private void CheckArguments(FunctionCallExpression functionCall, Function function)
+        {
             for (int i = 0; i < functionCall.Arguments.Count; i++)
             {
                 TypeInference inference = new(SymbolTable);
                 var argumentType = inference.InferType(functionCall.Arguments[i]);
 
-                SymbolTable.Define(functionDefined.Arguments[i].Text, InferedTypeToType(argumentType));
+                SymbolTable.Define(function.Arguments[i].Text, InferedTypeToType(argumentType));
 
-                if (argumentType == TypeInfered.ErrorType) Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' argument '{functionDefined.Arguments[i].Text}' is not defined");
-
-                if (argumentType == TypeInfered.Any) continue;
+                if (argumentType == TypeInfered.ErrorType)
+                {
+                    Errors.AddError($"SEMANTIC ERROR: Function '{functionCall.FunctionName.Text}' argument '{function.Arguments[i].Text}' is not defined");
+                }
             }
-
-            // Chequear el cuerpo de la funcion con los argumentos actuales
-            CheckExpression(functionDefined.Body);
-
-            SymbolTable.ExitScope();
         }
 
         internal static Type InferedTypeToType(TypeInfered argumentType)
