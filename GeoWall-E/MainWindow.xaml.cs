@@ -314,7 +314,7 @@ namespace GeoWall_E
         {
             if (saveChecker == false)
             {
-                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres volver sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question); // Muestra un cuadro de mensaje preguntando al usuario si quiere salir sin guardar.
+                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres salir sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question); // Muestra un cuadro de mensaje preguntando al usuario si quiere salir sin guardar.
                 if (result == MessageBoxResult.Yes)
                 {
                     this.Close(); // Cierra la ventana.
@@ -331,7 +331,7 @@ namespace GeoWall_E
         {
             if (saveChecker == false)
             {
-                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres salir sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question); // Muestra un cuadro de mensaje preguntando al usuario si quiere salir sin guardar.
+                MessageBoxResult result = MessageBox.Show("¿Seguro que quieres volver sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question); // Muestra un cuadro de mensaje preguntando al usuario si quiere salir sin guardar.
                 if (result == MessageBoxResult.Yes)
                 {
                     var Menu = new Window1(); // Crea una nueva instancia de la clase Window1.
