@@ -1,4 +1,6 @@
+using Microsoft.VisualBasic.Devices;
 using System.Net;
+using System.Security.Policy;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GeoWall_E
@@ -58,10 +60,8 @@ namespace GeoWall_E
             Random random = new Random();
 
             while (true)
-            {
-                double t;
-                // Genera t entre 0 y 1
-                t = random.NextDouble();
+            {                              
+                double t = 20* random.NextDouble() - 19;
                 double x = line.P1.X + t * (line.P2.X - line.P1.X);
                 double y = line.P1.Y + t * (line.P2.Y - line.P1.Y);
                 Point point = new Point();
@@ -96,18 +96,14 @@ namespace GeoWall_E
             {
                 double t;
                 // Genera t entre 0 y infinito
-                t = random.NextDouble() * 10;
-
-                // Verifica si el punto generado está dentro del rayo 
-                if (t >= 0)
-                {
-                    double x = ray.Start.X + t * (ray.End.X - ray.Start.X);
-                    double y = ray.Start.Y + t * (ray.End.Y - ray.Start.Y);
-                    Point point = new Point();
-                    point.AsignX(x);
-                    point.AsignY(y);
-                    yield return point;
-                }
+                t = random.NextDouble() * 10;                           
+                double x = ray.Start.X + t * (ray.End.X - ray.Start.X);
+                double y = ray.Start.Y + t * (ray.End.Y - ray.Start.Y);
+                Point point = new Point();
+                point.AsignX(x);
+                point.AsignY(y);
+                yield return point;
+                
             }
         }
         public IEnumerable<Point> GenerateRandomPointsOnCircle(Circle circle)
@@ -116,9 +112,10 @@ namespace GeoWall_E
 
             while (true)
             {
-                // Genera un ángulo aleatorio
+                // Genera un ángulo aleatorio entre 0 y 2π (0 y 360 grados)
                 double angle = 2 * Math.PI * random.NextDouble();
-
+                // Genera una distancia aleatoria desde el centro del círculo hasta su radio
+                // Se utiliza Math.Sqrt para ajustar la distribución, de modo que los puntos estén uniformemente distribuidos en el círculo
                 // Genera una distancia aleatoria desde el centro
                 double r = circle.Radius.Value * Math.Sqrt(random.NextDouble());
 
