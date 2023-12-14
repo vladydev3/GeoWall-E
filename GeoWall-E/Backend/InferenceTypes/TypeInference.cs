@@ -77,7 +77,8 @@ namespace GeoWall_E
                     return InferType(unary.Operand);
                 case SequenceExpression sequence:
                     if (sequence.Elements != null && sequence.Elements.Count == 0) return TypeInfered.Any;
-                    return InferType(sequence.Elements[0]);
+                    if (sequence.Elements != null) return InferType(sequence.Elements[0]);
+                    return TypeInfered.Any;
                 case FunctionDeclaration:
                     return TypeInfered.Any;
                 case LetInExpression letIn:
