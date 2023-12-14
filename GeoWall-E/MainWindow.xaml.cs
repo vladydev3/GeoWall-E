@@ -36,8 +36,8 @@ namespace GeoWall_E
         private double previousZoomFactor = 1.0;
         public Handler handler { get; set; }
         public bool saveChecker;
-        public bool saveChecker1;
-        public bool saveChecker3;
+        public bool saveErrorChecker;
+        public bool saveCompileChecker;
         private bool shouldContinueDrawing = true;
         public MainWindow()
         {
@@ -55,7 +55,7 @@ namespace GeoWall_E
         private void Compile(object sender, RoutedEventArgs e)// Este método se ejecuta cuando se hace clic en el botón para compilar el código.
 
         {
-            saveChecker3 = true;
+            saveCompileChecker = true;
 
             Consola.Clear(); // Limpia la consola.
 
@@ -65,7 +65,7 @@ namespace GeoWall_E
 
             if (handler.CheckErrors())
             {
-                saveChecker1 = true;
+                saveErrorChecker = true;
 
                 List<string> errors = handler.Errors.GetAllErrors.ToList(); // Obtiene todos los errores.
 
@@ -76,7 +76,7 @@ namespace GeoWall_E
             }
             else
             {
-                saveChecker1 = false;
+                saveErrorChecker = false;
 
                 Run.IsEnabled = true; // Habilita el botón Run.
             }
@@ -88,7 +88,7 @@ namespace GeoWall_E
             handler.HandleEvaluate();// Evalúa el código ingresado por el usuario.
             // Borra el Canvas
             drawingCanvas.Children.Clear();// Borra todos los elementos del Canvas.
-
+            
             if (handler.CheckErrors())
             {
                 List<string> errors = handler.Errors.GetAllErrors.ToList();// Obtiene todos los errores.
@@ -146,8 +146,8 @@ namespace GeoWall_E
                 MessageBoxResult result = MessageBox.Show("¿Seguro que quieres reiniciar sin guardar?", "Confirmación", MessageBoxButton.YesNo, MessageBoxImage.Question);// Muestra un cuadro de mensaje preguntando al usuario si quiere reiniciar sin guardar.
                 if (result == MessageBoxResult.Yes)
                 {
-                    saveChecker3 = false;
-                    saveChecker1 = false;
+                    saveCompileChecker = false;
+                    saveErrorChecker = false;
                     // Borra el TextBox
                     Entrada.Text = "";
                     Consola.Text = "";
@@ -162,8 +162,8 @@ namespace GeoWall_E
             }
             else
             {
-                saveChecker3 = false;
-                saveChecker1 = false;
+                saveCompileChecker = false;
+                saveErrorChecker = false;
                 // Borra el TextBox
                 Entrada.Text = "";
                 Consola.Text = "";
@@ -201,31 +201,28 @@ namespace GeoWall_E
 
         private void ScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            // 'scrollViewer' se refiere al control ScrollViewer que has añadido en tu XAML
             scrollViewer.ScrollToVerticalOffset(e.NewValue);
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void DownButton(object sender, RoutedEventArgs e)
         {
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset + 100);// Desplaza el ScrollViewer verticalmente 100 unidades hacia abajo.
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void UpButton(object sender, RoutedEventArgs e)
         {
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - 100); // Desplaza el ScrollViewer verticalmente 100 unidades hacia arriba.
         }
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
+        private void LeftButton(object sender, RoutedEventArgs e)
         {
             scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - 100);// Desplaza el ScrollViewer horizontalmente 100 unidades hacia la izquierda.
         }
 
-        private void Button_Click_5(object sender, RoutedEventArgs e)
+        private void RightButton(object sender, RoutedEventArgs e)
         {
             scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset + 100);// Desplaza el ScrollViewer horizontalmente 100 unidades hacia la derecha.
         }
-
-
         private void DrawingCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
             // Captura la posición del cursor cuando se hace clic en el canvas
@@ -237,7 +234,6 @@ namespace GeoWall_E
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             ApplyZoom((sender as Slider).Value);
-
         }
         private void ApplyZoom(double zoomFactor)
         {
@@ -264,7 +260,7 @@ namespace GeoWall_E
         {
             if (zoomSlider.Value > 0.5)
             {
-                zoomSlider.Value -= 0.01; // Cambia 0.1 a 0.05
+                zoomSlider.Value -= 0.01;
                 ApplyZoom(zoomSlider.Value);
             }
         }
@@ -272,21 +268,21 @@ namespace GeoWall_E
         {
             if (zoomSlider.Value < 4)
             {
-                zoomSlider.Value += 0.01; // Cambia 0.1 a 0.05
+                zoomSlider.Value += 0.01;
                 ApplyZoom(zoomSlider.Value);
             }
         }
-        private void Export(object sender, RoutedEventArgs e)
+        private void SaveDoc(object sender, RoutedEventArgs e)
         {
             if (Entrada.Text == "")
             {
                 MessageBox.Show("Error!! La entrada esta vacía", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // Muestra un cuadro de mensaje de error.
             }
-            else if (saveChecker1 == true)
+            else if (saveErrorChecker == true)
             {
-                System.Windows.Forms.MessageBox.Show("Error!! corrija los errores antes de guardar", "Error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error); // Muestra un cuadro de mensaje de error.
+                MessageBox.Show("Error!! corrija los errores antes de guardar", "Error",MessageBoxButton.OK,MessageBoxImage.Error); // Muestra un cuadro de mensaje de error.
             }
-            else if (saveChecker3 == false)
+            else if (saveCompileChecker == false)
             {
                 MessageBox.Show("Error!!Compile antes de guardar", "Error", MessageBoxButton.OK, MessageBoxImage.Error); // Muestra un cuadro de mensaje de error.
             }
@@ -371,7 +367,7 @@ namespace GeoWall_E
             Enumerador.Text = lineNumbers;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Center(object sender, RoutedEventArgs e)
         {
             scrollViewer.ScrollToVerticalOffset((scrollViewer.ScrollableHeight / 2) - 350);
             scrollViewer.ScrollToHorizontalOffset((scrollViewer.ScrollableWidth / 2) - 250);
@@ -387,6 +383,11 @@ namespace GeoWall_E
         private void TextBox_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             Enumerador.ScrollToVerticalOffset(e.VerticalOffset);
+        }
+
+        private void Stop(object sender, RoutedEventArgs e)
+        {           
+                shouldContinueDrawing = false;
         }
     }
 }
