@@ -176,11 +176,7 @@ public class BinaryExpression : Expression, IEvaluable
                         return new ErrorType();
                 }
             }
-            else
-            {
-                error.AddError($"RUNTIME ERROR: Invalid operands");
-                return new ErrorType();
-            }
+
         }
         error.AddError($"RUNTIME ERROR: Invalid operands");
         return new ErrorType();

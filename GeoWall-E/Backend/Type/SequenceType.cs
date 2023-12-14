@@ -44,6 +44,7 @@ namespace GeoWall_E
 
         public IEnumerable<Type> RestOfElements(int start)
         {
+
             int i = 0;
 
             foreach (var element in Elements)

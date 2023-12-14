@@ -32,7 +32,7 @@ namespace GeoWall_E
             var sequenceElementsEvaluated = new List<Type>();
             if (Elements != null)
             {
-                // Evaluate all elements of the sequence
+                // Evalua todos los elementos de la secuencia
                 foreach (var element in Elements)
                 {
                     var elementEvaluable = (IEvaluable)element;
@@ -44,7 +44,7 @@ namespace GeoWall_E
             }
             if (LowerBound != null && UpperBound == null)
             {
-                // If the upper bound is not specified, the sequence is infinite
+                // Si solo se especifica el limite inferior, la secuencia es infinita
 
                 int lowerBound = int.Parse(LowerBound.Text);
 
@@ -52,7 +52,7 @@ namespace GeoWall_E
             }
             if (LowerBound != null && UpperBound != null)
             {
-                // If the upper bound is specified, the sequence is finite
+                // Si el limite inferior y superior estan especificados, la secuencia es finita
 
                 int lowerBound = int.Parse(LowerBound.Text);
                 int upperBound = int.Parse(UpperBound.Text);
@@ -67,7 +67,7 @@ namespace GeoWall_E
             var sequenceElementsEvaluated = new List<Type>();
             if (Elements != null)
             {
-                // Evaluate all elements of the sequence
+                // Evalua todos los elementos de la secuencia
                 foreach (var element in Elements)
                 {
                     var elementEvaluable = (IEvaluable)element;

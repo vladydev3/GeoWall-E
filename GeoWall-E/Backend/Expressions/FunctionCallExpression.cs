@@ -5,7 +5,6 @@ public class FunctionCallExpression : Expression, IEvaluable
     public override TokenType Type => TokenType.FunctionCallExpression;
     private Token FunctionName_ { get; set; }
     private List<Expression> Arguments_ { get; set; }
-    private Expression? Body_ { get; set; }
     private int depth = 0;
 
     public FunctionCallExpression(Token functionName, List<Expression> arguments)
@@ -16,7 +15,6 @@ public class FunctionCallExpression : Expression, IEvaluable
 
     public Token FunctionName => FunctionName_;
     public List<Expression> Arguments => Arguments_;
-    public Expression Body => Body_;
 
     public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
     {
@@ -27,8 +25,9 @@ public class FunctionCallExpression : Expression, IEvaluable
             error.AddError($"RUNTIME ERROR: StackOverflow");
             return new ErrorType();
         }
-        var function = symbolTable.ResolveFunction(FunctionName.Text);
 
+        // busca la funcion en el scope
+        var function = symbolTable.ResolveFunction(FunctionName.Text);
         var functionDefined = (Function)function;
 
         Dictionary<string, Type> argumentsDefined = new();
@@ -43,11 +42,13 @@ public class FunctionCallExpression : Expression, IEvaluable
             }
             catch (Exception)
             {
+                // Si algun argumento no se puede evaluar, se agrega el error y se retorna un error
                 error.AddError($"RUNTIME ERROR: Can't evaluate argument {i + 1} of function {FunctionName.Text}");
                 return new ErrorType();
             }
         }
 
+        // agrego los argumentos al scope
         symbolTable.EnterScope();
         foreach (var argument in argumentsDefined)
         {

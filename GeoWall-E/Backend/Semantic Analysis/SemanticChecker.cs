@@ -25,7 +25,6 @@ namespace GeoWall_E
             if (root == null) return;
 
             SymbolTable_ = new SymbolTable();
-            SymbolTable.EnterScope();
 
             foreach (var node in root)
             {

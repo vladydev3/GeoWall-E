@@ -24,6 +24,7 @@ namespace GeoWall_E
         public Expression Measure => Measure_;
         public Dictionary<string, Tuple<int, int>> Positions => Positions_;
 
+        // Evalúa la expresión del arco y devuelve el tipo resultante
         public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
         {
             if (Center is IEvaluable centerEvaluable && Start is IEvaluable startEvaluable && End is IEvaluable endEvaluable && Measure is IEvaluable measureEvaluable)
@@ -37,6 +38,8 @@ namespace GeoWall_E
             }
             else return new ErrorType();
         }
+
+        // Maneja la expresión del arco para dibujar en la pantalla
         public void HandleArcExpression(List<Tuple<Type, Color>> toDraw, Error errors, SymbolTable symbolTable, Color color, string name)
         {
             var arc = Evaluate(symbolTable, errors, toDraw);
@@ -47,6 +50,7 @@ namespace GeoWall_E
             }
         }
 
+        // Maneja la expresión de asignación de un arco
         public void HandleArcAsignationExpression(SymbolTable symbolTable, Error errors, AsignationStatement asignation)
         {
             var arc = Evaluate(symbolTable, errors, toDraw: new List<Tuple<Type, Color>>());
