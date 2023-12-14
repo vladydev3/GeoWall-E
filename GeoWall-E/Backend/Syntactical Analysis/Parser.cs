@@ -9,6 +9,7 @@ namespace GeoWall_E
         int position;
         Color PreviousColor = new(Colors.Black);
         Color color = new(Colors.Black);
+        bool skip = false;
 
         public Parser(List<Token> tokens, Error errors)
         {
@@ -26,8 +27,10 @@ namespace GeoWall_E
 
         Token Match(TokenType Type)
         {
+            if (skip) return NextToken();
             if (Current.Type == Type) return NextToken();
             errors.AddError($"SYNTAX ERROR: Expected {Type} but got {Current.Type}, Line: {Current.Line}, Column: {Current.Column}");
+            skip = true;
             return new Token(TokenType.Error, "", Current.Line, Current.Column);
         }
 
@@ -251,6 +254,7 @@ namespace GeoWall_E
 
         Expression ParsePrimaryExpression()
         {
+            if (skip) return new ErrorExpression();
             switch (Current.Type)
             {
                 case TokenType.Line:
@@ -370,6 +374,7 @@ namespace GeoWall_E
             while (Current.Type != TokenType.In)
             {
                 var statement = ParseStatement();
+                if (skip) break;
                 if (statement as Statement != null) instructions.Add((Statement)statement);
             }
             Match(TokenType.In);

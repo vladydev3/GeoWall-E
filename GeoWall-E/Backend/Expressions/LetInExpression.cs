@@ -18,7 +18,6 @@ public class LetInExpression : Expression, IEvaluable
     public Type Evaluate(SymbolTable symbolTable, Error error, List<Tuple<Type, Color>> toDraw)
     {
         symbolTable.EnterScope();
-
         var evaluator = new Evaluator(Let, error, symbolTable);
         evaluator.Evaluate();
         toDraw.AddRange(evaluator.ToDraw);

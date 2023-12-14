@@ -2,6 +2,14 @@ namespace GeoWall_E
 {
     public static class Utils
     {
+        /// <summary>
+        /// Ordena dos objetos Type en el orden deseado.
+        /// </summary>
+        /// <typeparam name="T1">Primer tipo.</typeparam>
+        /// <typeparam name="T2">Segundo tipo.</typeparam>
+        /// <param name="f1">El objecto del primer tipo.</param>
+        /// <param name="f2">El objecto del segundo tipo.</param>
+        /// <returns>Una tupla con los tipos ordenados.</returns>
         public static (T1, T2) OrderByType<T1, T2>(Type f1, Type f2) where T1 : Type where T2 : Type
         {
             if (f1 is T1 t && f2 is T2 t1) return (t, t1);
@@ -14,6 +22,7 @@ namespace GeoWall_E
             if (p1.X == p2.X) return (p2.Y - p1.Y) / (p2.X - p1.X + 1);
             return (p2.Y - p1.Y) / (p2.X - p1.X);
         }
+
         // Calcular la pendiente de una recta y la ecuacion de la recta
         public static (double, double) SlopeAndEquation(Point p1, Point p2)
         {
@@ -22,7 +31,11 @@ namespace GeoWall_E
             return (m, b);
         }
 
-        // Colocar el import statement y las declaraciones de funciones en el inicio de la lista de nodos
+        /// <summary>
+        /// Reordena la lista de nodos colocando las importaciones y las declaraciones de funciones al inicio.
+        /// </summary>
+        /// <param name="nodes">La lista de nodos a ordenar.</param>
+        /// <returns>La lista de nodos reordenada.</returns>
         public static List<Node> ReorderNodes(List<Node> nodes)
         {
             List<Node> newNodes = new();
@@ -40,7 +53,5 @@ namespace GeoWall_E
             newNodes.AddRange(otherNodes);
             return newNodes;
         }
-
-
     }
 }
