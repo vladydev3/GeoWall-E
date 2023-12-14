@@ -52,19 +52,34 @@ namespace GeoWall_E
 
             // Si la distancia es menor que la diferencia absoluta de los radios, un circulo esta dentro del otro
             if (d < Math.Abs(c1.Radius.Value - c2.Radius.Value)) return new Sequence(new List<Type>() { new Undefined() });
+            // Si la distancia es igual a la suma de los radios, los círculos son tangentes y tienen un solo punto de intersección
+            if (d == c1.Radius.Value + c2.Radius.Value)
+            {
+                // Calcula las coordenadas del punto de intersección
+                double x = c1.Center.X + (c1.Radius.Value / d) * (c2.Center.X - c1.Center.X);
+                double y = c1.Center.Y + (c1.Radius.Value / d) * (c2.Center.Y - c1.Center.Y);
+
+                Point point = new();
+                point.AsignX(x);
+                point.AsignY(y);
+
+                return new Sequence(new List<Type>() { point });
+            }
 
             double r1 = c1.Radius.Value;
             double r2 = c2.Radius.Value;
-
+            
+            // Calcula la variable 'a', que es la distancia desde el centro del primer círculo hasta la línea que pasa por los puntos de intersección
             double a = (r1 * r1 - r2 * r2 + d * d) / (2 * d);
+            // Calcula la variable 'h', que es la distancia desde la línea que pasa por los puntos de intersección hasta los puntos de intersección
             double h = Math.Sqrt(r1 * r1 - a * a);
-
+            // Calcula las coordenadas de un punto en la línea que pasa por los centros de los círculos
             double x2 = c1.Center.X + a * (c2.Center.X - c1.Center.X) / d;
             double y2 = c1.Center.Y + a * (c2.Center.Y - c1.Center.Y) / d;
-
+            // Calcula las coordenadas del primer punto de intersección
             double x3 = x2 + h * (c2.Center.Y - c1.Center.Y) / d;
             double y3 = y2 - h * (c2.Center.X - c1.Center.X) / d;
-
+            // Calcula las coordenadas del segundo punto de intersección
             double x4 = x2 - h * (c2.Center.Y - c1.Center.Y) / d;
             double y4 = y2 + h * (c2.Center.X - c1.Center.X) / d;
 
@@ -181,16 +196,17 @@ namespace GeoWall_E
             // Si la distancia es menor que la diferencia absoluta de los radios, un circulo esta dentro del otro
             if (distance < Math.Abs(circle.Radius.Value - arc.Measure.Value)) return new Sequence(new List<Type>() { new Undefined() });
 
-            // Calcular los puntos de interseccion
+            // Calcula la variable 'a', que es la distancia desde el centro del arco hasta la línea que pasa por los puntos de intersección
             var a = (arc.Measure.Value * arc.Measure.Value - circle.Radius.Value * circle.Radius.Value + distance * distance) / (2 * distance);
+            // Calcula la variable 'h', que es la distancia desde la línea que pasa por los puntos de intersección hasta los puntos de intersección
             var h = Math.Sqrt(arc.Measure.Value * arc.Measure.Value - a * a);
-
+            // Calcula las coordenadas de un punto en la línea que pasa por los centros del arco y del círculo
             var x1 = arc.Center.X + a * (circle.Center.X - arc.Center.X) / distance;
             var y1 = arc.Center.Y + a * (circle.Center.Y - arc.Center.Y) / distance;
-
+            // Calcula las coordenadas del primer punto de intersección
             var x2 = x1 + h * (circle.Center.Y - arc.Center.Y) / distance;
             var y2 = y1 - h * (circle.Center.X - arc.Center.X) / distance;
-
+            // Calcula las coordenadas del segundo punto de intersección
             var x3 = x1 - h * (circle.Center.Y - arc.Center.Y) / distance;
             var y3 = y1 + h * (circle.Center.X - arc.Center.X) / distance;
             Point point1 = new();
@@ -210,21 +226,22 @@ namespace GeoWall_E
         internal static Sequence IntersectCircleAndSegment(Type f1, Type f2)
         {
             (Segment segment, Circle circle) = Utils.OrderByType<Segment, Circle>(f1, f2);
-
+            // Calcula la pendiente y el intercepto de la línea que representa el segmento
             (var m, var b) = Utils.SlopeAndEquation(segment.Start, segment.End);
-
+            // Calcula los coeficientes de la ecuación cuadrática que se utilizará para encontrar los puntos de intersección
             var a = 1 + m * m;
             var b1 = -2 * circle.Center.X + 2 * m * b - 2 * m * circle.Center.Y;
             var c = circle.Center.X * circle.Center.X + b * b + circle.Center.Y * circle.Center.Y - 2 * b * circle.Center.Y - circle.Radius.Value * circle.Radius.Value;
-
+            // Calcula el discriminante de la ecuación cuadrática
             var discriminant = b1 * b1 - 4 * a * c;
-
+            // Si el discriminante es menor que 0, entonces la ecuación cuadrática no tiene soluciones reales, lo que significa que el segmento de línea y el círculo no se intersectan
             if (discriminant < 0) return new Sequence(new List<Type>() { new Undefined() });
             else
             {
+                // Calcula las coordenadas x de los puntos de intersección
                 var x1 = (-b1 + Math.Sqrt(discriminant)) / (2 * a);
                 var x2 = (-b1 - Math.Sqrt(discriminant)) / (2 * a);
-
+                // Calcula las coordenadas y de los puntos de intersección
                 var y1 = m * x1 + b;
                 var y2 = m * x2 + b;
 
@@ -235,7 +252,10 @@ namespace GeoWall_E
                 Point point2 = new();
                 point2.AsignX(x2);
                 point2.AsignY(y2);
-
+                // Verifica si los puntos de intersección están en el segmento de línea
+                // Si ambos puntos están en el segmento de línea, devuelve una secuencia que contiene ambos puntos
+                // Si solo uno de los puntos está en el segmento de línea, devuelve una secuencia que contiene ese punto
+                // Si ninguno de los puntos está en el segmento de línea, devuelve una secuencia que contiene un objeto Undefined
                 if (x1 >= Math.Min(segment.Start.X, segment.End.X) &&
                     x1 <= Math.Max(segment.Start.X, segment.End.X) &&
                     y1 >= Math.Min(segment.Start.Y, segment.End.Y) &&
@@ -268,15 +288,15 @@ namespace GeoWall_E
         internal static Sequence IntersectLineAndSegment(Type f1, Type f2)
         {
             (Line line, Segment segment) = Utils.OrderByType<Line, Segment>(f1, f2);
-
+            // Si los puntos de inicio y fin de la línea tienen la misma coordenada x, ajusta la coordenada x del punto final para evitar una división por cero al calcular la pendiente
             if (line.P1.X == line.P2.X) line.P2.AsignX(line.P2.X + 1);
-
+            // Calcula la pendiente y el intercepto de la línea
             (var m1, var b1) = Utils.SlopeAndEquation(line.P1, line.P2);
-
-            (var m2, var b2) = Utils.SlopeAndEquation(segment.Start, segment.End);
-
+            //Calcula la pendiente y el intercepto del segmento
+           (var m2, var b2) = Utils.SlopeAndEquation(segment.Start, segment.End);
+            // Si las pendientes de la línea y el segmento de línea son iguales, entonces son paralelos y no se intersectan
             if (m1 == m2) return new Sequence(new List<Type>() { new Undefined() });
-
+            // Calcula las coordenadas x e y del punto de intersección
             var x = (b2 - b1) / (m1 - m2);
             var y = m1 * x + b1;
 
@@ -300,21 +320,22 @@ namespace GeoWall_E
         internal static Sequence IntersectLineAndCircle(Type f1, Type f2)
         {
             (Line line, Circle circle) = Utils.OrderByType<Line, Circle>(f1, f2);
-
+            // Calcula la pendiente y el intercepto de la línea
             (var m, var b) = Utils.SlopeAndEquation(line.P1, line.P2);
-
+            // Calcula los coeficientes de la ecuación cuadrática que se utilizará para encontrar los puntos de intersección
             var a = 1 + m * m;
             var b1 = -2 * circle.Center.X + 2 * m * b - 2 * m * circle.Center.Y;
             var c = circle.Center.X * circle.Center.X + b * b + circle.Center.Y * circle.Center.Y - 2 * b * circle.Center.Y - circle.Radius.Value * circle.Radius.Value;
-
+            // Calcula el discriminante de la ecuación cuadrática
             var discriminant = b1 * b1 - 4 * a * c;
-
+            // Si el discriminante es menor que 0, entonces la ecuación cuadrática no tiene soluciones reales, lo que significa que la línea y el círculo no se intersectan
             if (discriminant < 0) return new Sequence(new List<Type>() { new Undefined() });
             else
             {
+                // Calcula las coordenadas x de los puntos de intersección
                 var x1 = (-b1 + Math.Sqrt(discriminant)) / (2 * a);
                 var x2 = (-b1 - Math.Sqrt(discriminant)) / (2 * a);
-
+                // Calcula las coordenadas y de los puntos de intersección
                 var y1 = m * x1 + b;
                 var y2 = m * x2 + b;
 
@@ -537,6 +558,8 @@ namespace GeoWall_E
             bool isClockwise = vectorStart.X * vectorEnd.Y - vectorEnd.X * vectorStart.Y < 0;
 
             // Comprueba si el punto está en el arco
+            // Si el arco está en sentido horario, el producto cruzado de inicio debe ser menor o igual a cero y el producto cruzado de fin mayor o igual a cero
+            // Si el arco está en sentido antihorario, el producto cruzado de inicio debe ser mayor o igual a cero y el producto cruzado de fin menor o igual a cero
             if (isClockwise) return crossProductStart <= 0 && crossProductEnd >= 0;
             return crossProductStart >= 0 && crossProductEnd <= 0;
         }
