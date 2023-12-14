@@ -140,7 +140,7 @@ namespace GeoWall_E
                 angle -= Math.PI;
             }
             double x = origin.X + distance * Math.Cos(angle);
-            double y = origin.Y + distance * Math.Sin(angle); // Usar 'origin.Y' en lugar de 'origin.X'
+            double y = origin.Y + distance * Math.Sin(angle);
             Point newPoint = new();
             newPoint.AsignX(x);
             newPoint.AsignY(y);
@@ -303,20 +303,41 @@ namespace GeoWall_E
             Canvas.SetLeft(label, midX);
             Canvas.SetTop(label, midY);
             // Calcular la pendiente de la línea
-            double m = (P2.Y - P1.Y) / (P2.X - P1.X);
-            // Calcular el intercepto y
-            double b = P1.Y - m * P1.X;
-            // Coordenadas de inicio
-            line1.X1 = 0; // borde izquierdo del lienzo
-            line1.Y1 = m * line1.X1 + b;
-            // Coordenadas de fin
-            line1.X2 = drawingCanvas.Width; // borde derecho del lienzo
-            line1.Y2 = m * line1.X2 + b;
-            // Crear los puntos y las etiquetas
-            DrawPoint(P1, drawingCanvas, color);
-            DrawPoint(P2, drawingCanvas, color);
-            // Agregar la línea al canvas
-            drawingCanvas.Children.Add(line1);
+            if (P2.X == P1.X) 
+            {
+                double m = (P2.Y - P1.Y) / (P2.X - P1.X+1);
+                // Calcular el intercepto y
+                double b = P1.Y - m * P1.X;
+                // Coordenadas de inicio
+                line1.X1 = 0; // borde izquierdo del lienzo
+                line1.Y1 = m * line1.X1 + b;
+                // Coordenadas de fin
+                line1.X2 = drawingCanvas.Width; // borde derecho del lienzo
+                line1.Y2 = m * line1.X2 + b;
+                // Crear los puntos y las etiquetas
+                DrawPoint(P1, drawingCanvas, color);
+                DrawPoint(P2, drawingCanvas, color);
+                // Agregar la línea al canvas
+                drawingCanvas.Children.Add(line1);
+            }
+            else
+            {
+                double m = (P2.Y - P1.Y) / (P2.X - P1.X);
+                // Calcular el intercepto y
+                double b = P1.Y - m * P1.X;
+                // Coordenadas de inicio
+                line1.X1 = 0; // borde izquierdo del lienzo
+                line1.Y1 = m * line1.X1 + b;
+                // Coordenadas de fin
+                line1.X2 = drawingCanvas.Width; // borde derecho del lienzo
+                line1.Y2 = m * line1.X2 + b;
+                // Crear los puntos y las etiquetas
+                DrawPoint(P1, drawingCanvas, color);
+                DrawPoint(P2, drawingCanvas, color);
+                // Agregar la línea al canvas
+                drawingCanvas.Children.Add(line1);
+            }
+            
         }
         public static Label CreateLabel(string name)
         {
